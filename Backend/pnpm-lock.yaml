@@ -1069,7 +1069,7 @@ snapshots:
     optionalDependencies:
       '@mikro-orm/mysql': 5.8.10(@mikro-orm/core@5.8.10)
 
-  '@mikro-orm/knex@5.8.10(@mikro-orm/core@5.8.10(@mikro-orm/mysql@5.8.10))(mysql2@3.6.2)':
+  '@mikro-orm/knex@5.8.10(@mikro-orm/core@5.8.10)(mysql2@3.6.2)':
     dependencies:
       '@mikro-orm/core': 5.8.10(@mikro-orm/mysql@5.8.10)
       fs-extra: 11.1.1
@@ -1085,7 +1085,7 @@ snapshots:
   '@mikro-orm/mysql@5.8.10(@mikro-orm/core@5.8.10)':
     dependencies:
       '@mikro-orm/core': 5.8.10(@mikro-orm/mysql@5.8.10)
-      '@mikro-orm/knex': 5.8.10(@mikro-orm/core@5.8.10(@mikro-orm/mysql@5.8.10))(mysql2@3.6.2)
+      '@mikro-orm/knex': 5.8.10(@mikro-orm/core@5.8.10)(mysql2@3.6.2)
       mysql2: 3.6.2
     transitivePeerDependencies:
       - better-sqlite3
