@@ -1,12 +1,12 @@
-/* import { Router } from "express";
-import {sanitizeproductInput, findAll, findOne, add, update, remove } from "./product.controler.js";
-
+import { Router } from "express";
+import { sanitizeProductInput, findAll, findOne, add, update, remove } from "./product.controler.js";
+import { validateToken } from "../validate-token/validate-token.routes.js";
 
 export const productRouter = Router();
 
-productRouter.get('/', findAll)
-productRouter.get('/:id', findOne)
-productRouter.post('/', sanitizeproductInput, add)
-productRouter.put('/:id', sanitizeproductInput, update)
-productRouter.patch('/:id', sanitizeproductInput, update)
-productRouter.delete('/:id', sanitizeproductInput, remove) */
+productRouter.get('/', validateToken ,findAll)
+productRouter.get('/:id', validateToken ,findOne)
+productRouter.post('/', validateToken ,sanitizeProductInput, add)
+productRouter.put('/:id', validateToken ,sanitizeProductInput, update)
+productRouter.patch('/:id', validateToken ,sanitizeProductInput, update)
+productRouter.delete('/:id', validateToken ,sanitizeProductInput, remove)

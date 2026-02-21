@@ -11,6 +11,7 @@ import {
 import { BaseEntity } from "../zshare/db/baseEntity.entity.js";
 import { Animal } from "../animal/animal.entity.js";
 import { Person } from "../person/person.entity.js";
+import { AdoptionStatus } from "../adoptionStatus/adoptionStatus.entity.js";
 
 @Entity()
 export class Adoption extends BaseEntity{
@@ -25,4 +26,7 @@ export class Adoption extends BaseEntity{
 
   @ManyToOne(() => Person, {nullable: false})
   person!: Rel<Person>;
+
+  @OneToMany(() => AdoptionStatus, adoptionStatus => adoptionStatus.adoption, { cascade: [Cascade.ALL] })
+  adoptions = new Collection<Adoption>(this)
 }

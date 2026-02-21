@@ -13,7 +13,7 @@ export class OrderStatus extends BaseEntity {
   motive?: string
   
   @ManyToOne(() => OrderState, {nullable: false})
-  orderStates!: Rel<OrderState>
+  orderState!: Rel<OrderState>
   
   @ManyToOne(() => Order, {nullable: false})
   order!: Rel<Order>

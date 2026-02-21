@@ -8,7 +8,7 @@ const em = orm.em
 
 async function findAll( req: Request, res: Response ){
   try {
-    const animal = await em.find(Animal, {}, {populate:['rescueClass', 'breed']})
+    const animal = await em.find(Animal, {}, {populate:['rescueClass', 'breed', 'user', 'photos']})
     res
       .status(200)
       .json({ message: 'found all animal', data: animal })
@@ -21,7 +21,7 @@ async function findAll( req: Request, res: Response ){
 async function findOne( req: Request, res: Response ){
   try {
     const id = Number.parseInt(req.params.id)
-    const animal = await em.findOneOrFail(Animal, { id }, {populate:['rescueClass', 'breed']})
+    const animal = await em.findOneOrFail(Animal, { id }, {populate:['rescueClass', 'breed', 'user', 'photos']})
     res
       .status(200)
       .json({ data: animal })
