@@ -1,11 +1,12 @@
 import { Router } from "express";
-import {  findAll, findOne, add, update, remove } from "./rescue.controler.js";
+import {  findAll, findOne, add, update, remove, sanitizeRescueInput } from "./rescue.controler.js";
+import { validateToken } from "../validate-token/validate-token.routes.js";
 
 export const rescueRouter = Router();
 
-rescueRouter.get('/', findAll)
-rescueRouter.get('/:id', findOne)
-rescueRouter.post('/',  add)
-rescueRouter.patch('/:id', update)
-rescueRouter.delete('/:id', remove)
-rescueRouter.put('/:id', update)
+rescueRouter.get('/', validateToken ,sanitizeRescueInput,findAll)
+rescueRouter.get('/:id', validateToken ,sanitizeRescueInput, findOne)
+rescueRouter.post('/', validateToken ,sanitizeRescueInput,add)
+rescueRouter.patch('/:id', validateToken ,sanitizeRescueInput,update)
+rescueRouter.delete('/:id', validateToken ,sanitizeRescueInput,remove)
+rescueRouter.put('/:id', validateToken ,sanitizeRescueInput,update)

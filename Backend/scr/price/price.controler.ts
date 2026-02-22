@@ -1,93 +1,81 @@
 import { Request, Response, NextFunction } from 'express';
-/*import { PriceRepository } from './price.repository.js';
-import { Price } from './price.entity.js';*/
+import { Price } from './price.entity.js';
+import { orm } from '../zshare/db/orm.js';
 
-/*const pricerepository = new PriceRepository();*/
+
+const em = orm.em
 
 function sanitizePriceInput(req: Request, res: Response, next:NextFunction){
   
-  req.body.sanitizedprice = {
-    amount: req.body.amount,
+  req.body.sanitizedPrice = {
     date: req.body.date,
-    id_product: req.body.id_product,
+    value: req.body.value,
+    product: req.body.product,
     id: req.body.id,
   }
-   Object.keys(req.body.sanitizePriceInput).forEach((key) => {
-    if (req.body.sanitizePriceInput[key] === undefined) {
-      delete req.body.sanitizePriceInput[key]
-    }
-  })
+  if (req.body.sanitizedPrice){
+    Object.keys(req.body.sanitizedPrice).forEach((key) => {
+      if (req.body.sanitizedPrice[key] === undefined) {
+        delete req.body.sanitizedPrice[key]
+      }
+    })
+  }
 
-  next()
+  next();
 }
 
 async function findAll( req: Request, res: Response ){
-  res.status(500).json({message: 'Not implemented'});
+  try{
+    const price = await em.find(Price, {});
+    res.status(200).json({message: 'all prices: ', data: price});
+  } catch (error: any){
+    res.status(500).json({message: error.message});
+  }
 }
 
 async function findOne( req: Request, res: Response ){
-  res.status(500).json({message: 'Not implemented'});
+  try{
+    const id = Number.parseInt(req.params.id);
+    const price = await em.findOneOrFail(Price, { id: id });
+    res.status(200).json({message: 'price data: ', data: price});
+  } catch (error: any){
+    res.status(500).json({message: error.message});
+  }
 }
 
 async function add( req: Request, res: Response ){
-  res.status(500).json({message: 'Not implemented'});
+  try{
+    const input = req.body.sanitizedPrice;
+    const price = em.create(Price, input);
+    await em.flush();
+    res.status(201).json({ message: 'price created', data: price });
+  }catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 async function update( req: Request, res: Response ){
-  res.status(500).json({message: 'Not implemented'});
+  try{
+    const id = Number.parseInt(req.params.id);
+    const input = req.body.sanitizedPrice;
+    const price = em.getReference(Price, id);
+    em.assign(price, input);
+    await em.flush();
+    res.status(200).json({ message: 'price updated', data: price });
+  }catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 async function remove( req: Request, res: Response ){
-  res.status(500).json({message: 'Not implemented'});
+  try{
+    const id = Number.parseInt(req.params.id);
+    const price = em.getReference(Price, id);
+    em.removeAndFlush(price);
+    res.status(200).json({ message: 'price deleted', data: price });
+  }catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 export { findAll, findOne, add, update, remove, sanitizePriceInput }
-
-
-/*
-function findAll(req: Request,res: Response ){
-  res.json({data: pricerepository.findAll()});
-}
-
-
-function findOne(req: Request,res: Response ){
-  const id = req.params.id;
-  const price = pricerepository.findOne({id});
-  if(!price){
-    return res.status(404).send({message:'ID non-existent' })
-  }
-  res.json(price)
-}
-
-
-function add (req: Request,res: Response){
-  const input = req.body.sanitizedprice
-
-  const peopleInput = new Price (input.amount,input.date,input.id_product,input.id)
-  const price = pricerepository.add(peopleInput)
-  return res.status(201).send({message: 'new price create', data: Price })
-}
-
-
-function update (req: Request,res: Response ){
-  req.body.sanitizedprice.id = req.params.id
-  const price = pricerepository.update('1', req.body.sanitizedprice) 
-  if (!price) {
-    return res.status(404).send({message:'price not found' })
-  }
-  return res.status(200).send({message: 'price changed suscessfully', data:  Price })
-
-}
-
-function remove(req: Request,res: Response ){
-  const id = req.params.id;
-  const price = pricerepository.delete({id})
-  if(!price){
-    return res.status(404).send({message:'incorrect ID' })
-  }
-  else{
-  return res.status(200).send({message: 'price deleted suscessfully' })
-  }
-}
-
-export {  sanitizePriceInput, findOne, add, update, remove, findAll }*/
