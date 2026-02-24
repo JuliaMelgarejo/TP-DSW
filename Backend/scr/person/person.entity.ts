@@ -38,7 +38,7 @@ export class Person extends BaseEntity {
   phoneNumber!: string
 
   @Property({nullable: false})
-  birthdate!: Date
+  birthdate!: string
 
   @Property({nullable: false})
   street!: string
@@ -46,11 +46,8 @@ export class Person extends BaseEntity {
   @Property({nullable: true})
   nroCuit!: string
 
-  @Property({nullable: true})
+  @Property({nullable: false})
   number_street!: string
-
-  @Enum(() => UserRole)
-  role!: UserRole;
 
   @ManyToOne(() => City, {nullable: false, cascade: [Cascade.ALL]})
   city!: Rel<City>
@@ -58,8 +55,8 @@ export class Person extends BaseEntity {
   @OneToMany(() => Adoption, adoption => adoption.person, { cascade: [Cascade.ALL] })
   adoptions = new Collection<Adoption>(this)
 
-  @OneToOne(() => User, (user) => user.person, {nullable: true})
-  user?: typeof User;
+  @OneToOne(() => User, (user) => user.person, { mappedBy: 'person'})
+  user!: Rel<User>;
 
   @OneToMany(() => Order, order => order.person, { cascade: [Cascade.ALL] })
   orders = new Collection<Order>(this)

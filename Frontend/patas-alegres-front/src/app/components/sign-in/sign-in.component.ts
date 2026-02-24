@@ -31,7 +31,7 @@ export class SignInComponent {
   doc_type: FormControl;
   doc_nro: FormControl;
   email: FormControl;
-  phone: FormControl;
+  phoneNumber: FormControl;
   birthdate: FormControl;
   number_street: FormControl;
   street: FormControl;
@@ -57,9 +57,9 @@ export class SignInComponent {
     this.doc_type = new FormControl('', [Validators.required]);
     this.doc_nro = new FormControl('', [Validators.required]);
     this.email = new FormControl('');
-    this.phone = new FormControl('');
-    this.birthdate = new FormControl('', [Validators.required]);
-    this.number_street = new FormControl('', [Validators.required]);
+    this.phoneNumber = new FormControl('');
+    this.birthdate = new FormControl('');
+    this.number_street = new FormControl('');
     this.street = new FormControl('', [Validators.required]);
     this.city = new FormControl('', [Validators.required]);
     this.nroCuit = new FormControl('');
@@ -170,43 +170,24 @@ ngOnInit(): void {
 
     SignIn() {
     if (this.UserForm.valid) {
-      const user: any = {
+      const payload = {
         username: this.UserForm.value.username,
         password: this.UserForm.value.password,
         role: 'USER',
+        person: {...this.UserForm.value.person}
       };
      
-    const person = {  ...this.UserForm.value.person  };
-      this.userService.signIn(user).subscribe({
-        next: (userResponse) => {
-          console.log('Usuario creado:', userResponse); 
-          person.user = userResponse.data.id;   
-          console.log(userResponse.data.id);  
-       
-          this.personService.postPerson(person).subscribe({
-            next: (personResponse) => {
-              console.log('Persona creada:', personResponse);
+    //const person = {  ...this.UserForm.value.person  };
+      this.userService.signIn(payload).subscribe({
+        next: () => {
               alert('Usuario y Persona creados exitosamente!');
               this.router.navigate(['/login']);
-            },
-            error: (personError: HttpErrorResponse) => {
-              console.error('Error al crear persona:', personError);
-              this.errorService.msjError(personError);
-
-            },
-          });
-        },
-        error: (userError: HttpErrorResponse) => {
-          console.error('Error al crear usuario:', userError);
-          this.errorService.msjError(userError);
-
-        },
-      });
-    } else {
+            },});
+    }else {
       console.log('Formulario inválido');
+      console.log(this.UserForm.value);
+      console.log(this.UserForm.errors);
+
     }
   }
 }
-
-
-  

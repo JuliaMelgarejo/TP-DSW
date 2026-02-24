@@ -83,11 +83,12 @@ function sanitizePersonInput(req: Request, res: Response, next: NextFunction) {
     doc_nro: req.body.doc_nro,
     doc_type: req.body.doc_type,
     email: req.body.email,
-    phone: req.body.phone,
+    phoneNumber: req.body.phone,
     birthdate: req.body.birthdate ? new Date(req.body.birthdate) : null,
-    address: req.body.address,
+    street: req.body.street,
+    number_street: req.body.number_street,
+    city: req.body.city,
     nroCuit: req.body.nroCuit,
-    role: role,
   };
 
   if (req.body.sanitizedPerson) {
