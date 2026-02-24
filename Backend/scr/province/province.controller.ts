@@ -71,10 +71,20 @@ async function remove( req: Request, res: Response ){
     const id = Number.parseInt(req.params.id);
     const province = em.getReference(Province, id);
     em.removeAndFlush(province);
-    res.status(200).json({ message: 'adoption deleted', data: province });
+    res.status(200).json({ message: 'province deleted', data: province });
   }catch (error: any) {
     res.status(500).json({ message: error.message })
   }
 }
 
-export { findAll, findOne, add, update, remove, sanitizeProvinceInput }
+async function findByCountry( req: Request, res: Response ){
+  try{
+    const country_id = Number.parseInt(req.params.countryId);
+    const provinces = await em.find(Province, { country: country_id });
+    res.status(200).json({message: 'provinces by country data: ', data: provinces});
+  } catch (error: any){
+    res.status(500).json({message: error.message});
+  }
+}
+
+export { findAll, findOne, add, update, remove, sanitizeProvinceInput, findByCountry }

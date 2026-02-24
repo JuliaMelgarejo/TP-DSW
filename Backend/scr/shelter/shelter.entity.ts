@@ -17,6 +17,7 @@ import { City } from "../city/city.entity.js";
 import { Person } from "../person/person.entity.js";
 import { Product } from "../product/product.entity.js";
 import { ShippingTypeStatus } from "../shippingTypeStatus/shippingTypeStatus.entity.js";
+import { User } from "../user/user.entity.js";
 @Entity()
 export class Shelter extends BaseEntity {
   [x: string]: any;
@@ -53,6 +54,6 @@ export class Shelter extends BaseEntity {
   @ManyToOne(() => City, {nullable: false})
   city!: Rel<City>;
   
-  @OneToOne(() => Person, (person) => person.shelter, { nullable: true })
-  person!: Rel<Person>;
+  @OneToOne(() => User, (user) => user.shelter, { nullable: true })
+  user!: Rel<User>;
 }

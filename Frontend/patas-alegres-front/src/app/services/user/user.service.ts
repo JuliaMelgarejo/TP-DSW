@@ -11,7 +11,6 @@ export class UserService {
   readonly API_URL2 = 'http://localhost:3000/api/user/login';
   users: User[] = [];
 
-
   constructor(private http: HttpClient) { 
     this.users = [];
 

@@ -1,33 +1,188 @@
-<div class="wrapper">
-  <div class="body">
-    <img class="icon" src="../../assets/img/hospital.png" alt="img login">
-    <h1>Registrar usuario</h1>
-    <form [formGroup]="UserForm" novalidate>
-      <input formControlName="username" type="text" class="form-control mb-1" placeholder="Ingrese su  nombre de usuario">
-      <input formControlName="password" type="password" class="form-control mb-1" placeholder="Ingrese su contraseña">
-      <input formControlName="repassword" type="password" class="form-control mb-1" placeholder="Repita su contraseña">
-      <span *ngIf="UserForm.errors?.['passwordmatcherror']" class="">Las contraseñas no son iguales</span>
+<div class="container-fluid bg-light min-vh-100 d-flex justify-content-center">
+  <div class="col-12 col-md-8 col-lg-5 py-4">
 
-            <h2>Datos Personales</h2>
-            
-          <div formGroupName="person">
-              <input formControlName="name" type="text" class="form-control mb-1" placeholder="Ingrese su nombre" />
-              <input formControlName="surname" type="text" class="form-control mb-1" placeholder="Ingrese su apellido" />
-              <input formControlName="doc_type" type="text" class="form-control mb-1" placeholder="Tipo de documento" />
-              <input formControlName="doc_nro" type="number" class="form-control mb-1" placeholder="Número de documento" />
-              <input formControlName="email" type="email" class="form-control mb-1"
-                placeholder="Ingrese su correo electrónico (opcional)" />
-              <input formControlName="phone" type="text" class="form-control mb-1"
-                placeholder="Ingrese su número de teléfono (opcional)" />
-              <input formControlName="birthdate" type="date" class="form-control mb-1" placeholder="Fecha de nacimiento" />
-              <input formControlName="address" type="string" class="form-control mb-1" placeholder="Dirección" />
-              <input formControlName="nroCuit" type="String" class="form-control mb-1" placeholder="Número de CUIT (opcional)" />
-          </div>
-        <div class="d-grid gap-2 mt-2">
-          <button  (click)="SignIn()" type="button"  
-            class="btn btn-primary btn-lg" routerLink="/login">Aceptar</button>
+    <!-- Header -->
+    <div class="text-center mb-4">
+      <div class="fs-1">😊</div>
+      <h1 class="fw-bold">Patas alegres</h1>
+      <h4 class="fw-semibold">Primer regis usuario</h4>
+    </div>
+
+    <form [formGroup]="UserForm" (ngSubmit)="SignIn()">
+
+      <!-- USERNAME -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Usuario</label>
+        <input
+          type="text"
+          class="form-control form-control-lg"
+          formControlName="username"
+          placeholder="Ingresar aqui el usuario"
+        />
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Contraseña</label>
+        <input
+          type="password"
+          class="form-control form-control-lg"
+          formControlName="password"
+          placeholder="Ingresar aqui la contraseña"
+        />
+      </div>
+
+      <!-- PERSON GROUP -->
+      <div formGroupName="person">
+
+        <!-- NAME -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Nombre</label>
+          <input
+            type="text"
+            class="form-control form-control-lg"
+            formControlName="name"
+            placeholder="Ingresar aqui el nombre"
+          />
         </div>
+
+        <!-- SURNAME -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Apellido</label>
+          <input
+            type="text"
+            class="form-control form-control-lg"
+            formControlName="surname"
+            placeholder="Ingresar aqui el apellido"
+          />
+        </div>
+
+        <!-- DOC TYPE -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Tipo de documento</label>
+
+          <div class="input-group input-group-lg">
+            <select
+              class="form-select"
+              formControlName="doc_type"
+            >
+              <option value="" disabled selected>Tipos de documentos</option>
+              <option value="dni">DNI</option>
+              <option value="pasaporte">Pasaporte</option>
+              <option value="cuit">CUIT</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- DOC NUMBER -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Numero de documento</label>
+          <input
+            type="text"
+            class="form-control form-control-lg"
+            formControlName="doc_nro"
+            placeholder="Ingresar aqui el numero"
+          />
+        </div>
+
+        <!-- BIRTHDATE -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Fecha de nacimiento</label>
+          <input
+            type="date"
+            class="form-control form-control-lg"
+            formControlName="birthdate"
+          />
+        </div>
+
+        
+          <!-- STREET -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Calle</label>
+          <input
+            type="text"
+            class="form-control form-control-lg"
+            formControlName="street"
+            placeholder="Ingresar aqui el nombre de la calle"
+          />
+        </div>
+
+        <!-- NUMBER -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Numero</label>
+          <input
+            type="text"
+            class="form-control form-control-lg"
+            formControlName="number_street"
+            placeholder="Ingresar aqui el numero de calle"
+          />
+        </div>
+
+        <!-- PAIS -->
+        <div class="mb-4">
+          <select
+            class="form-select form-select-lg"
+            [(ngModel)]="selectedCountry"
+            [ngModelOptions]="{standalone: true}"
+            (change)="onCountryChange()"
+          >
+            <option value="">Seleccione un país</option>
+
+            <option *ngFor="let country of countries"
+                    [value]="country.id">
+              {{ country.name }}
+            </option>
+          </select>
+        </div>
+
+
+        <!-- PROVINCIA -->
+        <div class="mb-4">
+          <select
+            class="form-select form-select-lg"
+            [(ngModel)]="selectedProvince"
+            [ngModelOptions]="{standalone: true}"
+            (change)="onProvinceChange()"
+            [disabled]="!selectedCountry"
+          >
+            <option value="">Seleccione una provincia</option>
+
+            <option *ngFor="let province of provinces"
+                    [value]="province.id">
+              {{ province.name }}
+            </option>
+          </select>
+        </div>
+
+
+        <!-- CIUDAD -->
+        <div class="mb-4">
+          <select
+            class="form-select form-select-lg"
+            formControlName="city"
+            [disabled]="!selectedProvince"
+          >
+            <option value="">Seleccione una ciudad</option>
+
+            <option *ngFor="let city of cities"
+                    [value]="city.id">
+              {{ city.name }}
+            </option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- SUBMIT -->
+      <div class="d-grid">
+        <button
+          type="submit"
+          class="btn btn-secondary btn-lg py-3"
+        >
+          Siguiente
+        </button>
+      </div>
+
     </form>
-    <a href="" routerLink="/login">Pagina anterior</a>
   </div>
 </div>

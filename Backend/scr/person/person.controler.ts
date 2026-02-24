@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { orm } from '../zshare/db/orm.js';
 import { Person } from './person.entity.js';
+import { UserRole } from '../common/enums/user-role.enum.js';
 
 const em = orm.em
 
@@ -36,8 +37,8 @@ async function findOneByDoc( req: Request, res: Response ){
 
 async function add( req: Request, res: Response ){
   try{
-    //const input = req.body.sanitizedPerson;
-    const person = em.create(Person, req.body);
+    const input = req.body.sanitizedPerson;
+    const person = em.create(Person, input);
     await em.flush();
     res.status(201).json({ message: 'person created', data: person });
   }catch (error: any) {
@@ -70,6 +71,12 @@ async function remove( req: Request, res: Response ){
 }
 
 function sanitizePersonInput(req: Request, res: Response, next: NextFunction) {
+  const role = req.body.role;
+
+  if (!Object.values(UserRole).includes(role)) {
+    return res.status(400).json({ message: 'Invalid role' });
+  }
+
   req.body.sanitizedPerson = {
     name: req.body.name,
     surname: req.body.surname,
@@ -80,6 +87,7 @@ function sanitizePersonInput(req: Request, res: Response, next: NextFunction) {
     birthdate: req.body.birthdate ? new Date(req.body.birthdate) : null,
     address: req.body.address,
     nroCuit: req.body.nroCuit,
+    role: role,
   };
 
   if (req.body.sanitizedPerson) {
