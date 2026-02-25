@@ -1,185 +1,238 @@
-<div class="container-fluid bg-light min-vh-100 d-flex justify-content-center">
-  <div class="col-12 col-md-8 col-lg-5 py-4">
+<div class="container-fluid bg-light min-vh-100 d-flex justify-content-center  align-items-start py-5">
+  <div class="col-12 col-lg-10 col-xl-8">
 
     <!-- Header -->
-    <div class="text-center mb-4">
+    <div class="text-center mb-5">
       <div class="fs-1">😊</div>
       <h1 class="fw-bold">Patas alegres</h1>
       <h4 class="fw-semibold">Primer regis usuario</h4>
     </div>
 
     <form [formGroup]="UserForm" (ngSubmit)="SignIn()">
-
-      <!-- USERNAME -->
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Usuario</label>
-        <input
-          type="text"
-          class="form-control form-control-lg"
-          formControlName="username"
-          placeholder="Ingresar aqui el usuario"
-        />
-      </div>
-
-      <!-- PASSWORD -->
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Contraseña</label>
-        <input
-          type="password"
-          class="form-control form-control-lg"
-          formControlName="password"
-          placeholder="Ingresar aqui la contraseña"
-        />
-      </div>
-
-      <!-- PERSON GROUP -->
-      <div formGroupName="person">
-
-        <!-- NAME -->
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Nombre</label>
+    <div class = "row">
+      <div class="col-12 col-lg-6">
+        <!-- USERNAME -->
+        <div class="mb-4 text-center">
+          <label class="form-label fw-semibold">Usuario</label>
           <input
             type="text"
             class="form-control form-control-lg"
-            formControlName="name"
-            placeholder="Ingresar aqui el nombre"
+            formControlName="username"
+            placeholder="Ingresar aqui el usuario"
           />
+          <p class="error" *ngIf="UserForm.get('username')?.invalid && UserForm.get('username')?.touched">El tipo de documento es obligatorio</p>
         </div>
 
-        <!-- SURNAME -->
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Apellido</label>
+        <!-- PASSWORD -->
+        <div class="mb-4 text-center">
+          <label class="form-label fw-semibold">Contraseña</label>
           <input
-            type="text"
+            type="password"
             class="form-control form-control-lg"
-            formControlName="surname"
-            placeholder="Ingresar aqui el apellido"
+            formControlName="password"
+            placeholder="Ingresar aqui la contraseña"
           />
+          <p class="error" *ngIf="UserForm.get('password')?.invalid && UserForm.get('password')?.touched">El tipo de documento es obligatorio</p>
         </div>
 
-        <!-- DOC TYPE -->
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Tipo de documento</label>
+        <!-- PERSON GROUP -->
+        <div formGroupName="person">
 
-          <div class="input-group input-group-lg">
+          <!-- NAME -->
+          <div class="mb-4 text-center">
+            <label class="form-label fw-semibold">Nombre</label>
+            <input
+              type="text"
+              class="form-control form-control-lg"
+              formControlName="name"
+              placeholder="Ingresar aqui el nombre"
+            />
+            <p class="error" *ngIf="UserForm.get('name')?.invalid && UserForm.get('name')?.touched">El tipo de documento es obligatorio</p>
+          </div>
+
+          <!-- SURNAME -->
+          <div class="mb-4 text-center">
+            <label class="form-label fw-semibold">Apellido</label>
+            <input
+              type="text"
+              class="form-control form-control-lg"
+              formControlName="surname"
+              placeholder="Ingresar aqui el apellido"
+            />
+            <p class="error" *ngIf="UserForm.get('surname')?.invalid && UserForm.get('surname')?.touched">El tipo de documento es obligatorio</p>
+          </div>
+
+          <!-- DOC TYPE -->
+          <div class="mb-4 text-center">
+            <label class="form-label fw-semibold">Tipo de documento</label>
+
+            <div class="input-group input-group-lg">
+              <select
+                class="form-select"
+                formControlName="doc_type"
+              >
+                <option value="" disabled selected>Tipos de documentos</option>
+                <option value="dni">DNI</option>
+                <option value="pasaporte">Pasaporte</option>
+                <option value="cuit">CUIT</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-12 col-lg-6">
+          <!-- DOC NUMBER -->
+          <div class="mb-4 text-center">
+            <label class="form-label fw-semibold">Numero de documento</label>
+            <input
+              type="text"
+              class="form-control form-control-lg"
+              formControlName="doc_nro"
+              placeholder="Ingresar aqui el numero"
+            />
+            <p class="error" *ngIf="UserForm.get('doc_nro')?.invalid && UserForm.get('doc_nro')?.touched">El tipo de documento es obligatorio</p>
+          </div>
+
+          <!-- CUIT -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Numero</label>
+            <input
+              type="text"
+              class="form-control form-control-lg"
+              formControlName="cuit"
+              placeholder="Ingresar aqui el numero de calle"
+            />
+            <p class="error" *ngIf="UserForm.get('cuit')?.invalid && UserForm.get('cuit')?.touched">El tipo de documento es obligatorio</p>
+          </div>
+
+          <!-- BIRTHDATE -->
+          <div class="mb-4 text-center">
+            <label class="form-label fw-semibold">Fecha de nacimiento</label>
+            <input
+              type="date"
+              class="form-control form-control-lg"
+              formControlName="birthdate"
+            />
+            <p class="error" *ngIf="UserForm.get('birthdate')?.invalid && UserForm.get('birthdate')?.touched">El tipo de documento es obligatorio</p>
+          </div>
+
+          
+            <!-- STREET -->
+          <div class="mb-4 text-center">
+            <label class="form-label fw-semibold">Calle</label>
+            <input
+              type="text"
+              class="form-control form-control-lg"
+              formControlName="street"
+              placeholder="Ingresar aqui el nombre de la calle"
+            />
+            <p class="error" *ngIf="UserForm.get('street')?.invalid && UserForm.get('street')?.touched">El tipo de documento es obligatorio</p>
+          </div>
+
+          <!-- NUMBER -->
+          <div class="mb-4 text-center">
+            <label class="form-label fw-semibold">Numero</label>
+            <input
+              type="text"
+              class="form-control form-control-lg"
+              formControlName="number_street"
+              placeholder="Ingresar aqui el numero de calle"
+            />
+            <p class="error" *ngIf="UserForm.get('number_street')?.invalid && UserForm.get('number_street')?.touched">El tipo de documento es obligatorio</p>
+          </div>
+
+          
+          <!-- PHONENUMBER -->
+          <div class="mb-4 text-center">
+            <label class="form-label fw-semibold">Numero</label>
+            <input
+              type="text"
+              class="form-control form-control-lg"
+              formControlName="phoneNumber"
+              placeholder="Ingresar aqui el numero de calle"
+            />
+            <p class="error" *ngIf="UserForm.get('phoneNumber')?.invalid && UserForm.get('phoneNumber')?.touched">El tipo de documento es obligatorio</p>
+          </div>
+
+          
+          <!-- EMAIL -->
+          <div class="mb-4 text-center">
+            <label class="form-label fw-semibold">Numero</label>
+            <input
+              type="text"
+              class="form-control form-control-lg"
+              formControlName="email"
+              placeholder="Ingresar aqui el numero de calle"
+            />
+            <p class="error" *ngIf="UserForm.get('email')?.invalid && UserForm.get('email')?.touched">El tipo de documento es obligatorio</p>
+          </div>
+
+          
+
+          <!-- PAIS -->
+          <div class="mb-4">
             <select
-              class="form-select"
-              formControlName="doc_type"
+              class="form-select form-select-lg"
+              [(ngModel)]="selectedCountry"
+              [ngModelOptions]="{standalone: true}"
+              (change)="onCountryChange()"
             >
-              <option value="" disabled selected>Tipos de documentos</option>
-              <option value="dni">DNI</option>
-              <option value="pasaporte">Pasaporte</option>
-              <option value="cuit">CUIT</option>
+              <option value="">Seleccione un país</option>
+
+              <option *ngFor="let country of countries"
+                      [value]="country.id">
+                {{ country.name }}
+              </option>
             </select>
           </div>
+
+
+          <!-- PROVINCIA -->
+          <div class="mb-4 text-center">
+            <select
+              class="form-select form-select-lg"
+              [(ngModel)]="selectedProvince"
+              [ngModelOptions]="{standalone: true}"
+              (change)="onProvinceChange()"
+              [disabled]="!selectedCountry"
+            >
+              <option value="">Seleccione una provincia</option>
+
+              <option *ngFor="let province of provinces"
+                      [value]="province.id">
+                {{ province.name }}
+              </option>
+            </select>
+          </div>
+
+
+          <!-- CIUDAD -->
+          <div class="mb-4">
+            <select
+              class="form-select form-select-lg"
+              formControlName="city"
+              [disabled]="!selectedProvince"
+            >
+              <option value="">Seleccione una ciudad</option>
+
+              <option *ngFor="let city of cities"
+                      [value]="city.id">
+                {{ city.name }}
+              </option>
+            </select>
+          </div>
+
         </div>
-
-        <!-- DOC NUMBER -->
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Numero de documento</label>
-          <input
-            type="text"
-            class="form-control form-control-lg"
-            formControlName="doc_nro"
-            placeholder="Ingresar aqui el numero"
-          />
-        </div>
-
-        <!-- BIRTHDATE -->
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Fecha de nacimiento</label>
-          <input
-            type="date"
-            class="form-control form-control-lg"
-            formControlName="birthdate"
-          />
-        </div>
-
-        
-          <!-- STREET -->
-        <div class="mb-4">
-          <label class="form-label fw-semibold">Calle</label>
-          <input
-            type="text"
-            class="form-control form-control-lg"
-            formControlName="street"
-            placeholder="Ingresar aqui el nombre de la calle"
-          />
-        </div>
-
-        <!-- NUMBER -->
-        <div class="mb-4">
-          <label class="form-label fw-semibold">Numero</label>
-          <input
-            type="text"
-            class="form-control form-control-lg"
-            formControlName="number_street"
-            placeholder="Ingresar aqui el numero de calle"
-          />
-        </div>
-
-        <!-- PAIS -->
-        <div class="mb-4">
-          <select
-            class="form-select form-select-lg"
-            [(ngModel)]="selectedCountry"
-            [ngModelOptions]="{standalone: true}"
-            (change)="onCountryChange()"
-          >
-            <option value="">Seleccione un país</option>
-
-            <option *ngFor="let country of countries"
-                    [value]="country.id">
-              {{ country.name }}
-            </option>
-          </select>
-        </div>
-
-
-        <!-- PROVINCIA -->
-        <div class="mb-4">
-          <select
-            class="form-select form-select-lg"
-            [(ngModel)]="selectedProvince"
-            [ngModelOptions]="{standalone: true}"
-            (change)="onProvinceChange()"
-            [disabled]="!selectedCountry"
-          >
-            <option value="">Seleccione una provincia</option>
-
-            <option *ngFor="let province of provinces"
-                    [value]="province.id">
-              {{ province.name }}
-            </option>
-          </select>
-        </div>
-
-
-        <!-- CIUDAD -->
-        <div class="mb-4">
-          <select
-            class="form-select form-select-lg"
-            formControlName="city"
-            [disabled]="!selectedProvince"
-          >
-            <option value="">Seleccione una ciudad</option>
-
-            <option *ngFor="let city of cities"
-                    [value]="city.id">
-              {{ city.name }}
-            </option>
-          </select>
-        </div>
-
       </div>
-
       <!-- SUBMIT -->
-      <div class="d-grid">
+     <div class="d-flex justify-content-center mt-5">
         <button
           type="submit"
-          class="btn btn-secondary btn-lg py-3"
+          class="btn btn-secondary btn-lg px-5 py-3"
+          style="min-width: 300px;"
         >
-          Siguiente
+          Registrarme
         </button>
       </div>
 
