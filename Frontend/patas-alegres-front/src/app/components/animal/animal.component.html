@@ -1,34 +1,52 @@
-<div class="container-fluid py-3">
-  <div class="row g-3">
-    <div class="col-12 col-md-6 col-lg-4" *ngFor="let animal of animalService.animals">
-      <a class="card h-100 text-decoration-none text-dark"
-         [routerLink]="['/animal', animal.id]"
-         style="border-radius:16px; cursor:pointer;">
+<div class="pa-page">
+  <div class="container-fluid px-3">
 
-        <img
-          class="card-img-top"
-          [src]="getPhotoUrl(animal)"
-          [alt]="animal.name"
-          style="height:220px; object-fit:cover; border-top-left-radius:16px; border-top-right-radius:16px;"
-        />
+    <div class="row g-3">
+      <div class="col-12 col-md-6 col-lg-4" *ngFor="let animal of animalService.animals">
 
-        <div class="card-body">
-          <div class="fw-semibold mb-2">
-            Nombre: <span class="fw-bold">{{ animal.name }}</span>
+        <a
+          class="pa-card pa-card-hover d-block text-decoration-none"
+          [routerLink]="['/animal', animal.id]"
+          style="color: inherit; overflow: hidden;"
+        >
+
+          <img
+            [src]="getPhotoUrl(animal)"
+            [alt]="animal?.name || 'Animal'"
+            class="w-100 d-block"
+            style="height: 220px; object-fit: cover;"
+          />
+
+          <div class="pa-section">
+
+            <div class="fw-bold mb-2">
+              {{ animal?.name || '—' }}
+            </div>
+
+            <div class="pa-muted pa-small">Raza</div>
+            <div class="fw-semibold mb-2">
+              {{ animal?.breed?.name || '—' }}
+            </div>
+
+            <div class="pa-muted pa-small">Fecha rescate</div>
+            <div class="fw-semibold mb-2">
+              {{ animal?.rescueClass?.rescue_date ? (animal.rescueClass.rescue_date | date:'dd/MM/yyyy') : '—' }}
+            </div>
+
+            <div class="pa-muted pa-small">Descripción</div>
+            <div class="mb-2">
+              {{ animal?.description || '—' }}
+            </div>
+
+            <div class="mt-2 fw-bold" style="color: var(--pa-primary-dark);">
+              Ver información →
+            </div>
+
           </div>
+        </a>
 
-          <div class="text-muted small">Raza</div>
-          <div class="fw-medium mb-2">{{ animal.breed?.name || '—' }}</div>
-
-          <div class="text-muted small">Fecha rescate</div>
-          <div class="fw-medium mb-2">{{ animal.rescueClass?.rescue_date | date:'dd/MM/yyyy' }}</div>
-
-          <div class="text-muted small">Descripción</div>
-          <div class="mb-2">{{ animal.description || '—' }}</div>
-
-          <div class="mt-2 text-primary fw-semibold">Ver información →</div>
-        </div>
-      </a>
+      </div>
     </div>
+
   </div>
 </div>

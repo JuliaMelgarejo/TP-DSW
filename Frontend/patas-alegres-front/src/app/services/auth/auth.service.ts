@@ -21,16 +21,22 @@ export class AuthService {
   }
 
   // --- Role ---
-  get role(): AppRole {
-    return (localStorage.getItem('role') as AppRole) || 'USER';
+
+  getDecodedToken(): any {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    try{
+      const payload = token.split('.')[1];
+      return JSON.parse(atob(payload));
+    } catch (e) {
+      return null;
+    }
   }
 
-  setRole(role: AppRole) {
-    localStorage.setItem('role', role);
-  }
 
-  clearRole() {
-    localStorage.removeItem('role');
+  getRole(): AppRole | null {
+    const decoded = this.getDecodedToken();
+    return decoded?.role ?? null;
   }
 
   // --- Helpers ---
@@ -38,14 +44,12 @@ export class AuthService {
     return !!this.token;
   }
 
-  isUser(): boolean { return this.role === 'USER'; }
-  isAdmin(): boolean { return this.role === 'ADMIN'; }
-  isShelter(): boolean { return this.role === 'SHELTER'; }
+  isUser(): boolean { return this.getRole() === 'USER'; }
+  isShelter(): boolean { return this.getRole() === 'SHELTER'; }
 
   // --- Logout ---
   logout() {
     this.clearToken();
-    this.clearRole();
     this.router.navigate(['/login']);
   }
 }

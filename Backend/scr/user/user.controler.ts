@@ -105,7 +105,10 @@ export const login = async(req: Request, res: Response) => {
 
      // Generamos token
    const token = jwt.sign({
-    username: username
+    username: username, 
+    role: user.role, 
+    personId : user.person?.id, 
+    shelterId: user.shelter?.id
    }, process.env.SECRET_KEY || 'pepito123');
    
    res.json(token);

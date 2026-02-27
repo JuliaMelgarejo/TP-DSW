@@ -1,96 +1,55 @@
-import { Component, OnInit } from '@angular/core';
-import { AnimalService } from '../../services/animal/animal.service.js';
-import { ShelterService } from '../../services/shelter/shelter.service.js';
-import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { AuthService } from  '../../services/auth/auth.service';
+type Banner = {
+  src: string;
+  alt: string;
+  title?: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: any[]; // routerLink array
+};
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit {
-  animals: any[] = [];
-  shelters: any[] = [];
-  filteredAnimals: any[] = [];
-  uniqueBreeds: string[] = [];
-  uniqueZones: string[] = [];
-  selectedBreed: string = '';
-  selectedZone: string = '';
-  sortOrder: string = 'asc';
-
-  constructor(
-    private animalService: AnimalService,
-    public shelterService: ShelterService
-  ) {}
-
-  ngOnInit(): void {
-    this.getAnimals();
-    this.getShelters();
-  }
-
-  getAnimals(): void {
-    this.animalService.getAnimals().subscribe({
-      next: (response) => {
-        this.animals = response.data;
-        this.filteredAnimals = [...this.animals];
-        this.extractUniqueBreeds();
-      },
-      error: (error) => {
-        console.error(error);
-      },
-    });
-  }
-
-  getShelters(): void {
-    this.shelterService.getShelters().subscribe({
-      next: (response) => {
-        this.shelterService.shelters = response.data;
-        this.extractUniqueZones();
-      },
-      error: (error) => {
-        console.error(error);
-      },
-    });
-  }
-
-  extractUniqueBreeds(): void {
-    this.uniqueBreeds = [
-      ...new Set(this.animals.map((animal) => animal.breed.name)) // Extraer el nombre de la raza
-    ].sort();
-  }
-
-  extractUniqueZones(): void {
-    this.uniqueZones = [
-      ...new Set(this.shelterService.shelters.map((shelter) => shelter.zone.name)),
-    ].sort();
-  }
-
-  filterAnimals(): void {
-    this.filteredAnimals = this.animals.filter((animal) => {
-      return (
-        (this.selectedBreed === '' || animal.breed.name === this.selectedBreed) && // Comparar con el nombre
-        (this.selectedZone === '' ||
-          this.shelters.some(
-            (shelter) =>
-              shelter.zone.name === this.selectedZone &&
-              shelter.id === animal.shelterId
-          ))
-      );
-    });
-    this.sortAnimals();
-  }
-
-  sortAnimals(): void {
-    this.filteredAnimals.sort((a, b) => {
-      const nameA = a.name.toLowerCase();
-      const nameB = b.name.toLowerCase();
-      return this.sortOrder === 'asc'
-        ? nameA.localeCompare(nameB)
-        : nameB.localeCompare(nameA);
-    });
-  }
+export class HomeComponent {
+  constructor(public auth: AuthService) {}
+  ngOnInit() {
+  console.log('decoded token:', this.auth.getDecodedToken());
+  console.log('role:', this.auth.getRole());
+  console.log('isShelter:', this.auth.isShelter());
+}
+  // Cambiá las imágenes por las tuyas (assets/)
+  banners: Banner[] = [
+    {
+      src: 'assets/banner1.png',
+      alt: 'Adoptá, cambiá una vida',
+      title: 'Adoptá hoy',
+      subtitle: 'Dale una segunda oportunidad a un amigo.',
+      ctaText: 'Ver animales',
+      ctaLink: ['/animal'],
+    },
+    {
+      src: 'assets/banner2.png',
+      alt: 'Conmpra los mejores alimentos y ayudá refugios',
+      title: 'Ayudá a los refugios',
+      subtitle: 'Comprá nuestros productos.',
+      ctaText: 'Ver productos',
+      ctaLink: ['/buy'], // ajustá si tu ruta es otra
+    },
+    {
+      src: 'assets/banner3.png',
+      alt: 'Campañas de vacunación',
+      title: 'Campañas y eventos',
+      subtitle: 'Contactanos ',
+      ctaText: 'Ver refugios',
+      ctaLink: ['/shelter'], // ajustá si tu ruta es otra
+    },
+  ];
 }

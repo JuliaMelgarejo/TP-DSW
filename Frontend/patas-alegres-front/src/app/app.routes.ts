@@ -44,10 +44,10 @@ export const routes: Routes = [
   {path: 'zone/create', component: ZoneFormComponent, canActivate:[authGuard]},
   {path: 'zone/:id', component: ZoneDetailComponent, canActivate:[authGuard]},
 
-  {path: 'animal/create', component: AnimalFormComponent},//, canActivate:[authGuard]},
-  {path: 'animal', component: AnimalComponent},//, canActivate:[authGuard]},
-  {path: 'animal/:id', component:AnimalPageComponent}, //canActivate:[authGuard]},
-  {path: 'animal/:id/shelter', component: AnimalDetailsComponent},
+  {path: 'animal/create', component: AnimalFormComponent, canActivate:[authGuard], data: { roles: ['ROLE_ADMIN'] }},
+  {path: 'animal', component: AnimalComponent, canActivate:[authGuard]},
+  {path: 'animal/:id', component:AnimalPageComponent, canActivate:[authGuard]},
+  {path: 'animal/:id/shelter', component: AnimalDetailsComponent, canActivate:[authGuard], data: { roles: ['SHELTER'] }},
 
   {path: 'shelter', component: ShelterComponent, canActivate:[authGuard]},
   {path: 'shelter/create', component: ShelterFormComponent, canActivate:[authGuard]},
