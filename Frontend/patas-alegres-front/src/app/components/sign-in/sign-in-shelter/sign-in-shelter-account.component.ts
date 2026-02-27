@@ -174,7 +174,7 @@ export class SignInShelterAccountComponent {
       this.state.setAccount(this.UserForm.value);
       console.log("State actualizado: ", this.state);
       console.log("State account: ", this.state.getAccount());
-      this.router.navigate(['/register/shelter/details']);
+      this.router.navigate(['/signIn/shelter/details']);
     }
   }
 }

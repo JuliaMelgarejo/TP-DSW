@@ -30,10 +30,10 @@ import { SignInShelterDetailsComponent } from './components/sign-in/sign-in-shel
 
 export const routes: Routes = [
   {path: 'login', component: LoginComponent},
-  {path: 'signIn', component: SignInComponent},
-  { path: 'register/user', component: SignInComponent },
-  { path: 'register/shelter/account', component: SignInShelterAccountComponent },
-  { path: 'register/shelter/details', component: SignInShelterDetailsComponent },
+  { path: 'signIn', component: SignInComponent },
+  { path: 'signIn/user', component: SignInComponent },
+  { path: 'signIn/shelter/account', component: SignInShelterAccountComponent },
+  { path: 'signIn/shelter/details', component: SignInShelterDetailsComponent },
 
   { path: '',redirectTo: 'login',pathMatch: 'full' }, 
   {path: 'home', component: HomeComponent, canActivate:[authGuard]},

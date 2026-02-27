@@ -24,7 +24,7 @@ export class AppComponent {
   constructor(private router: Router) {
   this.router.events.subscribe(() => {
     // Rutas donde no quieres mostrar el header
-    const hiddenHeaderRoutes = ['/login', '/register/user', '/register/shelter/account', '/register/shelter/details'];
+    const hiddenHeaderRoutes = ['/login', '/signIn/user', '/signIn/shelter/account', '/signIn/shelter/details'];
     this.showHeader = !hiddenHeaderRoutes.includes(this.router.url);
   });
 }
