@@ -74,24 +74,19 @@ export class AnimalDetailsComponent {
     });
   }
 
-  updateAnimal(){
-    const updatedanimal = {
-    // ✅ partimos del animal completo que ya tenés
-    ...this.selectedAnimal,
+  updateAnimal() {
+    if (!this.selectedAnimal?.id) return;
 
-    // ✅ sobrescribimos lo editable
-    name: this.animalForm.value.name,
-    birth_date: this.animalForm.value.birth_date,
+    const payload = {
+      name: this.animalForm.value.name,
+      birth_date: this.animalForm.value.birth_date,
+    };
 
-    // ✅ mantenemos relaciones como están (o sus ids si tu backend lo espera así)
-    breed: this.selectedAnimal.breed,
-    rescueClass: this.selectedAnimal.rescueClass,
-  };
-    
-    this.animalService.updateAnimal(updatedanimal).subscribe({
+    // OJO: tu service arma la URL con animal.id, así que pasamos id afuera
+    this.animalService.updateAnimal({ ...(payload as any), id: this.selectedAnimal.id }).subscribe({
       next: () => this.getAnimal(this.selectedAnimal.id),
-      error: (error) => console.log(error)
-    })
+      error: (error) => console.log(error),
+    });
   }
 
   // ======================
@@ -138,4 +133,25 @@ export class AnimalDetailsComponent {
     const d = new Date(date);
     return d.toISOString().substring(0,10);
   }
+
+  deletePhoto(photoId: number) {
+  if (!this.selectedAnimal?.id) return;
+
+  const ok = confirm('¿Eliminar esta foto?');
+  if (!ok) return;
+
+  this.photoService.deletePhoto(photoId).subscribe({
+    next: () =>{ this.getAnimal(this.selectedAnimal.id);
+      this.previewUrl = null;
+      this.selectedFile = null;
+  },
+    error: (err) => console.log(err),
+  });
+}
+
+getPhotoUrl(p: any): string {
+  const url = p?.url;
+  if (!url) return 'assets/nophoto.png';
+  return url.startsWith('http') ? url : this.BACKEND_BASE + url;
+}
 }

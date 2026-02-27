@@ -1,0 +1,141 @@
+<div class="pa-card pa-filter">
+
+  <!-- Header -->
+  <div class="d-flex align-items-center justify-content-between mb-2">
+    <div class="fw-semibold">Filtros y ordenamiento</div>
+    <button type="button" class="pa-btn-link" (click)="onClear()">Limpiar filtros</button>
+  </div>
+
+  <!-- Chips (opcional) -->
+  <div *ngIf="appliedChips?.length" class="mb-3">
+    <div class="text-muted small mb-1">Filtros aplicados</div>
+    <div class="d-flex flex-wrap gap-2">
+      <span class="pa-chip" *ngFor="let c of appliedChips">{{ c }}</span>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="form" (ngSubmit)="onApply()">
+
+    <!-- Ordenar por -->
+    <div class="mb-3">
+      <div class="pa-legend">Ordenar por</div>
+      <div class="pa-box">
+        <label class="d-flex align-items-center gap-2 py-1">
+          <input class="form-check-input" type="radio" formControlName="sortBy" value="breed">
+          <span>Animal (Raza)</span>
+        </label>
+        <label class="d-flex align-items-center gap-2 py-1">
+          <input class="form-check-input" type="radio" formControlName="sortBy" value="rescueDate">
+          <span>Tiempo de rescate</span>
+        </label>
+        <label class="d-flex align-items-center gap-2 py-1">
+          <input class="form-check-input" type="radio" formControlName="sortBy" value="age">
+          <span>Edad</span>
+        </label>
+        <label class="d-flex align-items-center gap-2 py-1">
+          <input class="form-check-input" type="radio" formControlName="sortBy" value="zone">
+          <span>Zona</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Raza -->
+    <div class="mb-3">
+      <div class="pa-legend">Raza</div>
+      <div class="pa-box pa-scroll">
+        <div *ngFor="let b of breeds" class="py-1">
+          <label class="d-flex align-items-center gap-2">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="hasId('breedIds', b.id)"
+              (change)="toggleId('breedIds', b.id)"
+            />
+            <span>{{ b.label }}</span>
+          </label>
+        </div>
+        <div *ngIf="!breeds?.length" class="text-muted small">—</div>
+      </div>
+    </div>
+
+    <!-- Refugio -->
+    <div class="mb-3">
+      <div class="pa-legend">Refugio</div>
+      <div class="pa-box pa-scroll">
+        <div *ngFor="let s of shelters" class="py-1">
+          <label class="d-flex align-items-center gap-2">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="hasId('shelterIds', s.id)"
+              (change)="toggleId('shelterIds', s.id)"
+            />
+            <span>{{ s.label }}</span>
+          </label>
+        </div>
+        <div *ngIf="!shelters?.length" class="text-muted small">—</div>
+      </div>
+    </div>
+
+    <!-- Edad -->
+    <div class="mb-3">
+      <div class="pa-legend">Edad</div>
+      <div class="pa-box">
+        <div class="row g-2">
+          <div class="col-6">
+            <input class="form-control pa-input" type="number" min="0" placeholder="Mín" formControlName="minAge">
+          </div>
+          <div class="col-6">
+            <input class="form-control pa-input" type="number" min="0" placeholder="Máx" formControlName="maxAge">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fecha de rescate -->
+    <div class="mb-3">
+      <div class="pa-legend">Fecha de rescate</div>
+      <div class="pa-box">
+        <div class="row g-2">
+          <div class="col-6">
+            <input class="form-control pa-input" type="date" formControlName="rescueFrom">
+          </div>
+          <div class="col-6">
+            <input class="form-control pa-input" type="date" formControlName="rescueTo">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zona -->
+    <div class="mb-3">
+      <div class="pa-legend">Zona</div>
+      <div class="pa-box pa-scroll">
+        <div *ngFor="let z of zones" class="py-1">
+          <label class="d-flex align-items-center gap-2">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="hasId('zoneIds', z.id)"
+              (change)="toggleId('zoneIds', z.id)"
+            />
+            <span>{{ z.label }}</span>
+          </label>
+        </div>
+        <div *ngIf="!zones?.length" class="text-muted small">—</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="d-flex align-items-center justify-content-between">
+      <div class="text-muted small" *ngIf="totalFound !== null">
+        {{ totalFound }} encontrados
+      </div>
+      <button type="submit" class="pa-btn pa-btn-primary px-4">
+        Aplicar
+      </button>
+    </div>
+
+  </form>
+</div>
