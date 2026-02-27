@@ -15,6 +15,9 @@ import { adoptionRouter } from './scr/adoption/adoption.router.js';
 import { userRouter } from './scr/user/user.routes.js';
 import path from 'path';
 import { photoRouter } from './scr/photo/photo.router.js';
+import { cityRouter } from './scr/city/city.router.js';
+import { provinceRouter } from './scr/province/province.router.js';
+import { countryRouter } from './scr/country/country.router.js';
 
 const app = express();
 app.use(express.json());
@@ -46,6 +49,9 @@ app.use('/api/adoption', adoptionRouter)
 app.use('/api/user', userRouter)
 app.use('/api/login', userRouter)
 app.use('/api/photo', photoRouter);
+app.use('/api/city', cityRouter)
+app.use('/api/province', provinceRouter)
+app.use('/api/country', countryRouter )
 
 await syncSchema() //never in production*/
 

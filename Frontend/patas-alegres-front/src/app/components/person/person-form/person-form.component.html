@@ -31,7 +31,7 @@
 
   <div class="form-fieldset">
     <label for="phone">Teléfono:</label>
-    <input type="text" id="person-phone" formControlName="phone">
+    <input type="text" id="person-phone" formControlName="phoneNumber">
   </div>
 
   <div class="form-fieldset">
@@ -42,7 +42,7 @@
 
   <div class="form-fieldset">
     <label for="address">Dirección:</label>
-    <input type="text" id="person-address" formControlName="address">
+    <input type="text" id="person-address" formControlName="street">
     <p class="error" *ngIf="personForm.get('address')?.invalid && personForm.get('address')?.touched">La dirección es obligatoria</p>
   </div>
 
