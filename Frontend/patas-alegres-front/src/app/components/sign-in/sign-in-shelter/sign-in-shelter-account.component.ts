@@ -1,27 +1,30 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule, FormBuilder } from '@angular/forms';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule,FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { UserService } from '../../services/user/user.service.js';
+import { UserService } from '../../../services/user/user.service.js';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ErrorService } from '../../services/errors/error.service.js';
-import { PersonService } from '../../services/person/person.service.js';
-import { City } from '../../models/city/city.module.js';
-import { Province } from '../../models/province/province.module.js';
-import { Country } from '../../models/country/country.module.js';
-import { CityService } from '../../services/city/city.service.js';
-import { ProvinceService } from '../../services/province/province.service.js';
-import { CountryService } from '../../services/country/country.service.js';
-
+import { ErrorService } from '../../../services/errors/error.service.js';
+import { PersonService } from '../../../services/person/person.service.js';
+import { City } from '../../../models/city/city.module.js';
+import { Province } from '../../../models/province/province.module.js';
+import { Country } from '../../../models/country/country.module.js';
+import { CityService } from '../../../services/city/city.service.js';
+import { ProvinceService } from '../../../services/province/province.service.js';
+import { CountryService } from '../../../services/country/country.service.js';
+import { SignInStateService } from '../../../services/sign-in-state/sign-in-state.service.js';
 
 @Component({
-  selector: 'app-sign-in',
+  selector: 'app-sign-in-shelter-account',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './sign-in.component.html',
-  styleUrl: './sign-in.component.css'
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+  ],
+  templateUrl: './sign-in-shelter-account.component.html'
 })
-export class SignInComponent {
+export class SignInShelterAccountComponent {
 [x: string]: any;
   UserForm: FormGroup;
   username: FormControl;
@@ -44,8 +47,17 @@ export class SignInComponent {
   nroCuit: FormControl;
   user: FormControl;
 
-  constructor(private route: ActivatedRoute,public userService: UserService, public errorService: ErrorService,
-     public personService: PersonService,public cityService: CityService,public provinceService: ProvinceService, public countryService: CountryService, public router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private state: SignInStateService,
+    public userService: UserService, 
+    public errorService: ErrorService,
+    public personService: PersonService,
+    public cityService: CityService,
+    public provinceService: ProvinceService,
+    public countryService: CountryService,
+    public router: Router
+  ) {
     this.username = new FormControl('',[Validators.required, Validators.minLength(3)]);
     this.password = new FormControl('',[Validators.required, Validators.minLength(6)]);
 
@@ -61,27 +73,28 @@ export class SignInComponent {
     this.city = new FormControl('', [Validators.required]);
     this.nroCuit = new FormControl('');
     this.user = new FormControl('');
+
     {
-    this.UserForm = new FormGroup({
-      username: new FormControl('', [Validators.required, Validators.minLength(3)]),
-      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-      person: new FormGroup({
-        name: new FormControl('', [Validators.required]),
-        surname: new FormControl('', [Validators.required]),
-        doc_type: new FormControl('', [Validators.required]),
-        doc_nro: new FormControl('', [Validators.required]),
-        email: new FormControl(''),
-        phoneNumber: new FormControl(''),
-        birthdate: new FormControl(''),
-        number_street: new FormControl(''),
-        street: new FormControl(''),
-        city: new FormControl(''),
-        nroCuit: new FormControl(''),
-        user: new FormControl(''),
-      }),
-    });
+      this.UserForm = new FormGroup({
+        username: new FormControl('', [Validators.required, Validators.minLength(3)]),
+        password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+        person: new FormGroup({
+          name: new FormControl('', [Validators.required]),
+          surname: new FormControl('', [Validators.required]),
+          doc_type: new FormControl('', [Validators.required]),
+          doc_nro: new FormControl('', [Validators.required]),
+          email: new FormControl(''),
+          phoneNumber: new FormControl(''),
+          birthdate: new FormControl(''),
+          number_street: new FormControl(''),
+          street: new FormControl(''),
+          city: new FormControl(''),
+          nroCuit: new FormControl(''),
+          user: new FormControl(''),
+        }),
+      });
+    }
   }
-     }
 
   ngOnInit(): void {
     this.loadCountries();
@@ -116,6 +129,7 @@ export class SignInComponent {
         });
     });
   }
+     
 
   loadCountries() {
     this.countryService.getCountries().subscribe({
@@ -154,27 +168,13 @@ export class SignInComponent {
     });
   }
 
-  SignIn() {
+  next() {
     if (this.UserForm.valid) {
-      const payload = {
-        username: this.UserForm.value.username,
-        password: this.UserForm.value.password,
-        role: 'USER',
-        person: {...this.UserForm.value.person}
-      };
-     
-    //const person = {  ...this.UserForm.value.person  };
-      this.userService.signIn(payload).subscribe({
-        next: () => {
-              alert('Usuario y Persona creados exitosamente!');
-              this.router.navigate(['/login']);
-            },});
-    } else {
-      alert('Por favor, complete todos los campos requeridos correctamente.');
-      console.log('Formulario inválido');
-      console.log(this.UserForm.value);
-      console.log(this.UserForm.errors);
-
+      console.log("Formulario válido, avanzando al siguiente paso...");
+      this.state.setAccount(this.UserForm.value);
+      console.log("State actualizado: ", this.state);
+      console.log("State account: ", this.state.getAccount());
+      this.router.navigate(['/register/shelter/details']);
     }
   }
 }

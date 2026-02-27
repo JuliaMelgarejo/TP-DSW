@@ -5,10 +5,11 @@ import { orm } from '../zshare/db/orm.js';
 import jwt from 'jsonwebtoken';
 import { UserRole } from '../common/enums/user-role.enum.js';
 import { Person } from '../person/person.entity.js';
+import { Shelter } from '../shelter/shelter.entity.js';
 
 export const newUser = async(req: Request, res: Response) => {
   const em = orm.em.fork();
-  const {username, password, role, person } = req.body;
+  const {username, password, role, person, shelter } = req.body;
     // Validamos si el usuario ya existe en la base de datos
   const user = await em.findOne(User, { username: username } );
 
@@ -30,9 +31,11 @@ export const newUser = async(req: Request, res: Response) => {
   console.log(hashedpassword);
   console.log(req.body);
   console.log(req.body.person);
+  console.log(req.body.shelter);
   try{
     //validamos
     console.log("entro al try");
+    console.log("Datos de usuario: ", {username, password, role });
     const user = await em.create(User, {
         username,
         password: hashedpassword, 
@@ -45,14 +48,31 @@ export const newUser = async(req: Request, res: Response) => {
     console.log(newPerson);
     console.log("se creo persona");
     user.person = newPerson;
-    console.log("paso crear persona");
+    console.log("Se asigno persona al usuario");
+    
+    if (role === UserRole.USER && !shelter) {
+      await em.persistAndFlush([user, newPerson]);
+      return res.status(201).json({
+        msg: `Usuario ${username} y persona creado exitosamente!`, data:user 
+      })
+    } else if (role === UserRole.SHELTER && shelter) {
+      const newShelter = em.create(Shelter, {
+        ...shelter
+      });
+      console.log("Refugio a guardar: ", newShelter);
+      
+      user.shelter = newShelter;
 
-    await em.persistAndFlush([user, newPerson]);
-
-
-    res.status(201).json({
-      msg: `Usuario ${username} y persona creado exitosamente!`, data:user 
-    })
+      await em.persistAndFlush([user, newPerson, newShelter]);
+      return res.status(201).json({
+        msg: `Usuario ${username}, persona y refugio creado exitosamente!`, data:user 
+      })
+    }
+    else if (role !== UserRole.SHELTER && shelter) {
+      return res.status(400).json({
+        msg: `Solo los usuarios con rol ${UserRole.SHELTER} pueden tener un refugio asociado`
+      })
+    }
   } catch (error) {
       res.status(400).json({
       msg: 'Upps ocurrio un error',
@@ -61,7 +81,6 @@ export const newUser = async(req: Request, res: Response) => {
     })
   }
 }
-
 
 export const login = async(req: Request, res: Response) => {
   const em = orm.em

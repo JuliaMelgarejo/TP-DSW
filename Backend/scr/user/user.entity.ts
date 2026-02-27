@@ -24,6 +24,6 @@ export class User extends BaseEntity {
   person?: Rel<Person>;
 
   @OneToOne(() => Shelter,(shelter) => shelter.user, { owner: true, nullable: true })
-  shelter?: typeof Shelter;
+  shelter?: Rel<Shelter>;
 
 }
