@@ -1,48 +1,90 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RescueService } from '../../../services/rescue/rescue.service.js';
-import { ActivatedRoute } from '@angular/router';
+import { Rescue, AnimalLite } from '../../../models/rescue/rescue.model';
+
+type Option = { id: number; name: string };
 
 @Component({
   selector: 'app-rescue-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './rescue-form.component.html',
-  styleUrl: './rescue-form.component.css'
+  styleUrl: './rescue-form.component.css',
 })
 export class RescueFormComponent {
-  rescueForm: FormGroup;
-  rescue_date: FormControl;
-  description: FormControl;
-  comments: FormControl;
-  animals: FormControl;
-  shelters: FormControl;
+  @Input() shelters: Option[] = [];
+  @Input() cities: Option[] = [];
+  @Input() breeds: Option[] = []; // ✅
 
-  constructor(private route: ActivatedRoute, public rescueService: RescueService){
-    this.rescue_date = new FormControl('', [Validators.required]);
-    this.description = new FormControl('');
-    this.comments = new FormControl('');
-    this.animals = new FormControl('');
-    this.shelters = new FormControl('');
+  @Output() submitRescue = new EventEmitter<Rescue>();
 
-    this.rescueForm = new FormGroup({
-      rescue_date: this.rescue_date,
-      description: this.description,
-      comments: this.comments,
-      animals: this.animals,
-      shelters: this.shelters
-    })
+  rescueForm = new FormGroup({
+    rescue_date: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
+    cityId: new FormControl<number | null>(null, { validators: [Validators.required] }),
+    shelterId: new FormControl<number | null>(null, { validators: [Validators.required] }),
+
+    street: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
+    number_street: new FormControl<number | null>(null, { validators: [Validators.required] }),
+
+    description: new FormControl<string>('', { nonNullable: true }),
+    comments: new FormControl<string>('', { nonNullable: true }),
+  });
+
+  animals: AnimalLite[] = [];
+
+  // ✅ mini form: ahora breedId es obligatorio si querés
+  animalForm = new FormGroup({
+    name: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
+    birth_date: new FormControl<string>(''),
+    breedId: new FormControl<number | null>(null, { validators: [Validators.required] }), // ✅ dropdown
+  });
+
+  addAnimalFromMiniForm(): void {
+    if (this.animalForm.invalid) {
+      this.animalForm.markAllAsTouched();
+      return;
+    }
+
+    const v = this.animalForm.getRawValue();
+
+    this.animals.push(new AnimalLite(
+      v.name,
+      v.birth_date || null,
+      Number(v.breedId)
+    ));
+
+    this.animalForm.reset({ name: '', birth_date: '', breedId: null });
   }
 
-  postRescue(){
-    this.rescueService.postRescue(this.rescueForm.value).subscribe({
-      next: (data) => {
-        console.log(data);
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    })
+  removeAnimal(index: number): void {
+    this.animals.splice(index, 1);
   }
 
+  onSubmit(): void {
+    if (this.rescueForm.invalid) {
+      this.rescueForm.markAllAsTouched();
+      return;
+    }
+    if (this.animals.length === 0) {
+      alert('Tenés que agregar al menos un animal.');
+      return;
+    }
+
+    const v = this.rescueForm.getRawValue();
+
+    const payload = new Rescue(
+      null,
+      v.rescue_date,
+      v.description ?? '',
+      v.comments ?? '',
+      v.street,
+      Number(v.number_street),
+      Number(v.shelterId),
+      Number(v.cityId),
+      this.animals
+    );
+
+    this.submitRescue.emit(payload);
+  }
 }

@@ -1,0 +1,25 @@
+/* Centrado del contenido del modal */
+.pa-filters-wrap{
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* =========================
+   MOBILE: pegar cards (form + animales)
+   ========================= */
+@media (max-width: 991.98px){
+
+  /* Pegamos la card de animales con la de form */
+  .mobile-animals-card{
+    margin-top: -1px;                 /* une el borde */
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  /* Quitamos el radio inferior del card dentro del componente hijo */
+  :host ::ng-deep app-rescue-form .pa-card{
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}

@@ -1,15 +1,76 @@
-<h2>Crear Rescate</h2>
-<form [formGroup]="rescueForm" (submit)="postRescue()">
-  <fieldset>
-    <label for="rescue_date">fecha de rescate:</label><br>
-    <input type="date" id="rescue-date" rescue_date="rescue_date" formControlName="rescue_date">
-    <br><br>
-    <label for="description">Descripcion:</label><br>
-    <input type="text" id="description" comments="description" formControlName="description">
-    <br><br>
-    <label for="comments">Comentarios:</label><br>
-    <input type="text" id="comments" comments="comments" formControlName="comments">
-    <br><br>
-  </fieldset>
-  <button class="btn">Crear rescate</button>
-</form>
+<div class="pa-card pa-section pa-panel">
+
+  <div class="mb-3">
+    <div class="pa-h3 mb-0">Registro Rescate-Animales</div>
+    <div class="pa-muted pa-small">Completá los datos del rescate</div>
+  </div>
+
+  <form [formGroup]="rescueForm" class="d-grid pa-gap-md">
+
+    <div>
+      <div class="fw-bold mb-1">Refugio</div>
+      <select class="pa-input w-100" formControlName="shelterId">
+        <option [ngValue]="null">Seleccionar refugio</option>
+        <option *ngFor="let s of shelters" [ngValue]="s.id">{{ s.name }}</option>
+      </select>
+      <div class="text-danger small"
+           *ngIf="rescueForm.controls.shelterId.touched && rescueForm.controls.shelterId.invalid">
+        Requerido
+      </div>
+    </div>
+
+    <div>
+      <div class="fw-bold mb-1">Zona de rescate</div>
+      <select class="pa-input w-100" formControlName="cityId">
+        <option [ngValue]="null">Seleccionar zona</option>
+        <option *ngFor="let c of cities" [ngValue]="c.id">{{ c.name }}</option>
+      </select>
+      <div class="text-danger small"
+           *ngIf="rescueForm.controls.cityId.touched && rescueForm.controls.cityId.invalid">
+        Requerido
+      </div>
+    </div>
+
+    <div>
+      <div class="fw-bold mb-1">Fecha de rescate</div>
+      <input class="pa-input w-100" type="date" formControlName="rescue_date" />
+      <div class="text-danger small"
+           *ngIf="rescueForm.controls.rescue_date.touched && rescueForm.controls.rescue_date.invalid">
+        Requerido
+      </div>
+    </div>
+
+    <div class="d-flex gap-2">
+      <div class="w-100">
+        <div class="fw-bold mb-1">Calle</div>
+        <input class="pa-input w-100" type="text" formControlName="street" placeholder="Ingresa aquí la dirección" />
+        <div class="text-danger small"
+             *ngIf="rescueForm.controls.street.touched && rescueForm.controls.street.invalid">
+          Requerido
+        </div>
+      </div>
+
+      <div style="width:140px;">
+        <div class="fw-bold mb-1">Número</div>
+        <input class="pa-input w-100" type="number" formControlName="number_street" placeholder="0" />
+        <div class="text-danger small"
+             *ngIf="rescueForm.controls.number_street.touched && rescueForm.controls.number_street.invalid">
+          Requerido
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="fw-bold mb-1">Descripción</div>
+      <textarea class="pa-input w-100" rows="2" formControlName="description"
+                placeholder="Descripción del rescate (opcional)"></textarea>
+    </div>
+
+    <div>
+      <div class="fw-bold mb-1">Comentarios</div>
+      <textarea class="pa-input w-100" rows="2" formControlName="comments"
+                placeholder="Comentarios internos (opcional)"></textarea>
+    </div>
+
+  </form>
+</div>
