@@ -52,6 +52,7 @@ export class ShelterDetailComponent {
     }
   });
   }
+  
 
   getShelter(id: number){
     this.shelterService.getShelter(id).subscribe({

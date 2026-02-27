@@ -17,10 +17,10 @@ import { Rescue } from "../rescue/rescue.entity.js";
 @Entity()
 export class City extends BaseEntity{
   @Property({nullable: true})
-  nombre!: string
+  name!: string
 
   @Property({nullable: false})
-  cod_postal!: number
+  zip_code!: number
 
   @ManyToOne(() => Province, {nullable: false})
   province!: Rel<Province>;

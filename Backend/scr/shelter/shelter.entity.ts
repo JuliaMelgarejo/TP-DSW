@@ -17,34 +17,35 @@ import { City } from "../city/city.entity.js";
 import { Person } from "../person/person.entity.js";
 import { Product } from "../product/product.entity.js";
 import { ShippingTypeStatus } from "../shippingTypeStatus/shippingTypeStatus.entity.js";
+import { User } from "../user/user.entity.js";
 @Entity()
 export class Shelter extends BaseEntity {
   [x: string]: any;
   @Property({nullable: false, unique: true})
   name!: string
-  @Property()
+  @Property({nullable: false})
   phoneNumber!: string
-  @Property()
+  @Property({nullable: false})
   tuitionVet!: string
-  @Property()
+  @Property({nullable: true})
   address!: string
-  @Property()
+  @Property({nullable: false})
   street!: string
-  @Property()
+  @Property({nullable: false})
   streetNumber!: number
-  @Property()
+  @Property({nullable: false})
   max_capacity!: number
 
-  @ManyToOne(() => Zone, {nullable: false})
+  @ManyToOne(() => Zone, {nullable: true})
   zone!: Rel<Zone>;
 
-  @OneToMany(() => Rescue, rescue => rescue.shelters, { cascade: [Cascade.ALL] })
+  @OneToMany(() => Rescue, rescue => rescue.shelters, { cascade: [Cascade.ALL], nullable: true })
   rescues = new Collection<Rescue>(this);
   
-  @OneToMany(() => Product, product => product.shelter, { cascade: [Cascade.ALL] })
+  @OneToMany(() => Product, product => product.shelter, { cascade: [Cascade.ALL], nullable: true })
   products = new Collection<Product>(this);
 
-  @OneToMany(() => ShippingTypeStatus, shippingTypeStatus => shippingTypeStatus.shelter, { cascade: [Cascade.ALL] })
+  @OneToMany(() => ShippingTypeStatus, shippingTypeStatus => shippingTypeStatus.shelter, { cascade: [Cascade.ALL], nullable: true })
   shippingTypeStatus = new Collection<ShippingTypeStatus>(this);
 
   @ManyToOne(() => Vet, {  nullable: true,   cascade: [Cascade.ALL] }, )
@@ -53,6 +54,6 @@ export class Shelter extends BaseEntity {
   @ManyToOne(() => City, {nullable: false})
   city!: Rel<City>;
   
-  @OneToOne(() => Person, (person) => person.shelter, { nullable: true })
-  person!: Rel<Person>;
+  @OneToOne(() => User, (user) => user.shelter, { mappedBy: 'shelter'} )
+  user!: Rel<User>;
 }

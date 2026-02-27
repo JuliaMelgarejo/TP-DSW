@@ -47,7 +47,6 @@ async function update(req: Request, res: Response) {
   }
 }
 
-
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
@@ -62,11 +61,13 @@ async function remove(req: Request, res: Response) {
 function sanitizeShelterInput(req: Request, res: Response, next:NextFunction){
   req.body.sanitizedShelter = {
     name: req.body.name,
-    address: req.body.address,
+    tuitionVet: req.body.tuitionVet,
+    phoneNumber: req.body.phoneNumber,
+    street: req.body.street,
+    streetNumber: req.body.streetNumber,
     max_capacity: req.body.max_capacity,
-    zone: req.body.zone.id,
-    vet: req.body.vet.id,
-    rescues: req.body.rescues
+    rescues: req.body.rescues,
+    city: req.body.city,
   }
     Object.keys(req.body.sanitizedShelter).forEach((key) => {
     if (req.body.sanitizedShelter[key] === undefined) {

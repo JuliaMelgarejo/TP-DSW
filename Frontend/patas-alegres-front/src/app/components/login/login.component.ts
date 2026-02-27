@@ -31,7 +31,8 @@ export class LoginComponent {
     // Creamos el body
     const user: User = {
       username: this.username,
-      password: this.password
+      password: this.password,
+      role: 'USER'
     }
 
     this.userservice.login(user).subscribe({

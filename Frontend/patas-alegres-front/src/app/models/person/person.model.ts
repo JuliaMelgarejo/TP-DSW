@@ -6,27 +6,27 @@ export class Person {
   surname: string; // no
   doc_type: string; // no
   doc_nro: string; // no
-  email: string; // nullable
-  phone: string; // nullable
-  birthdate: Date; // no
-  address: string; // no 
-  nroCuit: number; // nullable
-  createdAt: Date; // no
-  updatedAt: Date; // no
+  email?: string; // nullable
+  phoneNumber?: string; // nullable
+  birthdate: string; // no
+  street: string; // no
+  number_street: string; 
+  nroCuit?: string; // nullable
+  city!: number; // normalmente se envía el id
   user: User;
 
-  constructor(name: string, surname: string, doc_type: string, doc_nro: string, email: string, phone: string, birthdate: Date, address: string, nroCuit: number, createdAt: Date, updatedAt: Date, user: User) {
+  constructor(name: string, surname: string, doc_type: string, doc_nro: string, email: string, phone: string, birthdate: string, street: string, number_street: string, nroCuit: string, createdAt: Date, updatedAt: Date, user: User, city : number, role: string) {
     this.name = name;
     this.surname = surname;
     this.doc_type = doc_type;
     this.doc_nro = doc_nro;
     this.email = email;
-    this.phone = phone;
+    this.phoneNumber = phone;
     this.birthdate = birthdate;
-    this.address = address;
+    this.street = street;
+    this.number_street = number_street;
     this.nroCuit = nroCuit;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
+    this.city = city;
     this.user = user;
   }
 }

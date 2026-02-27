@@ -11,7 +11,6 @@ export class UserService {
   readonly API_URL2 = 'http://localhost:3000/api/user/login';
   users: User[] = [];
 
-
   constructor(private http: HttpClient) { 
     this.users = [];
 
@@ -26,6 +25,4 @@ export class UserService {
    login(user: User):Observable<string> {
     return this.http.post<string>(this.API_URL2, user)
    }
-
-
 }

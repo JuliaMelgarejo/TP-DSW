@@ -81,4 +81,13 @@ async function remove( req: Request, res: Response ){
   }
 }
 
-export { findAll, findOne, add, update, remove, sanitizeCityInput }
+async function findByProvince( req: Request, res: Response ){
+  try{
+    const province_id = Number.parseInt(req.params.provinceId);
+    const cities = await em.find(City, { province: province_id });
+    res.status(200).json({message: 'cities by province data: ', data: cities});
+  } catch (error: any){
+    res.status(500).json({message: error.message});
+  }
+}
+export { findAll, findOne, add, update, remove, sanitizeCityInput, findByProvince }
