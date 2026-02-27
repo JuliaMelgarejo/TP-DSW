@@ -5,10 +5,10 @@
     <div class="text-center mb-5">
       <div class="fs-1">😊</div>
       <h1 class="fw-bold">Patas alegres</h1>
-      <h4 class="fw-semibold">Registremos tu usuario</h4>
+      <h4 class="mb-3">Paso 1 - Datos de cuenta</h4>
     </div>
 
-    <form [formGroup]="UserForm" (ngSubmit)="SignIn()">
+    <form [formGroup]="UserForm">
       <div class = "row">
         <div class="col-12 col-lg-6">
           <!-- USERNAME -->
@@ -226,8 +226,9 @@
           type="submit"
           class="btn btn-secondary btn-lg px-5 py-3"
           style="min-width: 300px;"
+          (click)="next()"
         >
-          Registrarme
+          Continuar
         </button>
       </div>
     </form>

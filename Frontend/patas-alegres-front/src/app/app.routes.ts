@@ -25,10 +25,16 @@ import { VetDetailComponent } from './components/vet/vet-detail/vet-detail.compo
 import { RescueComponent } from './components/rescue/rescue.component.js';
 import { RescueFormComponent } from './components/rescue/rescue-form/rescue-form.component.js';
 import { RescueDetailComponent } from './components/rescue/rescue-detail/rescue-detail.component.js';
+import { SignInShelterAccountComponent } from './components/sign-in/sign-in-shelter/sign-in-shelter-account.component.js';
+import { SignInShelterDetailsComponent } from './components/sign-in/sign-in-shelter/sign-in-shelter-details.component.js';
 
 export const routes: Routes = [
   {path: 'login', component: LoginComponent},
-  {path: 'signIn', component: SignInComponent},
+  { path: 'signIn', component: SignInComponent },
+  { path: 'signIn/user', component: SignInComponent },
+  { path: 'signIn/shelter/account', component: SignInShelterAccountComponent },
+  { path: 'signIn/shelter/details', component: SignInShelterDetailsComponent },
+
   { path: '',redirectTo: 'login',pathMatch: 'full' }, 
   {path: 'home', component: HomeComponent, canActivate:[authGuard]},
 
