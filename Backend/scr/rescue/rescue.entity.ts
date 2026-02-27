@@ -27,7 +27,6 @@ export class Rescue extends BaseEntity {
   @ManyToOne(() => Shelter, {nullable: false})
   shelters!: Rel<Shelter>;
 
-
   @ManyToOne(() => City, {nullable: false})
   city!: Rel<City>;
 

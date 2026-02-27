@@ -25,7 +25,7 @@ export class Animal extends BaseEntity {
   rescueClass!: Rel<Rescue>
 
   @ManyToMany(()=> User)
-  User!: Rel<User>
+  user!: Rel<User>
 
   @OneToMany(() => Photo, photo => photo.animal, {orphanRemoval: true,})
   photos = new Collection<Photo>(this);

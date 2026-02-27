@@ -19,10 +19,10 @@ export class Photo extends BaseEntity {
   @Property({ nullable: true })
   size?: number;
 
-  @ManyToOne(() => Animal)
+  @ManyToOne(() => Animal , {nullable: true})
   animal!: Rel<Animal>;
 
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, {nullable: true})
   product!: Rel<Product>;
 
 }

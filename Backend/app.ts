@@ -13,6 +13,8 @@ import { rescueRouter } from './scr/rescue/rescue.router.js';
 import { vetRouter } from './scr/vet/vet.router.js';
 import { adoptionRouter } from './scr/adoption/adoption.router.js';
 import { userRouter } from './scr/user/user.routes.js';
+import path from 'path';
+import { photoRouter } from './scr/photo/photo.router.js';
 
 const app = express();
 app.use(express.json());
@@ -28,6 +30,9 @@ app.use((req, res, next ) => {
   RequestContext.create(orm.em, next)
 })
 
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
+
 //antes de las rutas y middlewares
 
 app.use('/api/breed', breedRouter)
@@ -40,6 +45,7 @@ app.use('/api/vet', vetRouter)
 app.use('/api/adoption', adoptionRouter)
 app.use('/api/user', userRouter)
 app.use('/api/login', userRouter)
+app.use('/api/photo', photoRouter);
 
 await syncSchema() //never in production*/
 

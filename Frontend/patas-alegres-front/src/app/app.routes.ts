@@ -25,6 +25,7 @@ import { VetDetailComponent } from './components/vet/vet-detail/vet-detail.compo
 import { RescueComponent } from './components/rescue/rescue.component.js';
 import { RescueFormComponent } from './components/rescue/rescue-form/rescue-form.component.js';
 import { RescueDetailComponent } from './components/rescue/rescue-detail/rescue-detail.component.js';
+import { AnimalPageComponent } from './components/animal/animal-page/animal-page/animal-page.component.js';
 
 export const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -37,9 +38,10 @@ export const routes: Routes = [
   {path: 'zone/create', component: ZoneFormComponent, canActivate:[authGuard]},
   {path: 'zone/:id', component: ZoneDetailComponent, canActivate:[authGuard]},
 
-  {path: 'animal/create', component: AnimalFormComponent, canActivate:[authGuard]},
-  {path: 'animal', component: AnimalComponent, canActivate:[authGuard]},
-  {path: 'animal/:id', component:AnimalDetailsComponent, canActivate:[authGuard]},
+  {path: 'animal/create', component: AnimalFormComponent},//, canActivate:[authGuard]},
+  {path: 'animal', component: AnimalComponent},//, canActivate:[authGuard]},
+  {path: 'animal/:id', component:AnimalPageComponent}, //canActivate:[authGuard]},
+  {path: 'animal/:id/shelter', component: AnimalDetailsComponent},
 
   {path: 'shelter', component: ShelterComponent, canActivate:[authGuard]},
   {path: 'shelter/create', component: ShelterFormComponent, canActivate:[authGuard]},

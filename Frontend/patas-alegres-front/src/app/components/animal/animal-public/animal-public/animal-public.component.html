@@ -1,0 +1,167 @@
+<div class="container py-3" *ngIf="selectedAnimal">
+    <div class="pa-container">
+
+
+        <!-- Nombre -->
+        <h2 class="fw-bold mb-3">{{ selectedAnimal.name }}</h2>
+
+        <!-- ✅ Layout responsive -->
+        <div class="row g-4 align-items-start">
+
+            <!-- IZQUIERDA -->
+            <div class="col-12 col-lg-5">
+            <div class="left-col">
+
+                <!-- Carrusel -->
+                <div
+                [id]="carouselId()"
+                class="carousel slide mb-3 animal-carousel"
+                data-bs-ride="carousel"
+                >
+                <div class="carousel-inner rounded border overflow-hidden">
+                    <div
+                    class="carousel-item"
+                    *ngFor="let img of getPhotoUrls(); let i = index"
+                    [class.active]="i === 0"
+                    >
+                    <img
+                        class="d-block w-100"
+                        [src]="img"
+                        [alt]="selectedAnimal.name + ' - foto ' + (i + 1)"
+                    />
+                    </div>
+                </div>
+
+                <!-- Flechas -->
+                <button
+                    *ngIf="getPhotoUrls().length > 1"
+                    class="carousel-control-prev"
+                    type="button"
+                    [attr.data-bs-target]="'#' + carouselId()"
+                    data-bs-slide="prev"
+                >
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+
+                <button
+                    *ngIf="getPhotoUrls().length > 1"
+                    class="carousel-control-next"
+                    type="button"
+                    [attr.data-bs-target]="'#' + carouselId()"
+                    data-bs-slide="next"
+                >
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
+
+                <!-- Indicadores -->
+                <div class="carousel-indicators" *ngIf="getPhotoUrls().length > 1">
+                    <button
+                    *ngFor="let _ of getPhotoUrls(); let i = index"
+                    type="button"
+                    [attr.data-bs-target]="'#' + carouselId()"
+                    [attr.data-bs-slide-to]="i"
+                    [class.active]="i === 0"
+                    ></button>
+                </div>
+                </div>
+
+                <!-- ✅ Botones SOLO desktop -->
+                <div class="d-none d-lg-flex justify-content-between gap-2 mt-auto">
+                <a class="btn btn-outline-secondary" routerLink="/animal">Volver</a>
+                <a class="btn btn-primary" [routerLink]="['/adopt-animal', selectedAnimal.id]">
+                    Interesado en adoptar
+                </a>
+                </div>
+
+            </div>
+            </div>
+
+            <!-- DERECHA -->
+            <div class="col-12 col-lg-7">
+
+            <!-- Chips -->
+            <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+                <div class="text-muted small me-2">Info</div>
+
+                <button
+                type="button"
+                class="btn btn-sm rounded-pill px-3 py-1 chip"
+                [class.btn-dark]="activeInfo === 'description'"
+                [class.btn-outline-dark]="activeInfo !== 'description'"
+                (click)="showInfo('description')"
+                >
+                Descripción
+                </button>
+
+                <button
+                type="button"
+                class="btn btn-sm rounded-pill px-3 py-1 chip"
+                [class.btn-dark]="activeInfo === 'breed'"
+                [class.btn-outline-dark]="activeInfo !== 'breed'"
+                (click)="showInfo('breed')"
+                >
+                Raza
+                </button>
+
+                <button
+                type="button"
+                class="btn btn-sm rounded-pill px-3 py-1 chip"
+                [class.btn-info]="activeInfo === 'rescue'"
+                [class.btn-outline-info]="activeInfo !== 'rescue'"
+                (click)="showInfo('rescue')"
+                >
+                Rescate
+                </button>
+            </div>
+
+            <!-- Panel Descripción -->
+            <div *ngIf="activeInfo === 'description'" class="border rounded p-3 mb-3 bg-light">
+                <div class="text-muted">
+                {{ selectedAnimal.description || 'Sin descripción' }}
+                </div>
+            </div>
+
+            <!-- Panel Raza -->
+            <div *ngIf="activeInfo === 'breed'" class="border rounded p-3 mb-3 bg-light">
+                <div class="fw-semibold mb-1">{{ getBreedName() }}</div>
+                <div class="text-muted small">{{ getBreedDescription() }}</div>
+            </div>
+
+            <!-- Panel Rescate -->
+            <div *ngIf="activeInfo === 'rescue'" class="border rounded p-3 mb-3 bg-light">
+                <div class="mb-1">
+                <span class="text-muted small">Fecha:</span>
+                <span class="fw-medium ms-1">{{ getRescueDateLabel() }}</span>
+                </div>
+
+                <div class="mb-1">
+                <span class="text-muted small">Lugar:</span>
+                <span class="fw-medium ms-1">{{ getRescueAddressLabel() }}</span>
+                </div>
+
+                <div *ngIf="getRescueDescription()" class="text-muted small mt-2">
+                {{ getRescueDescription() }}
+                </div>
+
+                <div *ngIf="getRescueComments()" class="text-muted small mt-1">
+                {{ getRescueComments() }}
+                </div>
+            </div>
+
+            </div>
+        </div>
+
+        <!-- ✅ Botones SOLO mobile/tablet (abajo de todo) -->
+        <div class="d-lg-none d-flex gap-2 mt-4">
+            <a class="btn btn-outline-secondary flex-shrink-0" routerLink="/animal">Volver</a>
+            <a class="btn btn-primary flex-grow-1" [routerLink]="['/adopt-animal', selectedAnimal.id]">
+            Interesado en adoptar
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<div class="container py-3" *ngIf="!selectedAnimal">
+  <div class="text-muted">Cargando...</div>
+</div>

@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AnimalService } from '../../../services/animal/animal.service.js';
-import { Animal } from '../../../models/animal/animal.model.js';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+
+import { AnimalService } from '../../../services/animal/animal.service.js';
+import { PhotoService } from '../../../services/photo/photo.service';
+import { Animal } from '../../../models/animal/animal.model.js';
 
 @Component({
   selector: 'app-animal-details',
@@ -12,15 +14,29 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
   templateUrl: './animal-details.component.html',
   styleUrl: './animal-details.component.css'
 })
-export class AnimalDetailsComponent  {
-  selectedAnimal: Animal | any;
+export class AnimalDetailsComponent {
+
+  selectedAnimal: any;
+
   animalForm: FormGroup;
   name: FormControl;
   birth_date: FormControl;
   breed: FormControl;
   rescueClass: FormControl;
 
-  constructor(private route: ActivatedRoute, public animalService: AnimalService){
+  // Upload state
+  selectedFile: File | null = null;
+  previewUrl: string | null = null;
+  uploading = false;
+  uploadError: string | null = null;
+
+  readonly BACKEND_BASE = 'http://localhost:3000';
+
+  constructor(
+    private route: ActivatedRoute,
+    public animalService: AnimalService,
+    private photoService: PhotoService
+  ){
     this.name = new FormControl('', [Validators.required]);
     this.birth_date = new FormControl('');
     this.breed = new FormControl('');
@@ -35,40 +51,91 @@ export class AnimalDetailsComponent  {
   }
 
   ngOnInit(): void {
-    const animalid = this.route.snapshot.params['id']
+    const animalid = Number(this.route.snapshot.params['id']);
     this.getAnimal(animalid);
   }
-  
-    getAnimal(id: number) {
+
+  getAnimal(id: number) {
     this.animalService.getAnimal(id).subscribe({
-      next: (response) => {
-        this.selectedAnimal = response.data;
+      next: (value: Animal) => {
+        const animal = (value as any)?.data ?? value;
+        this.selectedAnimal = animal;
+
         this.animalForm.patchValue({
-          name: this.selectedAnimal.name,
-          birth_date: this.selectedAnimal.birth_date,
-          breed: this.selectedAnimal.breed.name,
-          rescueClass: this.selectedAnimal.rescueClass.rescue_date
+          name: animal.name,
+          birth_date: this.formatInputDate(animal.birth_date),
+          breed: animal.breed?.name,
+          rescueClass: animal.rescueClass?.rescue_date
         });
-        console.log('Animal cargado:', this.selectedAnimal)
+
+        console.log('Animal cargado:', animal);
       },
-      error: (error) => {
-        console.log(error);
-      }
-    })    
+      error: (error) => console.log(error)
+    });
   }
 
   updateAnimal(){
     const updatedanimal = {
-    ...this.animalForm.value,
-    id: this.selectedAnimal.id
-    }
+    // ✅ partimos del animal completo que ya tenés
+    ...this.selectedAnimal,
+
+    // ✅ sobrescribimos lo editable
+    name: this.animalForm.value.name,
+    birth_date: this.animalForm.value.birth_date,
+
+    // ✅ mantenemos relaciones como están (o sus ids si tu backend lo espera así)
+    breed: this.selectedAnimal.breed,
+    rescueClass: this.selectedAnimal.rescueClass,
+  };
+    
     this.animalService.updateAnimal(updatedanimal).subscribe({
-      next: (response) => {
-        console.log('Animal actualizado:', response);
+      next: () => this.getAnimal(this.selectedAnimal.id),
+      error: (error) => console.log(error)
+    })
+  }
+
+  // ======================
+  // FOTO
+  // ======================
+
+  onFileChange(event: Event){
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+
+    this.selectedFile = file;
+
+    if(this.previewUrl) URL.revokeObjectURL(this.previewUrl);
+    this.previewUrl = file ? URL.createObjectURL(file) : null;
+  }
+
+  uploadPhoto(){
+    if(!this.selectedAnimal?.id || !this.selectedFile) return;
+
+    this.uploading = true;
+
+    this.photoService.uploadAnimalPhoto(this.selectedAnimal.id, this.selectedFile).subscribe({
+      next: () => {
+        this.uploading = false;
+        this.previewUrl = null;
+        this.selectedFile = null;
+        this.getAnimal(this.selectedAnimal.id);
       },
-      error: (error) => {
-        console.log('Error actualizando animal:', error);
+      error: (err) => {
+        this.uploading = false;
+        this.uploadError = err?.error?.message ?? 'Error subiendo foto';
       }
     })
+  }
+
+  getMainPhotoUrl(){
+    const url = this.selectedAnimal?.photos?.length ? this.selectedAnimal.photos[0].url : null;
+    if(!url) return null;
+    return url.startsWith('http') ? url : this.BACKEND_BASE + url;
+  }
+
+  formatInputDate(date:any){
+    if(!date) return '';
+    const d = new Date(date);
+    return d.toISOString().substring(0,10);
   }
 }
