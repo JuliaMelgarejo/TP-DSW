@@ -1,0 +1,67 @@
+/* =========================
+   Carrusel - controles
+   ========================= */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 40px;
+  height: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+}
+
+/* Flechas negras */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: invert(1);
+}
+
+/* =========================
+   Carrusel - altura responsive
+   (NO uses height inline en HTML)
+   ========================= */
+.animal-carousel .carousel-inner,
+.animal-carousel .carousel-item,
+.animal-carousel .carousel-item img {
+  height: 260px; /* mobile */
+}
+
+@media (min-width: 768px) {
+  .animal-carousel .carousel-inner,
+  .animal-carousel .carousel-item,
+  .animal-carousel .carousel-item img {
+    height: 360px; /* tablet */
+  }
+}
+
+@media (min-width: 992px) {
+  .animal-carousel .carousel-inner,
+  .animal-carousel .carousel-item,
+  .animal-carousel .carousel-item img {
+    height: 420px; /* desktop (balanceado al costado) */
+  }
+}
+
+/* Recorte prolijo sin deformar */
+.animal-carousel .carousel-item img {
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* =========================
+   Layout desktop: dejar botones abajo en la col izquierda
+   ========================= */
+.left-col {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* =========================
+   Chips
+   ========================= */
+.chip {
+  font-weight: 500;
+}

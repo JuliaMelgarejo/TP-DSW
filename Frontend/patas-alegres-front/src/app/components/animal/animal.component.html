@@ -1,26 +1,52 @@
-<h1>Animales: </h1>
-<div>
-  <input type="text" [(ngModel)]="breeds" placeholder="Filtrar por especie" />
-  <input type="text" [(ngModel)]="rescue" placeholder="Filtrar por fecha de rescate" />
-</div>
-<ul>
-  <li *ngFor="let animal of animalService.animals| animalFilter:breeds:rescue; let i = index">
-    <div class="d-flex flex-row align-self-center">
-      <div>
-        <a *ngIf="animal.id" routerLink="/animal/{{ animal.id }}">
-          <h2>{{ animal.name }}</h2>
+<div class="pa-page">
+  <div class="container-fluid px-3">
+
+    <div class="row g-3">
+      <div class="col-12 col-md-6 col-lg-4" *ngFor="let animal of animalService.animals">
+
+        <a
+          class="pa-card pa-card-hover d-block text-decoration-none"
+          [routerLink]="['/animal', animal.id]"
+          style="color: inherit; overflow: hidden;"
+        >
+
+          <img
+            [src]="getPhotoUrl(animal)"
+            [alt]="animal?.name || 'Animal'"
+            class="w-100 d-block"
+            style="height: 220px; object-fit: cover;"
+          />
+
+          <div class="pa-section">
+
+            <div class="fw-bold mb-2">
+              {{ animal?.name || '—' }}
+            </div>
+
+            <div class="pa-muted pa-small">Raza</div>
+            <div class="fw-semibold mb-2">
+              {{ animal?.breed?.name || '—' }}
+            </div>
+
+            <div class="pa-muted pa-small">Fecha rescate</div>
+            <div class="fw-semibold mb-2">
+              {{ animal?.rescueClass?.rescue_date ? (animal.rescueClass.rescue_date | date:'dd/MM/yyyy') : '—' }}
+            </div>
+
+            <div class="pa-muted pa-small">Descripción</div>
+            <div class="mb-2">
+              {{ animal?.description || '—' }}
+            </div>
+
+            <div class="mt-2 fw-bold" style="color: var(--pa-primary-dark);">
+              Ver información →
+            </div>
+
+          </div>
         </a>
-      <p class="card-text">Raza: {{ animal.breed.name }}</p><br>
-      <p class="card-text">Fecha de rescate: {{ animal.rescueClass.rescue_date | date:'shortDate' }}</p><br>
-      </div>
-      <div class="p-3">
-        <button class="btn btn-danger" (click)="animal.id ? deleteAnimal(animal.id) : null">Eliminar animal</button>
+
       </div>
     </div>
-  </li>
-</ul>
-<nav>
-  <ul>
-    <button><a routerLink="/animal/create">agregar un animal </a></button>
-  </ul>
-</nav>
+
+  </div>
+</div>

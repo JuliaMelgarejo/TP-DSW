@@ -25,30 +25,15 @@ export class AnimalComponent {
     this.getAnimals();
   }
   
-  getAnimals() {
-    this.animalService.getAnimals().subscribe({
+getAnimals() {
+  this.animalService.getAnimals().subscribe({
     next: (response) => {
-      const animals = response.data;
-      animals.forEach((animal: any) => {
-        // Obtener el nombre de la especie (breed)
-        this.animalService.getBreed(animal.breed).subscribe((breed) => {
-          animal.breed = breed.data; // Reemplaza el ID con el objeto completo
-        });
-
-        // Obtener la fecha de rescate
-        this.animalService.getRescue(animal.rescueClass).subscribe((rescue) => {
-          animal.rescueClass = rescue.data; // Reemplaza el ID con el objeto completo
-        });
-      });
-      this.animalService.animals = animals; // Asigna la lista actualizada
+      this.animalService.animals = response.data;
       console.log(this.animalService.animals);
-      
     },
-    error: (error) => {
-      console.log(error)
-    }
-  })
-  }
+    error: (error) => console.log(error)
+  });
+}
   deleteAnimal(id: number){
     this.animalService.deleteAnimal(id).subscribe({
       next: (response) => {
@@ -59,5 +44,13 @@ export class AnimalComponent {
         console.log(error);
       }
     })
+  }
+
+  BACKEND_BASE = 'http://localhost:3000';
+
+  getPhotoUrl(animal: any): string {
+    const url = animal?.photos?.length ? animal.photos[0].url : null;
+    if (!url) return 'assets/nophoto.png';
+    return url.startsWith('http') ? url : this.BACKEND_BASE + url;
   }
 }

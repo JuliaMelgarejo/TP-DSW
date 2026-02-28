@@ -1,20 +1,130 @@
-<div>
-  <h1>Detalles de un animal</h1>
-  <div class="card" style="width: fit-content;">
-  <div class="card-body" *ngIf="selectedAnimal" id="{{ selectedAnimal?.id }}">
-    <form [formGroup]="animalForm" (ngSubmit)="updateAnimal()">
-      <fieldset>
-        <label for="name" class="p-3">Nombre:</label>
-        <input type="text" id="animal-name" formControlName="name">
-        <p class="card-text">
-          UpdatedAt: {{ selectedAnimal?.updatedAt }}<br>
-          CreatedAt: {{ selectedAnimal?.createdAt }}<br>
-          Breed: {{ selectedAnimal?.breed.name }}<br>
-          Rescate: {{ selectedAnimal?.rescueClass.rescue_date }}<br>
-        </p>
-        <button type="submit" class="btn btn-primary">Actualizar animal</button>
-      </fieldset>
-    </form>
+<div class="pa-page">
+  <div class="container py-4">
+
+    <div class="row g-4">
+
+      <!-- FOTO -->
+      <div class="col-12 col-lg-5">
+        <div class="pa-card pa-section">
+
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h5 class="mb-0">Fotos</h5>
+            <span class="text-muted small" *ngIf="selectedAnimal?.photos?.length">
+              {{ selectedAnimal.photos.length }} cargada(s)
+            </span>
+          </div>
+
+          <!-- FOTO PRINCIPAL -->
+          <img
+            *ngIf="getMainPhotoUrl(); else noPhoto"
+            [src]="getMainPhotoUrl()!"
+            class="img-fluid rounded border mb-3"
+            style="height:280px; width:100%; object-fit:cover;"
+          />
+
+          <ng-template #noPhoto>
+            <img
+              src="assets/nophoto.png"
+              class="img-fluid rounded border mb-3"
+              style="height:280px; width:100%; object-fit:cover;"
+            />
+          </ng-template>
+
+          <!-- PREVIEW -->
+          <img
+            *ngIf="previewUrl"
+            [src]="previewUrl"
+            class="img-fluid rounded border mb-3"
+            style="height:280px; width:100%; object-fit:cover;"
+          />
+
+          <!-- INPUT LOCAL -->
+          <input
+            type="file"
+            class="form-control pa-input mb-2"
+            accept="image/*"
+            (change)="onFileChange($event)"
+          />
+
+          <button
+            type="button"
+            class="pa-btn pa-btn-primary w-100 mb-2"
+            (click)="uploadPhoto()"
+            [disabled]="uploading || !selectedFile"
+          >
+            {{ uploading ? 'Subiendo...' : 'Subir foto' }}
+          </button>
+
+          <!-- Error upload -->
+          <div *ngIf="uploadError" class="text-danger small mb-2">
+            {{ uploadError }}
+          </div>
+
+          <!-- GALERÍA + ELIMINAR -->
+          <div *ngIf="selectedAnimal?.photos?.length" class="mt-3">
+            <div class="fw-semibold mb-2">Galería</div>
+
+            <div class="row g-2">
+              <div class="col-4" *ngFor="let p of selectedAnimal.photos">
+                <div class="position-relative">
+                  <img
+                    [src]="getPhotoUrl(p)"
+                    class="img-fluid rounded border"
+                    style="height:90px; width:100%; object-fit:cover;"
+                    [alt]="selectedAnimal?.name + ' foto'"
+                  />
+
+                  <button
+                    type="button"
+                    class="pa-icon-delete"
+                    title="Eliminar foto"
+                    (click)="deletePhoto(p.id)"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-muted small mt-2">
+              Tip: la primera foto es la que se muestra como principal.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- INFO -->
+      <div class="col-12 col-lg-7">
+        <div class="pa-card pa-section">
+
+          <h5 class="mb-3">Información</h5>
+
+          <form [formGroup]="animalForm">
+
+            <label class="form-label">Nombre</label>
+            <input class="form-control pa-input mb-3" formControlName="name" />
+
+            <label class="form-label">Nacimiento</label>
+            <input type="date" class="form-control pa-input mb-3" formControlName="birth_date" />
+
+            <label class="form-label">Raza</label>
+            <input class="form-control pa-input mb-3" formControlName="breed" readonly />
+
+            <button
+              type="button"
+              class="pa-btn pa-btn-primary w-100"
+              (click)="updateAnimal()"
+            >
+              Guardar cambios
+            </button>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+
   </div>
-</div>
 </div>

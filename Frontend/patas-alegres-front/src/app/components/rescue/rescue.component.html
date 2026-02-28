@@ -1,20 +1,230 @@
-<h1>Rescates:</h1>
+<div class="pa-page">
+  <div class="pa-container">
 
-<ul>
-  <li *ngFor="let rescue of rescueService.rescues; let i = index">
-    <div class="d-flex flex-row align-self-center">
-      <div>
-        <a *ngIf="rescue.id" [routerLink]="rescue.id.toString()">
-          <h2>{{ rescue.rescue_date }}</h2>
-        </a>
-  <div class="p-3">
-    <button class="btn btn-danger" (click)="deleteRescue(rescue.id)">Eliminar raza</button>
-  </div>
-  </div>
-  </div>
-  </li>
-</ul>
+    <div class="row g-3">
 
-<div class="p-3">
-  <button type="button" class="btn btn-success" (click)="navigateToRescueCreate()">Crear rescate</button>
+      <!-- =========================
+           IZQUIERDA: FORM RESCATE
+           ========================= -->
+      <div class="col-12 col-lg-6">
+
+        <!-- CARD FORM -->
+        <app-rescue-form
+          class="mobile-form-card"
+          (submitRescue)="createRescue($event)">
+        </app-rescue-form>
+
+        <!-- =========================
+             MOBILE: ANIMALES + CONFIRMAR (PEGADO AL FORM)
+             ========================= -->
+        <div class="pa-card pa-section pa-panel d-lg-none mobile-animals-card">
+
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="fw-bold">Animales cargados</div>
+
+            <button
+              class="pa-btn pa-btn-primary"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#addAnimalModal">
+              + Agregar animal
+            </button>
+          </div>
+
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <ng-container *ngIf="animals.length > 0; else noAnimalsMobile">
+              <span class="pa-chip pa-chip-accent" *ngFor="let a of animals; let i = index">
+                {{ a.name }}
+                <button class="pa-btn-link ms-2" type="button" (click)="removeAnimal(i)">×</button>
+              </span>
+            </ng-container>
+
+            <ng-template #noAnimalsMobile>
+              <span class="pa-muted pa-small">Todavía no agregaste animales.</span>
+            </ng-template>
+          </div>
+
+          <div class="mt-3">
+            <button
+              class="pa-btn pa-btn-primary w-100"
+              type="button"
+              (click)="submitRescueFromParent()">
+              Confirmar rescate
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- =========================
+           DESKTOP: ANIMALES + CONFIRMAR (COLUMNA DERECHA)
+           ========================= -->
+      <div class="col-12 col-lg-6 d-none d-lg-block">
+        <div class="pa-card pa-section pa-panel">
+
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="fw-bold">Animales cargados</div>
+
+            <button
+              class="pa-btn pa-btn-primary"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#addAnimalModal">
+              + Agregar animal
+            </button>
+          </div>
+
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <ng-container *ngIf="animals.length > 0; else noAnimalsDesktop">
+              <span class="pa-chip pa-chip-accent" *ngFor="let a of animals; let i = index">
+                {{ a.name }}
+                <button class="pa-btn-link ms-2" type="button" (click)="removeAnimal(i)">×</button>
+              </span>
+            </ng-container>
+
+            <ng-template #noAnimalsDesktop>
+              <span class="pa-muted pa-small">Todavía no agregaste animales.</span>
+            </ng-template>
+          </div>
+          
+          <div class="mt-3">
+            <button
+              class="pa-btn pa-btn-primary w-100"
+              type="button"
+              (click)="submitRescueFromParent()">
+              Confirmar rescate
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Loader -->
+    <div class="text-center pa-muted mt-3" *ngIf="saving">
+      Guardando...
+    </div>
+
+  </div>
+</div>
+
+
+<!-- =========================
+     MODAL: AGREGAR ANIMAL
+     ========================= -->
+<div class="modal fade" id="addAnimalModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+
+    <div class="modal-content pa-card" style="border-radius: var(--pa-radius); overflow:hidden;">
+
+      <div class="modal-header"
+           style="border-bottom:1px solid var(--pa-border); background: var(--pa-surface);">
+        <div class="fw-bold">Agregar animal rescatado</div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body" style="background: var(--pa-bg);">
+
+        <div class="pa-filters-wrap">
+          <div class="pa-card pa-section pa-panel">
+
+            <form [formGroup]="animalForm" class="d-grid pa-gap-md">
+
+              <!-- Nombre -->
+              <div>
+                <div class="fw-bold mb-1">Nombre</div>
+                <input
+                  class="pa-input w-100"
+                  type="text"
+                  formControlName="name"
+                  placeholder="Ingresa aquí el nombre" />
+                <div class="text-danger small"
+                     *ngIf="animalForm.controls.name.touched && animalForm.controls.name.invalid">
+                  Requerido
+                </div>
+              </div>
+
+              <!-- Fecha nacimiento -->
+              <div>
+                <div class="fw-bold mb-1">Fecha de nacimiento</div>
+                <input
+                  class="pa-input w-100"
+                  type="date"
+                  formControlName="birth_date" />
+              </div>
+
+              
+              <!-- Description -->
+                <div>
+                  <div class="fw-bold mb-1">Descripción</div>
+                  <textarea
+                    class="pa-input w-100"
+                    rows="2"
+                    formControlName="description"
+                    placeholder="Descripción del animal">
+                  </textarea>
+                </div>
+              
+              <!-- FOTO (opcional) -->
+                <div>
+                  <div class="fw-bold mb-1">Foto (opcional)</div>
+
+                  <input
+                    class="pa-input w-100"
+                    type="file"
+                    accept="image/*"
+                    (change)="onAnimalPhotoChange($event)"
+                  />
+
+
+                  <div *ngIf="selectedAnimalPreview" class="mt-2">
+                    <img
+                      [src]="selectedAnimalPreview"
+                      alt="Vista previa"
+                      style="width: 100%; max-height: 220px; object-fit: cover; border-radius: 12px; border: 1px solid var(--pa-border);"
+                    />
+                  </div>
+                </div>
+
+
+
+              <!-- Breed -->
+              <div>
+                <div class="fw-bold mb-1">Raza</div>
+                <select class="pa-input w-100" formControlName="breedId">
+                  <option [ngValue]="null">Seleccionar raza</option>
+                  <option *ngFor="let b of breeds" [ngValue]="b.id">{{ b.name }}</option>
+                </select>
+
+                <div class="text-danger small"
+                     *ngIf="animalForm.controls.breedId.touched && animalForm.controls.breedId.invalid">
+                  Requerido
+                </div>
+              </div>
+
+              <!-- Botones -->
+              <div class="d-flex gap-2 mt-2">
+                <button class="pa-btn pa-btn-outline w-100" type="button" data-bs-dismiss="modal">
+                  Cancelar
+                </button>
+
+                <button
+                  class="pa-btn pa-btn-primary w-100"
+                  type="button"
+                  (click)="addAnimalFromModal()"
+                  [attr.data-bs-dismiss]="animalForm.valid ? 'modal' : null">
+                  Confirmo
+                </button>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
 </div>

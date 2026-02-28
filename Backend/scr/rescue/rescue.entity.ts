@@ -6,7 +6,7 @@ import { City } from "../city/city.entity.js";
 
 @Entity()
 export class Rescue extends BaseEntity {
-  @Property({ nullable: false, unique: true })
+  @Property({ nullable: false })
   rescue_date!: Date;
 
   @Property()
@@ -26,7 +26,6 @@ export class Rescue extends BaseEntity {
 
   @ManyToOne(() => Shelter, {nullable: false})
   shelters!: Rel<Shelter>;
-
 
   @ManyToOne(() => City, {nullable: false})
   city!: Rel<City>;

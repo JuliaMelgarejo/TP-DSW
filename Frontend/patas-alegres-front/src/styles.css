@@ -1,38 +1,313 @@
-/* You can add global styles to this file, and also import other style files */
-:root {
-  --bs-primary: #e995aebc;       /* nuevo color principal */
-  --bs-primary-rgb: 108, 92, 231;
+/* =========================
+   Patas Alegres — Global styles.css
+   Diseño consistente + accesible
+   ========================= */
+
+/* --------- TOKENS --------- */
+:root{
+  /* Backgrounds */
+  --pa-bg: #F7E6E4;
+  --pa-surface: #FFFFFF;
+  --pa-surface-soft: #FFF7F6;
+
+  /* Brand */
+  --pa-primary: #C97A88;
+  --pa-primary-hover: #B46876;
+  --pa-primary-dark: #6B2E3A;
+
+  /* Accent */
+  --pa-accent: #E7A6B0;
+  --pa-accent-soft: #F3D3D8;
+
+  /* Borders */
+  --pa-border: #E9C9CE;
+
+  /* Text */
+  --pa-text: #2B1B1E;
+  --pa-text-muted: #6B5A5D;
+
+  /* Feedback */
+  --pa-success: #58A870;
+  --pa-warning: #E4A94A;
+  --pa-danger:  #D36A6A;
+
+  /* Radius */
+  --pa-radius: 16px;
+  --pa-radius-sm: 12px;
+
+  /* Elevation */
+  --pa-shadow-sm: 0 4px 10px rgba(0,0,0,.05);
+  --pa-shadow:    0 10px 30px rgba(0,0,0,.08);
+
+  /* Focus */
+  --pa-focus: 0 0 0 4px rgba(201, 122, 136, .22);
 }
 
+/* --------- DARK MODE (opcional) --------- */
+[data-theme="dark"]{
+  --pa-bg: #1E1416;
+  --pa-surface: #2B1B1E;
+  --pa-surface-soft: #352224;
+  --pa-border: #4A2E33;
+
+  --pa-text: #F7E6E4;
+  --pa-text-muted: #C7A7AC;
+}
+
+/* --------- BASE --------- */
+html, body { height: 100%; }
 body{
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--pa-bg);
+  color: var(--pa-text);
 }
 
+/* Links */
+a{ color: var(--pa-primary-dark); }
+a:hover{ color: var(--pa-primary); }
 
-/* You can add global styles to this file, and also import other style files */
-html,
-body {
-  height: 100%;
-  background-color:#e995aebc;
+/* --------- TYPOGRAPHY HELPERS --------- */
+.pa-h1{ font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; }
+.pa-h2{ font-size: 1.6rem; font-weight: 700; letter-spacing: -0.01em; }
+.pa-h3{ font-size: 1.3rem; font-weight: 700; }
+
+.pa-body{ font-size: 1rem; }
+.pa-small{ font-size: .85rem; }
+.pa-muted{ color: var(--pa-text-muted); }
+
+/* --------- LAYOUT HELPERS --------- */
+.pa-page{ min-height: 100%; background: var(--pa-bg); }
+
+.pa-container{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
 }
 
-.wrapper {
+/* Spacing tokens */
+.pa-gap-xs{ gap: 4px; }
+.pa-gap-sm{ gap: 8px; }
+.pa-gap-md{ gap: 16px; }
+.pa-gap-lg{ gap: 24px; }
+
+.pa-p-sm{ padding: 8px; }
+.pa-p-md{ padding: 16px; }
+.pa-p-lg{ padding: 24px; }
+
+/* --------- CARD SYSTEM --------- */
+.pa-card{
+  background: var(--pa-surface);
+  border: 1px solid var(--pa-border);
+  border-radius: var(--pa-radius);
+  box-shadow: var(--pa-shadow-sm);
+}
+
+.pa-card-soft{
+  background: var(--pa-surface-soft);
+  border: 1px solid var(--pa-border);
+  border-radius: var(--pa-radius);
+}
+
+.pa-section{ padding: 16px; }
+
+.pa-card-hover{ transition: .25s ease; }
+.pa-card-hover:hover{
+  transform: translateY(-2px);
+  box-shadow: var(--pa-shadow);
+}
+
+/* --------- HEADER / BRAND --------- */
+.pa-header{
+  background: rgba(255,255,255,.65);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--pa-border);
+}
+
+.pa-brand{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+}
+
+.pa-logo{
+  height: 34px;
+  width: auto;
+  display: block;
+}
+
+/* --------- INPUTS --------- */
+.pa-input{
+  border: 1px solid var(--pa-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.pa-input:focus{
+  outline: none;
+  border-color: var(--pa-primary);
+  box-shadow: var(--pa-focus);
+}
+
+/* --------- BUTTONS --------- */
+.pa-btn{
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-weight: 800;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: .2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pa-btn:active{ transform: scale(.98); }
+
+/* Primary */
+.pa-btn-primary{
+  background: var(--pa-primary);
+  border-color: var(--pa-primary);
+  color: #fff;
+}
+.pa-btn-primary:hover{
+  background: var(--pa-primary-dark);
+  border-color: var(--pa-primary-dark);
+}
+
+/* Outline */
+.pa-btn-outline{
+  background: transparent;
+  border-color: var(--pa-border);
+  color: var(--pa-primary-dark);
+}
+.pa-btn-outline:hover{
+  border-color: var(--pa-primary);
+  background: rgba(255,255,255,.6);
+}
+
+/* Link button */
+.pa-btn-link{
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--pa-primary-dark);
+  font-weight: 800;
+  cursor: pointer;
+}
+.pa-btn-link:hover{
+  color: var(--pa-primary);
+  text-decoration: underline;
+}
+
+/* --------- CHIPS / PILLS --------- */
+.pa-chip{
+  border-radius: 999px;
+  border: 1px solid var(--pa-border);
+  background: transparent;
+  color: var(--pa-primary-dark);
+  padding: 6px 14px;
+  font-weight: 800;
+  font-size: .9rem;
+  transition: .2s ease;
+}
+
+.pa-chip:hover{ border-color: var(--pa-primary); }
+
+.pa-chip-active{
+  background: var(--pa-primary-dark);
+  border-color: var(--pa-primary-dark);
+  color: #fff;
+}
+
+.pa-chip-accent{
+  background: var(--pa-accent);
+  border-color: var(--pa-accent);
+  color: var(--pa-primary-dark);
+}
+
+/* --------- PANELS (fade) --------- */
+.pa-panel{
+  animation: paFade .2s ease;
+}
+@keyframes paFade{
+  from{ opacity: 0; transform: translateY(6px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+/* --------- BOOTSTRAP COMPAT OVERRIDES (light touch) --------- */
+.card{
+  border-color: var(--pa-border);
+  border-radius: var(--pa-radius);
+}
+.text-muted{ color: var(--pa-text-muted) !important; }
+
+/* --------- CAROUSEL (Bootstrap) --------- */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 40px;
+  height: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.85);
+  border-radius: 50%;
+}
+
+/* Flechas negras */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: invert(1);
+}
+
+/* Altura responsive del carrusel */
+.animal-carousel .carousel-inner,
+.animal-carousel .carousel-item,
+.animal-carousel .carousel-item img {
+  height: 260px; /* mobile */
+}
+
+@media (min-width: 768px) {
+  .animal-carousel .carousel-inner,
+  .animal-carousel .carousel-item,
+  .animal-carousel .carousel-item img {
+    height: 360px; /* tablet */
+  }
+}
+
+@media (min-width: 992px) {
+  .animal-carousel .carousel-inner,
+  .animal-carousel .carousel-item,
+  .animal-carousel .carousel-item img {
+    height: 420px; /* desktop */
+  }
+}
+
+.animal-carousel .carousel-item img{
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* --------- LOGIN legacy classes support (optional) --------- */
+/* Si todavía usás .wrapper/.body/.logo en algún componente */
+.wrapper{
+  min-height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color:#e995aebc;
-  height: 100%;
+  background: var(--pa-bg);
 }
 
-.logo {
-  height: 130px;
-  margin-bottom: 10px;
-}
-
-.body {
-  max-width: 300px;
+.body{
   width: 100%;
-  text-align: center;
+  max-width: 520px;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.logo{
+  height: 130px;
+  width: auto;
+  display: block;
+  margin: 0 auto 10px auto;
+}

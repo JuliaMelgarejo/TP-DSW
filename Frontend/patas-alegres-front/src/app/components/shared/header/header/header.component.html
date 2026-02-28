@@ -1,48 +1,85 @@
-<header class="bg-prima text-primary-foreground shadow-md">
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-      <div class="d-flex items-center flex-shrink-0 mr-6">
-        <a routerLink="/home" class="logo">Patas Alegres</a>
-      </div>
-      <div class="block lg:hidden">
-        <button (click)="toggleMenu()" class="menu-button">
-          <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <title>Menu</title>
-            <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/>
-          </svg>
+<header class="pa-header">
+  <nav class="pa-nav">
+    <div class="pa-container d-flex align-items-center justify-content-between">
+
+      <!-- Brand -->
+      <a routerLink="/home" class="pa-brand">
+        <span class="pa-brand-text">Patas alegres</span>
+      </a>
+
+      <!-- Desktop links -->
+      <div class="d-none d-lg-flex align-items-center gap-4">
+
+        <a routerLink="/profile" routerLinkActive="pa-nav-active" class="pa-nav-link">Mi perfil</a>
+        <a routerLink="/shelter" routerLinkActive="pa-nav-active" class="pa-nav-link">Refugios</a>
+        <a routerLink="/animal" routerLinkActive="pa-nav-active" class="pa-nav-link">Animales</a>
+        <a routerLink="/adoption" routerLinkActive="pa-nav-active" class="pa-nav-link">Pedidos</a>
+        <a routerLink="/purchases" routerLinkActive="pa-nav-active" class="pa-nav-link">Compras</a>
+
+        <button type="button" class="pa-btn-link pa-logout" (click)="logOut()">
+          Cerrar sesión
         </button>
       </div>
-      <button (click)="toggleMenu()" class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-        <div [ngClass]="{'hidden': !isMenuOpen, 'open': isMenuOpen}" class="navbar-collapse w-full block flex-grow lg:flex lg:items-center lg:w-auto nav-links" id="navbarSupportedContent">
-          <div class="text-sm lg:flex-grow">
-            <a routerLink="/zone" routerLinkActive="active" class="block mt-4 lg:inline-block lg:mt-0 hover:text-accent mr-4">
-              Zona
-            </a>
-            <a routerLink="/shelter" routerLinkActive="active" class="block mt-4 lg:inline-block lg:mt-0 hover:text-accent mr-4">
-              Refugio
-            </a>
-            <a routerLink="/animal" routerLinkActive="active" class="block mt-4 lg:inline-block lg:mt-0 hover:text-accent mr-4">
-              Animal
-            </a>
-            <a routerLink="/breed" routerLinkActive="active" class="block mt-4 lg:inline-block lg:mt-0 hover:text-accent mr-4">
-              Razas
-            </a>
-            <a routerLink="/vet" routerLinkActive="active" class="block mt-4 lg:inline-block lg:mt-0 hover:text-accent mr-4">
-              Veterinarias
-            </a>
-            <a routerLink="/person" routerLinkActive="active" class="block mt-4 lg:inline-block lg:mt-0 hover:text-accent mr-4">
-              Personas
-            </a>
-            <a routerLink="/rescue" routerLinkActive="active" class="block mt-4 lg:inline-block lg:mt-0 hover:text-accent">
-              Rescates
-            </a>
-          </div>
-          <div class="ms-auto">
-            <button type="button" class="btn btn-primary btn-lg" (click)="logOut()">Cerrar Sesion</button>
-          </div>
-        </div>
+
+      <!-- Mobile actions (icons) -->
+      <div class="d-lg-none d-flex align-items-center gap-2">
+        <button type="button" class="pa-icon-btn" aria-label="Carrito">
+          🛒
+        </button>
+
+        <button
+          type="button"
+          class="pa-icon-btn"
+          aria-label="Abrir menú"
+          (click)="toggleMenu()"
+          [attr.aria-expanded]="isMenuOpen"
+        >
+          ☰
+        </button>
+      </div>
     </div>
+
+    <!-- Mobile drawer -->
+    <div class="pa-mobile-drawer" [class.is-open]="isMenuOpen">
+      <div class="pa-container py-3">
+
+        <a routerLink="/profile" routerLinkActive="pa-mobile-active"
+           class="pa-mobile-link" (click)="toggleMenu()">
+          Mi perfil
+        </a>
+
+        <a routerLink="/shelter" routerLinkActive="pa-mobile-active"
+           class="pa-mobile-link" (click)="toggleMenu()">
+          Refugios
+        </a>
+
+        <a routerLink="/animal" routerLinkActive="pa-mobile-active"
+           class="pa-mobile-link" (click)="toggleMenu()">
+          Animales rescatados
+        </a>
+
+        <a routerLink="/adoption" routerLinkActive="pa-mobile-active"
+           class="pa-mobile-link" (click)="toggleMenu()">
+          Pedidos de adopción
+        </a>
+
+        <a routerLink="/shelter/create" routerLinkActive="pa-mobile-active"
+           class="pa-mobile-link" (click)="toggleMenu()">
+          Abrir mi refugio
+        </a>
+
+        <a routerLink="/purchases" routerLinkActive="pa-mobile-active"
+           class="pa-mobile-link" (click)="toggleMenu()">
+          Compras
+        </a>
+
+        <button type="button" class="pa-btn pa-btn-danger w-100 mt-3" (click)="logOut()">
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+
+    <!-- Backdrop (mobile) -->
+    <div class="pa-backdrop" *ngIf="isMenuOpen" (click)="toggleMenu()"></div>
   </nav>
 </header>

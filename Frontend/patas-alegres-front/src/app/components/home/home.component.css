@@ -3,3 +3,19 @@
   font-family: Arial, sans-serif;
   background-color: #f0f0f0;
 }
+
+/* MOBILE */
+.home-carousel .carousel-inner,
+.home-carousel .carousel-item,
+.home-carousel .carousel-item img {
+  height: 500px;
+}
+
+/* DESKTOP HERO */
+@media (min-width: 992px) {
+  .home-carousel .carousel-inner,
+  .home-carousel .carousel-item,
+  .home-carousel .carousel-item img {
+    height: 80vh;
+  }
+}

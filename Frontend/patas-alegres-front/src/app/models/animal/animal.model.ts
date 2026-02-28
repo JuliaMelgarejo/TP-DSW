@@ -1,24 +1,17 @@
 import { Breed } from '../breed/breed.model';
+import { Photo } from '../photo/photo.module';
 import { Rescue } from '../rescue/rescue.model.js';
 
 export class Animal {
   id?: number;
-  name: string;
-  birth_date: Date;
-  breed: Breed;
-  rescueClass: Rescue;
-  data: Animal | undefined;
-  updatedAt: Date;
-  createdAt: Date;
-  images?: String[];
+  name!: string;
+  birth_date!: Date;
+  description!: string;
+  breed!: Breed;
+  rescueClass!: Rescue;
+  photos: Photo[] = [];
 
-  constructor(name: string, rescue_date: Date, birth_date: Date, breed: Breed, rescue: Rescue, updatedAt: Date, createdAt: Date, images?: String[]) {
-    this.name = name;
-    this.birth_date = birth_date;
-    this.breed = breed;
-    this.rescueClass = rescue;
-    this.updatedAt = updatedAt;
-    this.createdAt = createdAt;
-    this.images = images;
+  constructor(init?: Partial<Animal>) {
+    Object.assign(this, init);
   }
 }

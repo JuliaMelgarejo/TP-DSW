@@ -25,6 +25,7 @@ import { VetDetailComponent } from './components/vet/vet-detail/vet-detail.compo
 import { RescueComponent } from './components/rescue/rescue.component.js';
 import { RescueFormComponent } from './components/rescue/rescue-form/rescue-form.component.js';
 import { RescueDetailComponent } from './components/rescue/rescue-detail/rescue-detail.component.js';
+import { AnimalPageComponent } from './components/animal/animal-page/animal-page/animal-page.component.js';
 import { SignInShelterAccountComponent } from './components/sign-in/sign-in-shelter/sign-in-shelter-account.component.js';
 import { SignInShelterDetailsComponent } from './components/sign-in/sign-in-shelter/sign-in-shelter-details.component.js';
 
@@ -43,9 +44,10 @@ export const routes: Routes = [
   {path: 'zone/create', component: ZoneFormComponent, canActivate:[authGuard]},
   {path: 'zone/:id', component: ZoneDetailComponent, canActivate:[authGuard]},
 
-  {path: 'animal/create', component: AnimalFormComponent, canActivate:[authGuard]},
+  {path: 'animal/create', component: AnimalFormComponent, canActivate:[authGuard], data: { roles: ['ROLE_ADMIN'] }},
   {path: 'animal', component: AnimalComponent, canActivate:[authGuard]},
-  {path: 'animal/:id', component:AnimalDetailsComponent, canActivate:[authGuard]},
+  {path: 'animal/:id', component:AnimalPageComponent, canActivate:[authGuard]},
+  {path: 'animal/:id/shelter', component: AnimalDetailsComponent, canActivate:[authGuard], data: { roles: ['SHELTER'] }},
 
   {path: 'shelter', component: ShelterComponent, canActivate:[authGuard]},
   {path: 'shelter/create', component: ShelterFormComponent, canActivate:[authGuard]},
@@ -64,7 +66,7 @@ export const routes: Routes = [
   {path: 'vet/create', component: VetFormComponent, canActivate:[authGuard]},
   {path: 'vet/:id', component: VetDetailComponent,  canActivate:[authGuard]},
 
-  {path: 'rescue', component:RescueComponent, canActivate:[authGuard]},
+  {path: 'rescue', component:RescueComponent, canActivate:[authGuard], data: { roles: ['SHELTER'] }},
   {path: 'rescue/create', component:RescueFormComponent, canActivate:[authGuard]},
   {path: 'rescue/:id', component:RescueDetailComponent, canActivate:[authGuard]},
 

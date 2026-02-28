@@ -1,15 +1,130 @@
-<h2>Crear Rescate</h2>
-<form [formGroup]="rescueForm" (submit)="postRescue()">
-  <fieldset>
-    <label for="rescue_date">fecha de rescate:</label><br>
-    <input type="date" id="rescue-date" rescue_date="rescue_date" formControlName="rescue_date">
-    <br><br>
-    <label for="description">Descripcion:</label><br>
-    <input type="text" id="description" comments="description" formControlName="description">
-    <br><br>
-    <label for="comments">Comentarios:</label><br>
-    <input type="text" id="comments" comments="comments" formControlName="comments">
-    <br><br>
-  </fieldset>
-  <button class="btn">Crear rescate</button>
-</form>
+<div class="pa-card pa-section pa-panel">
+
+  <div class="mb-3">
+    <div class="pa-h3 mb-0">Registro Rescate-Animales</div>
+    <div class="pa-muted pa-small">Completá los datos del rescate</div>
+  </div>
+
+  <form [formGroup]="rescueForm" class="d-grid pa-gap-md">
+
+
+    <!-- FECHA -->
+    <div>
+      <div class="fw-bold mb-1">Fecha de rescate</div>
+      <input class="pa-input w-100" type="date" formControlName="rescue_date" />
+
+      <div class="text-danger small"
+           *ngIf="rescueForm.get('rescue_date')?.touched && rescueForm.get('rescue_date')?.invalid">
+        Requerido
+      </div>
+    </div>
+
+    <!-- CALLE + NÚMERO -->
+    <div class="d-flex gap-2">
+      <div class="w-100">
+        <div class="fw-bold mb-1">Calle</div>
+        <input
+          class="pa-input w-100"
+          type="text"
+          formControlName="street"
+          placeholder="Ingresa aquí la dirección"
+        />
+        <div class="text-danger small"
+             *ngIf="rescueForm.get('street')?.touched && rescueForm.get('street')?.invalid">
+          Requerido
+        </div>
+      </div>
+
+      <div style="width:140px;">
+        <div class="fw-bold mb-1">Número</div>
+        <input
+          class="pa-input w-100"
+          type="number"
+          formControlName="number_street"
+        />
+        <div class="text-danger small"
+             *ngIf="rescueForm.get('number_street')?.touched && rescueForm.get('number_street')?.invalid">
+          Requerido
+        </div>
+      </div>
+    </div>
+    
+        <!-- PAÍS -->
+    <div>
+      <div class="fw-bold mb-1">País</div>
+      <select
+        class="pa-input w-100"
+        [(ngModel)]="selectedCountry"
+        [ngModelOptions]="{ standalone: true }"
+        (change)="onCountryChange()"
+      >
+        <option value="" selected>Seleccione un país</option>
+        <option *ngFor="let country of countries" [value]="country.id">
+          {{ country.name }}
+        </option>
+      </select>
+    </div>
+              
+    <!-- PROVINCIA -->
+    <div>
+      <div class="fw-bold mb-1">Provincia</div>
+      <select
+        class="pa-input w-100"
+        [(ngModel)]="selectedProvince"
+        [ngModelOptions]="{ standalone: true }"
+        (change)="onProvinceChange()"
+        [disabled]="!selectedCountry"
+      >
+        <option value="" selected>Seleccione una provincia</option>
+        <option *ngFor="let province of provinces" [value]="province.id">
+          {{ province.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- CIUDAD -->
+    <div>
+      <div class="fw-bold mb-1">Ciudad (Zona de rescate)</div>
+      <select
+        class="pa-input w-100"
+        formControlName="cityId"
+        [disabled]="!selectedProvince"
+      >
+        <option value="" selected>Seleccione una ciudad</option>
+        <option *ngFor="let city of cities" [value]="city.id">
+          {{ city.name }}
+        </option>
+      </select>
+
+      <div class="text-danger small"
+           *ngIf="rescueForm.get('cityId')?.touched && rescueForm.get('cityId')?.invalid">
+        Requerido
+      </div>
+    </div>
+
+    <!-- DESCRIPCIÓN -->
+    <div>
+      <div class="fw-bold mb-1">Descripción</div>
+      <textarea
+        class="pa-input w-100"
+        rows="2"
+        formControlName="description"
+        placeholder="Descripción del rescate (opcional)">
+      </textarea>
+    </div>
+
+    
+
+    <!-- COMENTARIOS -->
+    <div>
+      <div class="fw-bold mb-1">Comentarios</div>
+      <textarea
+        class="pa-input w-100"
+        rows="2"
+        formControlName="comments"
+        placeholder="Comentarios internos (opcional)">
+      </textarea>
+    </div>
+
+  </form>
+</div>

@@ -34,13 +34,11 @@ export class AdoptAnimalComponent {
 
   getAnimal(id: number) {
     this.animalService.getAnimal(id).subscribe({
-      next:(response) => {
-        this.selectedAnimal = response.data;
+      next: (value: Animal) => {
+        this.selectedAnimal = (value as any)?.data ?? value;
       },
-      error: (error) => {
-        console.log(error);
-      }
-    })
+      error: (error) => console.log(error)
+    });
   }
 
   getPeople(){

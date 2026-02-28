@@ -1,0 +1,42 @@
+.pa-filter{
+  padding: 14px;
+}
+
+.pa-legend{
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--pa-muted);
+  margin-bottom: 6px;
+}
+
+.pa-box{
+  border: 1px solid var(--pa-border);
+  border-radius: var(--pa-radius);
+  background: var(--pa-surface);
+  padding: 10px 12px;
+}
+
+.pa-scroll{
+  max-height: 170px;
+  overflow: auto;
+}
+
+.pa-chip{
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--pa-border);
+  background: rgba(255,255,255,.7);
+  font-size: 12px;
+  color: var(--pa-text);
+}
+
+.pa-btn-link{
+  border: 0;
+  background: transparent;
+  color: var(--pa-primary-dark);
+  font-size: 12px;
+  text-decoration: underline;
+  padding: 0;
+}
