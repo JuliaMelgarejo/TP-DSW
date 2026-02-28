@@ -15,13 +15,13 @@ export class Person {
   city!: number; // normalmente se envía el id
   user: User;
 
-  constructor(name: string, surname: string, doc_type: string, doc_nro: string, email: string, phone: string, birthdate: string, street: string, number_street: string, nroCuit: string, createdAt: Date, updatedAt: Date, user: User, city : number, role: string) {
+  constructor(name: string, surname: string, doc_type: string, doc_nro: string, email: string, phoneNumber: string, birthdate: string, street: string, number_street: string, nroCuit: string, createdAt: Date, updatedAt: Date, user: User, city : number, role: string) {
     this.name = name;
     this.surname = surname;
     this.doc_type = doc_type;
     this.doc_nro = doc_nro;
     this.email = email;
-    this.phoneNumber = phone;
+    this.phoneNumber = phoneNumber;
     this.birthdate = birthdate;
     this.street = street;
     this.number_street = number_street;

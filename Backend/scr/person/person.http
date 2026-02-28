@@ -11,7 +11,7 @@ Content-Type: application/json
     "surname":"person 2",
     "doc_type": "DNI",
     "doc_nro": "12345672",
-    "phone": "123456782",
+    "phoneNumber": "123456782",
     "birthdate": "01/02/2000",
     "address": "corriente",
     "nroCuit": 2012,
@@ -33,7 +33,7 @@ Content-Type: application/json
     "surname":"person",
     "doc_type": "DNI",
     "doc_nro": "12345678",
-    "phone": "123456789",
+    "phoneNumber": "123456789",
     "birthdate": "01/01/2000",
     "address": "corrientes",
     "nroCuit": 2019

@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Person } from '../../../models/person/person.model.js';
 import { ActivatedRoute } from '@angular/router';
 import { PersonService } from '../../../services/person/person.service.js';
+import { AuthService } from '../../../services/auth/auth.service.js';
+import { ErrorService } from '../../../services/errors/error.service.js';
 
 @Component({
   selector: 'app-person-detail',
@@ -14,71 +16,65 @@ import { PersonService } from '../../../services/person/person.service.js';
 })
 export class PersonDetailComponent {
   selectedPerson: Person | any;
-  personForm: FormGroup;
-  name: FormControl;
-  surname: FormControl;
-  doc_type: FormControl;
-  doc_nro: FormControl;
-  email: FormControl;
-  phone: FormControl;
-  birthdate: FormControl;
-  address: FormControl;
-  nroCuit: FormControl;
+  PersonForm: FormGroup;
 
-  constructor(private route: ActivatedRoute, public personService: PersonService) {
-    this.name = new FormControl('', Validators.required);
-    this.surname = new FormControl('', Validators.required);
-    this.doc_type = new FormControl('', Validators.required);
-    this.doc_nro = new FormControl('', Validators.required);
-    this.email = new FormControl('', Validators.email);
-    this.phone = new FormControl('');
-    this.birthdate = new FormControl('', Validators.required);
-    this.address = new FormControl('', Validators.required);
-    this.nroCuit = new FormControl('');
-
-    this.personForm = new FormGroup({
-      name: this.name,
-      surname: this.surname,
-      doc_type: this.doc_type,
-      doc_nro: this.doc_nro,
-      email: this.email,
-      phone: this.phone,
-      birthdate: this.birthdate,
-      address: this.address,
-      nroCuit: this.nroCuit
-    })
+  constructor(
+    private route: ActivatedRoute,
+    private fb: FormBuilder,
+    public errorService: ErrorService,
+    public personService: PersonService,
+    public auth: AuthService,
+  ) {
+    this.PersonForm = this.fb.group({
+      name: ['', Validators.required],
+      surname: ['', Validators.required],
+      doc_type: ['', Validators.required],
+      doc_nro: ['', Validators.required],
+      email: ['', Validators.email],
+      phoneNumber: [''],
+      birthdate: ['', Validators.required],
+      street: ['', Validators.required],
+      number_street: [0, Validators.required],
+      nroCuit: [''],
+      city: ['', Validators.required],
+    });
   }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.params['id'];
-    this.getPerson(id);
+    const idFromRoute = this.route.snapshot.paramMap.get('id');
+    const id = idFromRoute ? Number(idFromRoute) : this.auth.getUserIdToken();
+    if (id) {
+      this.getPerson(id);
+    }
   }
 
   getPerson(id: number){
     this.personService.getPerson(id).subscribe({
       next: (response) => {
         this.selectedPerson = response.data;
-        this.personForm.patchValue({
+        this.PersonForm.patchValue({
           name: this.selectedPerson.name,
           surname: this.selectedPerson.surname,
           doc_type: this.selectedPerson.doc_type,
           doc_nro: this.selectedPerson.doc_nro,
           email: this.selectedPerson.email,
-          phone: this.selectedPerson.phone,
+          phoneNumber: this.selectedPerson.phoneNumber,
           birthdate: this.selectedPerson.birthdate,
-          address: this.selectedPerson.address,
           nroCuit: this.selectedPerson.nroCuit,
+          street: this.selectedPerson.street,
+          number_street: this.selectedPerson.number_street,
+          city: this.selectedPerson.city,
         });
       },
       error: (error) => {
-        console.log(error);
+        alert('Ups, ocurrio un error: ' + error.message);
       }
     });
   }
 
   updatePerson(){
     const updatedPerson = {
-      ...this.personForm.value,
+      ...this.PersonForm.value,
       id: this.selectedPerson.id,
     }
     this.personService.updatePerson(updatedPerson).subscribe({
@@ -86,7 +82,7 @@ export class PersonDetailComponent {
         console.log(response);
       },
       error: (error) => {
-        console.log(error);
+        alert('Ups, ocurrio un error: ' + error.message);
       }
     })
   }
