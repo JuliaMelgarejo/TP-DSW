@@ -9,7 +9,11 @@ import { BreedService } from '../../services/breed/breed.service';
 import { ViewChild } from '@angular/core';
 
 import { AnimalLite, Rescue } from '../../models/rescue/rescue.model';
-
+import { CityService } from '../../services/city/city.service';
+import { ProvinceService } from '../../services/province/province.service';
+import { CountryService } from '../../services/country/country.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { PhotoService } from '../../services/photo/photo.service';
 type Option = { id: number; name: string };
 
 @Component({
@@ -23,6 +27,8 @@ export class RescueComponent {
   cities: Option[] = [];
   shelters: Option[] = [];
   breeds: Option[] = [];
+  selectedAnimalFile: File | null = null;
+  selectedAnimalPreview: string | null = null;
 
   saving = false;
 
@@ -33,14 +39,16 @@ export class RescueComponent {
   animalForm = new FormGroup({
     name: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
     birth_date: new FormControl<string>(''),
+    description : new FormControl<string>(''),
     breedId: new FormControl<number | null>(null, { validators: [Validators.required] }),
   });
 
   constructor(
     private rescueService: RescueService,
-    //private cityService: CityService,
     private shelterService: ShelterService,
     private breedService: BreedService,
+    private authService: AuthService,
+    private photoService: PhotoService 
   ) {}
 
   @ViewChild(RescueFormComponent) rescueFormComp!: RescueFormComponent;
@@ -50,17 +58,11 @@ export class RescueComponent {
   }
 
   ngOnInit(): void {
-    //this.loadCities();
     this.loadShelters();
     this.loadBreeds();
+    
   }
 
- /* loadCities(): void {
-    this.cityService.getCities().subscribe({
-      next: (resp: any) => (this.cities = resp?.data ?? resp ?? []),
-      error: (err: any) => console.log(err),
-    });
-  }*/
 
   loadShelters(): void {
     this.shelterService.getShelters().subscribe({
@@ -77,37 +79,77 @@ export class RescueComponent {
   }
 
   /** ✅ recibe el payload del form (solo datos rescate) y agrega animals antes de POST */
-  createRescue(rescuePayload: Rescue): void {
+  createRescue(formData: any) {
+    const shelterId = this.authService.getShelterIdToken();
+    if (!shelterId) {
+      alert('No se encontró el shelterId en el token.');
+      return;
+    }
     if (this.animals.length === 0) {
       alert('Tenés que agregar al menos un animal.');
       return;
     }
 
-    const payload: any = {
-      ...rescuePayload,
-      animals: this.animals,
+    const payload = {
+      rescue_date: formData.rescue_date,
+      description: formData.description ?? '',
+      comments: formData.comments ?? '',
+      street: formData.street,
+      number_street: Number(formData.number_street),
+      city: Number(formData.cityId),
+      shelters: shelterId,
+      animals: this.animals.map(a => ({
+        name: a.name,
+        birth_date: a.birth_date,
+        description: a.description,
+        breed: a.breed
+      }))
     };
 
-    this.saving = true;
+  this.rescueService.postRescue(payload).subscribe({
+    next: (resp: any) => {
 
-    // Ajustá si tu método se llama distinto
-    this.rescueService.postRescue(payload).subscribe({
-      next: (resp: any) => {
-        this.saving = false;
-        alert('✅ Rescate creado');
-        console.log(resp);
+      console.log('Rescue creado:', resp);
 
-        // reset UI
-        this.animals = [];
-        this.animalForm.reset({ name: '', birth_date: '', breedId: null });
-      },
-      error: (err: any) => {
-        this.saving = false;
-        console.log(err);
-        alert(err?.error?.message ?? 'Error creando rescate');
-      }
-    });
+      // 🔥 1) Obtener animales creados desde el backend
+      const createdAnimals = resp?.data?.animals ?? [];
+
+      // 🔥 2) Subir fotos si existen
+      this.animals.forEach((local, i) => {
+        const created = createdAnimals[i];
+
+        if (local.photoFile && created?.id) {
+          this.photoService
+            .uploadAnimalPhoto(created.id, local.photoFile)
+            .subscribe({
+              next: () => console.log('Foto subida para animal', created.id),
+              error: (e) => console.log('Error subiendo foto', e),
+            });
+        }
+      });
+
+      alert('✅ Rescate creado correctamente');
+
+      // 🔥 3) Limpiar estado
+      this.animals = [];
+    },
+
+    error: (err) => {
+      console.log('Error creando rescate:', err);
+      alert(err?.error?.message ?? 'Error creando rescate');
+    }
+  });
   }
+
+onAnimalPhotoChange(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0] ?? null;
+
+  this.selectedAnimalFile = file;
+
+  if (this.selectedAnimalPreview) URL.revokeObjectURL(this.selectedAnimalPreview);
+  this.selectedAnimalPreview = file ? URL.createObjectURL(file) : null;
+}
 
   /** ✅ modal: agregar animal */
   addAnimalFromModal(): void {
@@ -119,13 +161,18 @@ export class RescueComponent {
     const v = this.animalForm.getRawValue();
 
     this.animals.push(new AnimalLite(
-      v.name,
-      v.birth_date || null,
-      Number(v.breedId)
+    v.name,
+    v.birth_date || null,
+    v.description ?? '',
+    Number(v.breedId),
+    this.selectedAnimalFile,        // ✅ foto opcional
+    this.selectedAnimalPreview 
     ));
 
     // reseteo
-    this.animalForm.reset({ name: '', birth_date: '', breedId: null });
+    this.animalForm.reset({ name: '', birth_date: '', description: '', breedId: null });
+    this.selectedAnimalFile = null;
+    this.selectedAnimalPreview = null;
   }
 
   removeAnimal(index: number): void {

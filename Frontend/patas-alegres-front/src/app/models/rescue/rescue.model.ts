@@ -16,18 +16,18 @@ export class AnimalLite {
   constructor(
     public name: string = '',
     public birth_date: string | null = null,
+    public description: string,
 
     // ✅ dropdown
-    public breedId: number | null = null
-
-    // si después usás especie:
-    // public speciesId: number | null = null
+    public breed: number | null = null,
+    public photoFile?: File | null,      // ✅ opcional
+    public photoPreviewUrl?: string | null
   ) {}
 }
 
 export class Rescue {
   constructor(
-    public id: number | null = null,
+    public id?: number,
 
     public rescue_date: string = '',       // yyyy-mm-dd para el input
     public description: string = '',

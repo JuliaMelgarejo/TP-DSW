@@ -11,8 +11,6 @@
         <!-- CARD FORM -->
         <app-rescue-form
           class="mobile-form-card"
-          [cities]="cities"
-          [shelters]="shelters"
           (submitRescue)="createRescue($event)">
         </app-rescue-form>
 
@@ -88,11 +86,7 @@
               <span class="pa-muted pa-small">Todavía no agregaste animales.</span>
             </ng-template>
           </div>
-
-          <div class="pa-muted pa-small">
-            Tip: podés cargar varios animales antes de confirmar el rescate.
-          </div>
-
+          
           <div class="mt-3">
             <button
               class="pa-btn pa-btn-primary w-100"
@@ -159,6 +153,41 @@
                   type="date"
                   formControlName="birth_date" />
               </div>
+
+              
+              <!-- Description -->
+                <div>
+                  <div class="fw-bold mb-1">Descripción</div>
+                  <textarea
+                    class="pa-input w-100"
+                    rows="2"
+                    formControlName="description"
+                    placeholder="Descripción del animal">
+                  </textarea>
+                </div>
+              
+              <!-- FOTO (opcional) -->
+                <div>
+                  <div class="fw-bold mb-1">Foto (opcional)</div>
+
+                  <input
+                    class="pa-input w-100"
+                    type="file"
+                    accept="image/*"
+                    (change)="onAnimalPhotoChange($event)"
+                  />
+
+
+                  <div *ngIf="selectedAnimalPreview" class="mt-2">
+                    <img
+                      [src]="selectedAnimalPreview"
+                      alt="Vista previa"
+                      style="width: 100%; max-height: 220px; object-fit: cover; border-radius: 12px; border: 1px solid var(--pa-border);"
+                    />
+                  </div>
+                </div>
+
+
 
               <!-- Breed -->
               <div>

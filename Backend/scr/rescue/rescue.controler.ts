@@ -1,17 +1,24 @@
 import { NextFunction, Request, Response } from 'express';
 import { orm } from '../zshare/db/orm.js';
 import { Rescue } from './rescue.entity.js';
+import { City } from '../city/city.entity.js';
+import { Shelter } from '../shelter/shelter.entity.js';
+import { Animal } from '../animal/animal.entity.js';
+import { Breed } from '../breed/breed.entity.js';
 
 const em = orm.em
 
 function sanitizeRescueInput(req: Request, res: Response, next:NextFunction){
   
   req.body.sanitizedRescue = {
+    rescue_date: req.body.rescue_date,
+    description: req.body.description,
     comments: req.body.comments,
+    street: req.body.street,
+    number_street: req.body.number_street,
     animal: req.body.animal,
-    person: req.body.person,
-    adoption_date: req.body.adoption_date,
-    id: req.body.id,
+    shelters: req.body.shelters,
+    city: req.body.city,
   }
   if (req.body.sanitizedRescue){
     Object.keys(req.body.sanitizedRescue).forEach((key) => {
@@ -46,11 +53,37 @@ async function findOne( req: Request, res: Response ){
 
 async function add(req: Request, res: Response) {
   try {
-    const input = req.body.sanitizedRescue;
-    const rescue = em.create(Rescue, req.body)
-    await em.flush()
-    res.status(201).json({ message: 'rescue created', data: rescue })
+    const result = await em.transactional(async (trx) => {
+      const rescue = trx.create(Rescue, {
+        rescue_date: new Date(req.body.rescue_date),
+        description: req.body.description ?? '',
+        comments: req.body.comments ?? '',
+        street: req.body.street,
+        number_street: Number(req.body.number_street),
+        city: trx.getReference(City, Number(req.body.city)),
+        shelters: trx.getReference(Shelter, Number(req.body.shelters)),
+      });
+
+    const animalsPayload = Array.isArray(req.body.animals) ? req.body.animals : [];
+      for (const a of animalsPayload) {
+        const animal = trx.create(Animal, {
+          name: a.name,
+          birth_date: a.birth_date ? new Date(a.birth_date) : null,
+          description: a.description ?? '',
+          breed: trx.getReference(Breed, Number(a.breed)),
+          rescueClass: rescue, // ✅ clave
+        });
+
+        rescue.animals.add(animal); // ✅ también lo agregamos al collection
+      }
+    
+    await trx.flush()
+    await trx.populate(rescue, ['animals','animals.breed' ,'shelters', 'city'])
+    return rescue
+    })
+    res.status(201).json({ message: 'rescue created', data: result })
   } catch (error: any) {
+    console.log('RESCUE CREATE ERROR =>', error);
     res.status(500).json({ message: error.message })
   }
 }

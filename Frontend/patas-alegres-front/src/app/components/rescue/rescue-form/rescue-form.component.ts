@@ -1,64 +1,93 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Rescue, AnimalLite } from '../../../models/rescue/rescue.model';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-type Option = { id: number; name: string };
+import { ProvinceService } from '../../../services/province/province.service';
+import { CityService } from '../../../services/city/city.service';
+import { CountryService } from '../../../services/country/country.service';
+
+import { Province } from '../../../models/province/province.module';
+import { Country } from '../../../models/country/country.module';
+import { City } from '../../../models/city/city.module';
 
 @Component({
   selector: 'app-rescue-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './rescue-form.component.html',
   styleUrl: './rescue-form.component.css',
 })
-export class RescueFormComponent {
-  @Input() shelters: Option[] = [];
-  @Input() cities: Option[] = [];
-  @Input() breeds: Option[] = []; // ✅
+export class RescueFormComponent implements OnInit {
 
-  @Output() submitRescue = new EventEmitter<Rescue>();
+  @Output() submitRescue = new EventEmitter<any>();
 
+  // Dropdowns estilo SignIn
+  countries: Country[] = [];
+  provinces: Province[] = [];
+  cities: City[] = [];
+
+  selectedCountry: number = 0;
+  selectedProvince: number = 0;
+
+  // Form SOLO datos rescate
   rescueForm = new FormGroup({
-    rescue_date: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
-    cityId: new FormControl<number | null>(null, { validators: [Validators.required] }),
-    shelterId: new FormControl<number | null>(null, { validators: [Validators.required] }),
-
-    street: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
-    number_street: new FormControl<number | null>(null, { validators: [Validators.required] }),
-
-    description: new FormControl<string>('', { nonNullable: true }),
-    comments: new FormControl<string>('', { nonNullable: true }),
+    rescue_date: new FormControl('', { validators: [Validators.required] }),
+    cityId: new FormControl('', { validators: [Validators.required] }),
+    street: new FormControl('', { validators: [Validators.required] }),
+    number_street: new FormControl('', { validators: [Validators.required] }),
+    description: new FormControl(''),
+    comments: new FormControl(''),
   });
 
-  animals: AnimalLite[] = [];
+  constructor(
+    public cityService: CityService,
+    public provinceService: ProvinceService,
+    public countryService: CountryService
+  ) {}
 
-  // ✅ mini form: ahora breedId es obligatorio si querés
-  animalForm = new FormGroup({
-    name: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
-    birth_date: new FormControl<string>(''),
-    breedId: new FormControl<number | null>(null, { validators: [Validators.required] }), // ✅ dropdown
-  });
-
-  addAnimalFromMiniForm(): void {
-    if (this.animalForm.invalid) {
-      this.animalForm.markAllAsTouched();
-      return;
-    }
-
-    const v = this.animalForm.getRawValue();
-
-    this.animals.push(new AnimalLite(
-      v.name,
-      v.birth_date || null,
-      Number(v.breedId)
-    ));
-
-    this.animalForm.reset({ name: '', birth_date: '', breedId: null });
+  ngOnInit(): void {
+    this.loadCountries();
   }
 
-  removeAnimal(index: number): void {
-    this.animals.splice(index, 1);
+  loadCountries(): void {
+    this.countryService.getCountries().subscribe({
+      next: (res: any) => {
+        this.countries = res?.data ?? [];
+      },
+      error: (err: any) => console.log(err),
+    });
+  }
+
+  onCountryChange(): void {
+    // reset cascada
+    this.selectedProvince = 0;
+    this.provinces = [];
+    this.cities = [];
+    this.rescueForm.patchValue({ cityId: '' });
+
+    if (!this.selectedCountry || this.selectedCountry === 0) return;
+
+    this.provinceService.getByCountry(this.selectedCountry).subscribe({
+      next: (res: any) => {
+        this.provinces = res?.data ?? [];
+      },
+      error: (err: any) => console.log(err),
+    });
+  }
+
+  onProvinceChange(): void {
+    // reset ciudades
+    this.cities = [];
+    this.rescueForm.patchValue({ cityId: '' });
+
+    if (!this.selectedProvince || this.selectedProvince === 0) return;
+
+    this.cityService.getByProvince(this.selectedProvince).subscribe({
+      next: (res: any) => {
+        this.cities = res?.data ?? [];
+      },
+      error: (err: any) => console.log(err),
+    });
   }
 
   onSubmit(): void {
@@ -66,25 +95,23 @@ export class RescueFormComponent {
       this.rescueForm.markAllAsTouched();
       return;
     }
-    if (this.animals.length === 0) {
-      alert('Tenés que agregar al menos un animal.');
-      return;
-    }
 
-    const v = this.rescueForm.getRawValue();
+    const v: any = this.rescueForm.value;
 
-    const payload = new Rescue(
-      null,
-      v.rescue_date,
-      v.description ?? '',
-      v.comments ?? '',
-      v.street,
-      Number(v.number_street),
-      Number(v.shelterId),
-      Number(v.cityId),
-      this.animals
-    );
+    const formPayload = {
+      rescue_date: v.rescue_date,
+      description: v.description ?? '',
+      comments: v.comments ?? '',
+      street: v.street,
+      number_street: v.number_street,
+      cityId: Number(v.cityId),
+    };
 
-    this.submitRescue.emit(payload);
+    if (!v.number_street || Number.isNaN(Number(v.number_street))) {
+    alert('Número de calle inválido');
+    return;
+}
+
+    this.submitRescue.emit(formPayload);
   }
 }
