@@ -83,7 +83,7 @@ function sanitizePersonInput(req: Request, res: Response, next: NextFunction) {
     doc_nro: req.body.doc_nro,
     doc_type: req.body.doc_type,
     email: req.body.email,
-    phoneNumber: req.body.phone,
+    phoneNumber: req.body.phoneNumber,
     birthdate: req.body.birthdate ? new Date(req.body.birthdate) : null,
     street: req.body.street,
     number_street: req.body.number_street,

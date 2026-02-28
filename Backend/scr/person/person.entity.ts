@@ -61,7 +61,5 @@ export class Person extends BaseEntity {
   @OneToMany(() => Order, order => order.person, { cascade: [Cascade.ALL] })
   orders = new Collection<Order>(this)
 
-
-
 }
 

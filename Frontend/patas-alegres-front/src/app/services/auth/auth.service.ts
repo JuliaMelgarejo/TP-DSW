@@ -34,16 +34,16 @@ export class AuthService {
   }
 
   getShelterIdToken(): number | null {
-  const decoded = this.getDecodedToken();
-  const id = decoded?.shelterId;
-  return id ;
+    const decoded = this.getDecodedToken();
+    const id = decoded?.shelterId;
+    return id ;
   }
 
   getUserIdToken(): number | null {
-  const decoded = this.getDecodedToken();
-  const id = decoded?.userId;
-  return id ;
-}
+    const decoded = this.getDecodedToken();
+    const id = decoded?.personId;
+    return id ;
+  }
 
 
   getRole(): AppRole | null {

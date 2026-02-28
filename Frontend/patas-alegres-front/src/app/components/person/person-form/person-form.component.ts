@@ -18,7 +18,7 @@ export class PersonFormComponent {
   doc_type: FormControl;
   doc_nro: FormControl;
   email: FormControl;
-  phone: FormControl;
+  phoneNumber: FormControl;
   birthdate: FormControl;
   address: FormControl;
   nroCuit: FormControl;
@@ -29,7 +29,7 @@ export class PersonFormComponent {
     this.doc_type = new FormControl('', [Validators.required]);
     this.doc_nro = new FormControl('', [Validators.required]);
     this.email = new FormControl('');
-    this.phone = new FormControl('');
+    this.phoneNumber = new FormControl('');
     this.birthdate = new FormControl('', [Validators.required]);
     this.address = new FormControl('', [Validators.required]);
     this.nroCuit = new FormControl('');
@@ -40,7 +40,7 @@ export class PersonFormComponent {
       doc_type: this.doc_type,
       doc_nro: this.doc_nro,
       email: this.email,
-      phone: this.phone,
+      phoneNumber: this.phoneNumber,
       birthdate: this.birthdate,
       address: this.address,
       nroCuit: this.nroCuit,
