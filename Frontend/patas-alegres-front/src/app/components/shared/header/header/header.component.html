@@ -1,5 +1,5 @@
 <header class="pa-header">
-  <nav class="navbar navbar-expand-lg navbar-dark">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
       <a routerLink="/home" class="pa-brand">
         <span class="pa-brand-text">Patas alegres</span>
@@ -37,7 +37,7 @@
         <!-- Usuario refugio -->
         <ul *ngIf="auth.isShelter()" class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a routerLink="/shelter" class="pa-nav-link" (click)="closeMenu()">Mi refugio</a>
+            <a routerLink="/shelter/{{auth.getShelterIdToken()}}" class="pa-nav-link" (click)="closeMenu()">Mi refugio</a>
           </li>
           <li class="nav-item">
             <a routerLink="/rescue" class="pa-nav-link" (click)="closeMenu()">Nuevo rescate</a>
@@ -46,13 +46,13 @@
             <a routerLink="/animal" class="pa-nav-link" (click)="closeMenu()">Animales</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/" class="pa-nav-link disabled">Productos</a>
+            <a routerLink="/home" class="pa-nav-link disabled">Productos</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/" class="pa-nav-link disabled">Pedidos</a>
+            <a routerLink="/home" class="pa-nav-link disabled">Pedidos</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/" class="pa-nav-link disabled">Solicitudes</a>
+            <a routerLink="/home" class="pa-nav-link disabled">Solicitudes</a>
           </li>
         </ul>
         <button type="button" class="pa-btn-link pa-logout" (click)="logOut(); closeMenu()">
