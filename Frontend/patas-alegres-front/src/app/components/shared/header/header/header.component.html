@@ -1,85 +1,64 @@
 <header class="pa-header">
-  <nav class="pa-nav">
-    <div class="pa-container d-flex align-items-center justify-content-between">
-
-      <!-- Brand -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
       <a routerLink="/home" class="pa-brand">
         <span class="pa-brand-text">Patas alegres</span>
       </a>
+      <button 
+        class="navbar-toggler d-lg-none pa-icon-btn" 
+        type="button" 
+        data-bs-toggle="collapse" 
+        data-bs-target="#navbarContent"
+        aria-controls="navbarContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-      <!-- Desktop links -->
-      <div class="d-none d-lg-flex align-items-center gap-4">
-
-        <a routerLink="/profile" routerLinkActive="pa-nav-active" class="pa-nav-link">Mi perfil</a>
-        <a routerLink="/shelter" routerLinkActive="pa-nav-active" class="pa-nav-link">Refugios</a>
-        <a routerLink="/animal" routerLinkActive="pa-nav-active" class="pa-nav-link">Animales</a>
-        <a routerLink="/adoption" routerLinkActive="pa-nav-active" class="pa-nav-link">Pedidos</a>
-        <a routerLink="/purchases" routerLinkActive="pa-nav-active" class="pa-nav-link">Compras</a>
-
-        <button type="button" class="pa-btn-link pa-logout" (click)="logOut()">
-          Cerrar sesión
-        </button>
-      </div>
-
-      <!-- Mobile actions (icons) -->
-      <div class="d-lg-none d-flex align-items-center gap-2">
-        <button type="button" class="pa-icon-btn" aria-label="Carrito">
-          🛒
-        </button>
-
-        <button
-          type="button"
-          class="pa-icon-btn"
-          aria-label="Abrir menú"
-          (click)="toggleMenu()"
-          [attr.aria-expanded]="isMenuOpen"
-        >
-          ☰
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile drawer -->
-    <div class="pa-mobile-drawer" [class.is-open]="isMenuOpen">
-      <div class="pa-container py-3">
-
-        <a routerLink="/profile" routerLinkActive="pa-mobile-active"
-           class="pa-mobile-link" (click)="toggleMenu()">
-          Mi perfil
-        </a>
-
-        <a routerLink="/shelter" routerLinkActive="pa-mobile-active"
-           class="pa-mobile-link" (click)="toggleMenu()">
-          Refugios
-        </a>
-
-        <a routerLink="/animal" routerLinkActive="pa-mobile-active"
-           class="pa-mobile-link" (click)="toggleMenu()">
-          Animales rescatados
-        </a>
-
-        <a routerLink="/adoption" routerLinkActive="pa-mobile-active"
-           class="pa-mobile-link" (click)="toggleMenu()">
-          Pedidos de adopción
-        </a>
-
-        <a routerLink="/shelter/create" routerLinkActive="pa-mobile-active"
-           class="pa-mobile-link" (click)="toggleMenu()">
-          Abrir mi refugio
-        </a>
-
-        <a routerLink="/purchases" routerLinkActive="pa-mobile-active"
-           class="pa-mobile-link" (click)="toggleMenu()">
-          Compras
-        </a>
-
-        <button type="button" class="pa-btn pa-btn-danger w-100 mt-3" (click)="logOut()">
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <!-- Usuario base -->
+        <ul *ngIf="auth.isUser()" class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a routerLink="/profile" class="pa-nav-link" (click)="closeMenu()">Mi perfil</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/shelter" class="pa-nav-link" (click)="closeMenu()">Refugios</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/animal" class="pa-nav-link" (click)="closeMenu()">Animales</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/adoption" class="pa-nav-link disabled">Pedidos de adopción</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/purchases" class="pa-nav-link disabled">Compras</a>
+          </li>
+        </ul>
+        <!-- Usuario refugio -->
+        <ul *ngIf="auth.isShelter()" class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a routerLink="/shelter" class="pa-nav-link" (click)="closeMenu()">Mi refugio</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/rescue" class="pa-nav-link" (click)="closeMenu()">Nuevo rescate</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/animal" class="pa-nav-link" (click)="closeMenu()">Animales</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/" class="pa-nav-link disabled">Productos</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/" class="pa-nav-link disabled">Pedidos</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/" class="pa-nav-link disabled">Solicitudes</a>
+          </li>
+        </ul>
+        <button type="button" class="pa-btn-link pa-logout" (click)="logOut(); closeMenu()">
           Cerrar sesión
         </button>
       </div>
     </div>
-
-    <!-- Backdrop (mobile) -->
-    <div class="pa-backdrop" *ngIf="isMenuOpen" (click)="toggleMenu()"></div>
   </nav>
 </header>
