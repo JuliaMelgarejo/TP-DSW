@@ -6,7 +6,7 @@ import { Adoption } from '../../models/adoption/adoption.model.js';
   providedIn: 'root'
 })
 export class AdoptionService {
-  readonly API_URL = 'http://localhost:3000/api/adoption'
+  readonly API_URL = 'http://localhost:3000/api'
 
   adoptions: Adoption[] = [];
 
@@ -14,22 +14,38 @@ export class AdoptionService {
     this.adoptions = [];
   }
 
+  createForAnimal(animalId: number, comments?: string) {
+  return this.http.post<{ message: string; data: Adoption }>(
+    `${this.API_URL}/animal/${animalId}/adoptions`,
+    { comments }
+  );
+}
   getAdoptions(){
-    return this.http.get<{message: string, data: Adoption[]}>(this.API_URL);
+    return this.http.get<{message: string, data: Adoption[]}>(`${this.API_URL}/adoption`);
   }
 
   getAdoption(id: number){
-    return this.http.get<{data: Adoption}>(`${this.API_URL}/${id}`);
+    return this.http.get<{data: Adoption}>(`${this.API_URL}/adoption/${id}`);
   }
 
   postAdoption(Adoption: Adoption){
-    return this.http.post<{message: string, data: Adoption}>(this.API_URL, Adoption);
+    return this.http.post<{message: string, data: Adoption}>(`${this.API_URL}/adoption`, Adoption);
   }
 
   updateAdoption(Adoption: Adoption){
-    return this.http.put<{message: string, data: Adoption}>(`${this.API_URL}/${Adoption.id}`, Adoption);
+    return this.http.put<{message: string, data: Adoption}>( `${this.API_URL}/adoption/${Adoption.id}`, Adoption);
   }
 
   deleteAdoption(id: number){
-    return this.http.delete<{message: string, data: Adoption}>(`${this.API_URL}/${id}`);
-  }}
+    return this.http.delete<{message: string, data: Adoption}>(`${this.API_URL}/adoption/${id}`);
+  }
+  
+  getMyAdoptions() {
+  return this.http.get<{ message: string; data: any[] }>(`${this.API_URL}/adoption/me`);
+  }
+
+  getAdoptionDetail(id: number) {
+    return this.http.get<{ message: string; data: any }>(`${this.API_URL}/adoption/${id}`);
+  }
+
+}

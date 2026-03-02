@@ -53,6 +53,7 @@ app.use('/api/city', cityRouter)
 app.use('/api/province', provinceRouter)
 app.use('/api/country', countryRouter )
 
+
 await syncSchema() //never in production*/
 
 app.listen(3000, ()=>{

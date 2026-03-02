@@ -28,5 +28,5 @@ export class Adoption extends BaseEntity{
   person!: Rel<Person>;
 
   @OneToMany(() => AdoptionStatus, adoptionStatus => adoptionStatus.adoption, { cascade: [Cascade.ALL] })
-  adoptions = new Collection<Adoption>(this)
+  statuses = new Collection<AdoptionStatus>(this)
 }

@@ -1,19 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AnimalService } from '../../../../services/animal/animal.service';
 import { Animal } from '../../../../models/animal/animal.model';
+import { AdoptModalComponent } from '../../../adopt-animal/adopt-modal/adopt-modal.component';
 
 @Component({
   selector: 'app-animal-public',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, AdoptModalComponent],
   templateUrl: './animal-public.component.html',
   styleUrl: './animal-public.component.css',
 })
 export class AnimalPublicComponent {
   selectedAnimal: any;
-
+  @ViewChild(AdoptModalComponent) adoptModal!: AdoptModalComponent;
   readonly BACKEND_BASE = 'http://localhost:3000';
 
   // ✅ chips/panel
@@ -21,9 +22,14 @@ export class AnimalPublicComponent {
 
   constructor(private route: ActivatedRoute, public animalService: AnimalService) {}
 
+  
   ngOnInit(): void {
     const id = Number(this.route.snapshot.params['id']);
     this.getAnimal(id);
+  }
+
+  openAdoptModal() {
+    this.adoptModal?.open();
   }
 
   getAnimal(id: number) {

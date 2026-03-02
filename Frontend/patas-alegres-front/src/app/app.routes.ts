@@ -28,6 +28,8 @@ import { RescueDetailComponent } from './components/rescue/rescue-detail/rescue-
 import { AnimalPageComponent } from './components/animal/animal-page/animal-page/animal-page.component.js';
 import { SignInShelterAccountComponent } from './components/sign-in/sign-in-shelter/sign-in-shelter-account.component.js';
 import { SignInShelterDetailsComponent } from './components/sign-in/sign-in-shelter/sign-in-shelter-details.component.js';
+import { MyAdoptionsComponent } from './components/adopt-animal/my-adoptions/my-adoptions.component.js';
+import { MyAdoptionDetailComponent } from './components/adopt-animal/my-adoption-detail/my-adoption-detail.component.js';
 
 export const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -72,5 +74,7 @@ export const routes: Routes = [
   {path: 'rescue/:id', component:RescueDetailComponent, canActivate:[authGuard]},
 
   { path: 'adopt/:id', component: AdoptAnimalComponent, canActivate:[authGuard] },
+  { path: 'my-adoptions', component: MyAdoptionsComponent, canActivate:[authGuard] },
+  { path: 'my-adoptions/:id', component: MyAdoptionDetailComponent, canActivate:[authGuard] },
   { path: '**',redirectTo: 'login',pathMatch: 'full' }
 ];

@@ -45,6 +45,8 @@ export class AuthService {
     return id ;
   }
 
+  
+
 
   getRole(): AppRole | null {
     const decoded = this.getDecodedToken();
