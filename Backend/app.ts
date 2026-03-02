@@ -57,6 +57,7 @@ app.use('/api/country', countryRouter )
 app.use('/api/product', productRouter)
 app.use('/api/category', categoryRouter)
 
+
 await syncSchema() //never in production*/
 
 app.listen(3000, ()=>{

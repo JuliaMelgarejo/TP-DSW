@@ -1,0 +1,53 @@
+<div class="pa-page">
+  <div class="pa-container pa-panel">
+
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div>
+        <div class="pa-h2">Detalle de solicitud</div>
+        <div class="pa-muted pa-small">Información del pedido y estado</div>
+      </div>
+
+      <a class="pa-btn pa-btn-outline" routerLink="/my-adoptions">Volver</a>
+    </div>
+
+    <div *ngIf="loading" class="pa-card pa-section">
+      <div class="pa-muted">Cargando...</div>
+    </div>
+
+    <div *ngIf="!loading && errMsg" class="pa-card pa-section">
+      <div class="pa-alert pa-alert-danger">{{ errMsg }}</div>
+    </div>
+
+    <div *ngIf="!loading && item" class="pa-card pa-section">
+
+      <div class="d-flex gap-3 align-items-start">
+        <img
+          [src]="getMainPhoto()"
+          style="width:120px;height:120px;border-radius:16px;object-fit:cover;border:1px solid var(--pa-border);" />
+
+        <div class="flex-grow-1">
+          <div class="pa-h3 mb-1">{{ item?.animal?.name }}</div>
+
+          <div class="pa-small mb-1">
+            <span class="pa-muted">Estado actual:</span>
+            <span class="fw-bold ms-1">{{ getCurrentState() }}</span>
+          </div>
+
+          <div class="pa-small">
+            <span class="pa-muted">Fecha del pedido:</span>
+            <span class="fw-bold ms-1">{{ item?.adoption_date | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <hr style="border-color: var(--pa-border);" />
+
+      <div>
+        <div class="fw-bold mb-1">Comentario</div>
+        <div class="pa-muted">{{ item?.comments || '—' }}</div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

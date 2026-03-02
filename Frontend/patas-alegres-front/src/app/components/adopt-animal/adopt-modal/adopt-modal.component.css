@@ -1,0 +1,39 @@
+/* ===== Patas Alegres: Modal ===== */
+.pa-modal-dialog{
+  transform: translateY(18px); /* lo baja un poquito */
+}
+
+.pa-modal-content{
+  overflow: hidden;
+}
+
+.pa-modal-header{
+  border-bottom: 1px solid var(--pa-border);
+  background: rgba(255,255,255,.7);
+  backdrop-filter: blur(10px);
+}
+
+.pa-modal-footer{
+  border-top: 1px solid var(--pa-border);
+  padding: 14px 16px;
+}
+
+/* Alerts estilo proyecto */
+.pa-alert{
+  border: 1px solid var(--pa-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 700;
+}
+
+.pa-alert-success{
+  background: rgba(88,168,112,.12);
+  border-color: rgba(88,168,112,.35);
+  color: var(--pa-success);
+}
+
+.pa-alert-danger{
+  background: rgba(211,106,106,.12);
+  border-color: rgba(211,106,106,.35);
+  color: var(--pa-danger);
+}
