@@ -32,6 +32,7 @@ import { ProductComponent } from './components/product/product.component.js';
 import { ProductFormComponent } from './components/product/product-form/product-form.component.js';
 import { MyAdoptionsComponent } from './components/adopt-animal/my-adoptions/my-adoptions.component.js';
 import { MyAdoptionDetailComponent } from './components/adopt-animal/my-adoption-detail/my-adoption-detail.component.js';
+import { AdoptListComponent } from './components/adopt-animal/adopt-list/adopt-list.component.js';
 
 export const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -82,5 +83,6 @@ export const routes: Routes = [
   { path: '**', redirectTo: 'home', pathMatch: 'full' },
   { path: 'my-adoptions', component: MyAdoptionsComponent, canActivate:[authGuard] },
   { path: 'my-adoptions/:id', component: MyAdoptionDetailComponent, canActivate:[authGuard] },
+  { path: 'shelter-adoptions', component: AdoptListComponent, canActivate:[authGuard], data: { roles: ['SHELTER'] } },
   { path: '**',redirectTo: 'login',pathMatch: 'full' }
 ];

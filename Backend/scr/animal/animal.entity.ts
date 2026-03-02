@@ -33,5 +33,4 @@ export class Animal extends BaseEntity {
   @OneToMany(() => Adoption, adoption => adoption.animal, {orphanRemoval: true,})
   adoptions = new Collection<Adoption>(this);
 
-
 }

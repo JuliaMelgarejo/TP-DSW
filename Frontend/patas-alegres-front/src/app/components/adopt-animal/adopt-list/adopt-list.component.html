@@ -1,0 +1,63 @@
+<div class="pa-page">
+  <div class="pa-container pa-panel">
+
+    <div class="d-flex align-items-start justify-content-between mb-3">
+      <div>
+        <div class="pa-h2">Solicitudes recibidas</div>
+        <div class="pa-muted pa-small">Pedidos de adopción para tu refugio</div>
+      </div>
+
+      <a class="pa-btn pa-btn-outline" routerLink="/home">Volver</a>
+    </div>
+
+    <div *ngIf="loading" class="pa-card pa-section">
+      <div class="pa-muted">Cargando...</div>
+    </div>
+
+    <div *ngIf="!loading && errMsg" class="pa-card pa-section">
+      <div class="pa-alert pa-alert-danger">{{ errMsg }}</div>
+    </div>
+
+    <div *ngIf="!loading && !errMsg && items.length === 0" class="pa-card pa-section">
+      <div class="pa-muted">Todavía no hay solicitudes para tus animales.</div>
+    </div>
+
+    <div *ngIf="!loading && !errMsg && items.length > 0" class="d-flex flex-column gap-3">
+      <button
+        type="button"
+        class="pa-card pa-card-hover pa-section text-start"
+        style="width: 100%;"
+        *ngFor="let a of items"
+        (click)="goDetail(a.id)">
+
+        <div class="d-flex gap-3 align-items-start">
+          <img
+            [src]="getPhoto(a)"
+            [alt]="a?.animal?.name"
+            style="width:96px;height:96px;border-radius:14px;object-fit:cover;border:1px solid var(--pa-border);" />
+
+          <div class="flex-grow-1">
+            <div class="fw-bold mb-1">Nombre: {{ a?.animal?.name }}</div>
+
+            <div class="pa-small mb-1">
+              <span class="pa-muted">Estado:</span>
+              <span class="fw-bold ms-1">{{ a?.currentState }}</span>
+            </div>
+
+            <div class="pa-small mb-1">
+              <span class="pa-muted">Fecha de pedido:</span>
+              <span class="fw-bold ms-1">{{ a?.adoption_date | date:'dd/MM/yyyy' }}</span>
+            </div>
+
+            <div class="pa-small">
+              <span class="pa-muted">Solicitante:</span>
+              <span class="fw-bold ms-1">{{ a?.applicant?.name }}</span>
+            </div>
+          </div>
+        </div>
+
+      </button>
+    </div>
+
+  </div>
+</div>
