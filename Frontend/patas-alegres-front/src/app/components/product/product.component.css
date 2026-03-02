@@ -1,0 +1,37 @@
+.price-container {
+  margin-bottom: 0.75rem;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #6c757d;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.price-row {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.price-label {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.current-price {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.discount-badge {
+  background-color: #28a745;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
