@@ -61,8 +61,6 @@ async function findMine(req: Request, res: Response) {
       { person: personId as any },
       { populate: ['animal', 'animal.photos', 'statuses', 'statuses.adoptionState'], orderBy: { adoption_date: 'DESC' } }
     );
-
-    // ✅ devolvemos “estado actual” ya calculado (para que el front sea fácil)
     const data = adoptions.map((a: any) => {
       const statuses = a.statuses?.getItems ? a.statuses.getItems() : (a.statuses ?? []);
       const latest = [...statuses].sort((x: any, y: any) =>
@@ -82,7 +80,101 @@ async function findMine(req: Request, res: Response) {
       };
     });
 
+
+
     res.status(200).json({ message: 'my adoptions', data });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function findForShelter(req: Request, res: Response) {
+  try {
+    const shelterId = Number((req as any).user?.shelterId);
+    if (!shelterId) return res.status(401).json({ message: 'Token sin shelterId' });
+
+    // Traemos adopciones cuyo animal pertenece al refugio (via rescueClass.shelters)
+    const adoptions = await em.find(
+      Adoption,
+      { animal: { rescueClass: { shelters: shelterId as any } } } as any,
+      {
+        populate: [
+          'animal',
+          'animal.photos',
+          'animal.rescueClass',
+          'animal.rescueClass.shelters',
+          'person',
+          'statuses',
+          'statuses.adoptionState',
+        ],
+        orderBy: { adoption_date: 'DESC' },
+      }
+    );
+
+    // armamos DTO para cards
+    const data = adoptions.map((a: any) => {
+      const statuses = a.statuses?.getItems ? a.statuses.getItems() : (a.statuses ?? []);
+      const latest = [...statuses].sort((x: any, y: any) =>
+        new Date(y.statusChangeDate).getTime() - new Date(x.statusChangeDate).getTime()
+      )[0];
+
+      return {
+        id: a.id,
+        adoption_date: a.adoption_date,
+        comments: a.comments,
+
+        animal: {
+          id: a.animal?.id,
+          name: a.animal?.name,
+          photos: a.animal?.photos ?? [],
+        },
+
+        applicant: { // persona que solicita
+          id: a.person?.id,
+          name: a.person?.name ?? a.person?.firstName ?? '—', // ajustá a tu entidad Person
+        },
+
+        currentState: latest?.adoptionState?.type ?? 'PENDIENTE',
+      };
+    });
+
+    res.status(200).json({ message: 'shelter adoptions', data });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function findOneForShelter(req: Request, res: Response) {
+  try {
+    const id = Number(req.params.id);
+    if (Number.isNaN(id)) return res.status(400).json({ message: 'ID inválido' });
+
+    const shelterId = Number((req as any).user?.shelterId);
+    if (!shelterId) return res.status(401).json({ message: 'Token sin shelterId' });
+
+    const adoption = await em.findOneOrFail(
+      Adoption,
+      { id },
+      {
+        populate: [
+          'animal',
+          'animal.photos',
+          'animal.rescueClass',
+          'animal.rescueClass.shelters',
+          'person',
+          'statuses',
+          'statuses.adoptionState',
+        ],
+      }
+    );
+
+    // ✅ validar que sea del refugio
+    const adoptionShelterId = (adoption as any).animal?.rescueClass?.shelters?.id;
+    if (Number(adoptionShelterId) !== shelterId) {
+      return res.status(403).json({ message: 'No autorizado' });
+    }
+
+    res.status(200).json({ message: 'adoption detail for shelter', data: adoption });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -160,4 +252,4 @@ async function remove( req: Request, res: Response ){
   }
 }
 
-export { findAll, findOne, add, update, remove,findMine , sanitizeAdoptionInput }
+export { findAll, findOne, add, update, remove, findMine, findForShelter,findOneForShelter , sanitizeAdoptionInput }

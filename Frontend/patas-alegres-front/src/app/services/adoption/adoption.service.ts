@@ -15,11 +15,13 @@ export class AdoptionService {
   }
 
   createForAnimal(animalId: number, comments?: string) {
-  return this.http.post<{ message: string; data: Adoption }>(
-    `${this.API_URL}/animal/${animalId}/adoptions`,
-    { comments }
-  );
+  return this.http.post<{ message: string; data: Adoption }>(`${this.API_URL}/animal/${animalId}/adoptions`,{ comments });
+  }
+
+  getShelterAdoptions() {
+  return this.http.get<{ message: string; data: any[] }>(`${this.API_URL}/adoption/shelter`);
 }
+
   getAdoptions(){
     return this.http.get<{message: string, data: Adoption[]}>(`${this.API_URL}/adoption`);
   }
