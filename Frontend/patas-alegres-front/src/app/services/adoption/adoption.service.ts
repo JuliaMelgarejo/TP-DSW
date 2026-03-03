@@ -18,8 +18,29 @@ export class AdoptionService {
   return this.http.post<{ message: string; data: Adoption }>(`${this.API_URL}/animal/${animalId}/adoptions`,{ comments });
   }
 
+  getShelterAdoptionsByAnimal(animalId: number) {
+  return this.http.get<{ message: string; data: any[] }>(
+    `${this.API_URL}/adoption/shelter/animals/${animalId}`
+  );
+}
+
   getShelterAdoptions() {
   return this.http.get<{ message: string; data: any[] }>(`${this.API_URL}/adoption/shelter`);
+}
+
+  getShelterAdoptionDetail(id: number) {
+    return this.http.get<{ message: string; data: any }>(`${this.API_URL}/adoption/shelter/${id}`);
+  }
+
+  addShelterStatus(adoptionId: number, stateType: string, reason?: string) {
+    return this.http.post<{ message: string; data: any }>(
+      `${this.API_URL}/adoption/${adoptionId}/status`,
+      { stateType, reason }
+    );
+  }
+
+  getAdoptionStates() {
+  return this.http.get<{ message: string; data: any[] }>(`${this.API_URL}/adoptionState`);
 }
 
   getAdoptions(){

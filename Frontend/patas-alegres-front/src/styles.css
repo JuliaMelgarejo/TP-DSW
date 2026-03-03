@@ -109,7 +109,7 @@ a:hover{ color: var(--pa-primary); }
   border-radius: var(--pa-radius);
 }
 
-.pa-section{ padding: 16px; }
+.pa-section{ padding: 24px; }
 
 .pa-card-hover{ transition: .25s ease; }
 .pa-card-hover:hover{

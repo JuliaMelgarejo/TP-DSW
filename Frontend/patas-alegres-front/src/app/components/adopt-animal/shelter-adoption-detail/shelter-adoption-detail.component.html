@@ -1,0 +1,160 @@
+<div class="pa-page">
+  <div class="pa-container pa-panel">
+
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div>
+        <div class="pa-h2">Detalle de solicitud</div>
+        <div class="pa-muted pa-small">Gestión de adopciones del refugio</div>
+      </div>
+
+      <a class="pa-btn pa-btn-outline" routerLink="/shelter-adoptions">Volver</a>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="pa-card pa-section">
+      <div class="pa-muted">Cargando...</div>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="!loading && errMsg" class="pa-card pa-section">
+      <div class="pa-alert pa-alert-danger">{{ errMsg }}</div>
+    </div>
+
+    <div *ngIf="!loading && item" class="d-flex flex-column gap-3">
+
+      <!-- Animal / Estado actual -->
+      <div class="pa-card pa-section">
+        <div class="d-flex gap-3 align-items-start">
+          <img
+            [src]="getMainPhoto()"
+            style="width:120px;height:120px;border-radius:16px;object-fit:cover;border:1px solid var(--pa-border);" />
+
+          <div class="flex-grow-1">
+            <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+              <div>
+                <div class="pa-h3 mb-1">{{ item?.animal?.name }}</div>
+
+                <div class="pa-small">
+                  <span class="pa-muted">Fecha del pedido:</span>
+                  <span class="fw-bold ms-1">{{ item?.adoption_date | date:'dd/MM/yyyy' }}</span>
+                </div>
+              </div>
+
+              <!-- badge estado actual -->
+              <span class="pa-badge" [ngClass]="stateBadgeClass(getCurrentState())">
+                {{ getCurrentState() }}
+              </span>
+            </div>
+
+            <div class="mt-2">
+              <div class="pa-small">
+                <span class="pa-muted">Comentario del solicitante:</span>
+              </div>
+              <div class="pa-muted">
+                {{ item?.comments || '—' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Solicitante -->
+      <div class="pa-card pa-section">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+          <div class="fw-bold">Solicitante</div>
+          <span class="pa-muted pa-small">Datos de la persona</span>
+        </div>
+
+        <div class="pa-muted">
+          <div><b>Nombre:</b> {{ item?.person?.name ?? '—' }}</div>
+          <div><b>Email:</b> {{ item?.person?.email ?? '—' }}</div>
+          <div><b>Teléfono:</b> {{ item?.person?.phone ?? '—' }}</div>
+        </div>
+      </div>
+
+      <!-- Cambiar estado -->
+      <div class="pa-card pa-section">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+          <div class="fw-bold">Cambiar estado</div>
+
+          <!-- preview badge del nuevo estado -->
+          <span *ngIf="stateType" class="pa-badge" [ngClass]="stateBadgeClass(stateType)">
+            {{ stateType }}
+          </span>
+        </div>
+
+        <div *ngIf="statesLoading" class="pa-muted pa-small">Cargando estados...</div>
+
+        <div *ngIf="statesErr" class="pa-alert pa-alert-danger">{{ statesErr }}</div>
+
+        <div *ngIf="!statesLoading && !statesErr" class="d-flex flex-column gap-2">
+          <label class="pa-small pa-muted">Nuevo estado</label>
+
+          <select class="pa-input" [(ngModel)]="stateType">
+            <option *ngFor="let s of states" [value]="s.type">
+              {{ s.type }}
+            </option>
+          </select>
+
+          <label class="pa-small pa-muted mt-2">Motivo (opcional)</label>
+          <textarea
+            class="pa-input"
+            rows="3"
+            [(ngModel)]="reason"
+            placeholder="Ej: documentación aprobada, visita realizada..."></textarea>
+
+          <div *ngIf="okMsg" class="pa-alert pa-alert-success mt-2">
+            {{ okMsg }}
+          </div>
+
+          <div class="d-flex justify-content-end mt-2 gap-2">
+            <button class="pa-btn pa-btn-outline" type="button" (click)="loadDetail(item.id)" [disabled]="saving">
+              Recargar
+            </button>
+
+            <button
+              class="pa-btn pa-btn-primary"
+              type="button"
+              (click)="saveStatus()"
+              [disabled]="!canSave()">
+              {{ saving ? 'Guardando...' : 'Guardar estado' }}
+            </button>
+          </div>
+
+          <div *ngIf="!canSave() && !saving" class="pa-muted pa-small mt-1">
+            Seleccioná un estado distinto al actual para guardar.
+          </div>
+        </div>
+      </div>
+
+      <!-- Historial -->
+      <div class="pa-card pa-section">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+          <div class="fw-bold">Historial de estados</div>
+          <span class="pa-muted pa-small">Más reciente primero</span>
+        </div>
+
+        <div *ngIf="getStatuses().length === 0" class="pa-muted">
+          Sin historial.
+        </div>
+
+        <div *ngFor="let s of getStatuses()" class="pa-card-soft pa-p-md mb-2">
+          <div class="d-flex align-items-center justify-content-between gap-2">
+            <span class="pa-badge" [ngClass]="stateBadgeClass(s?.adoptionState?.type)">
+              {{ s?.adoptionState?.type ?? '—' }}
+            </span>
+
+            <div class="pa-small pa-muted">
+              {{ s?.statusChangeDate | date:'dd/MM/yyyy HH:mm' }}
+            </div>
+          </div>
+
+          <div class="pa-small mt-2" *ngIf="s?.reason">
+            {{ s.reason }}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

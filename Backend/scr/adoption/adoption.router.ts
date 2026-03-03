@@ -1,13 +1,15 @@
 import { Router } from "express";
-import { sanitizeAdoptionInput, findAll, findOne, add, update, remove, findMine, findForShelter, findOneForShelter } from "./adoption.controler.js";
+import { sanitizeAdoptionInput, findAll, findOne, add, update, remove, findMine, findForShelter, findOneForShelter, findShelterByAnimal } from "./adoption.controler.js";
 import { validateToken } from "../validate-token/validate-token.routes.js";
+import { addStatusForShelter, sanitizeAdoptionStatusInput } from "../adoptionStatus/adoptionStatus.controller.js";
 
 export const adoptionRouter = Router();
 adoptionRouter.get('/me', validateToken, findMine);
 adoptionRouter.get('/shelter', validateToken, findForShelter);
 adoptionRouter.get('/shelter/:id', validateToken, findOneForShelter);
+adoptionRouter.get('/shelter/animals/:animalId', validateToken, findShelterByAnimal);
 adoptionRouter.get('/', validateToken ,findAll)
-
+adoptionRouter.post('/:id/status', validateToken, addStatusForShelter);
 adoptionRouter.get('/:id', validateToken ,findOne)
 adoptionRouter.post('/', validateToken, sanitizeAdoptionInput, add);
 adoptionRouter.put('/:id', validateToken ,sanitizeAdoptionInput, update)

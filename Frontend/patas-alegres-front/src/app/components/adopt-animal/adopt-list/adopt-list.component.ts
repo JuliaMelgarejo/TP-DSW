@@ -1,25 +1,42 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdoptionService } from '../../../services/adoption/adoption.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-adopt-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, FormsModule],
   templateUrl: './adopt-list.component.html',
   styleUrl: './adopt-list.component.css',
 })
 export class AdoptListComponent {
   items: any[] = [];
+  allItems: any[] = [];
   loading = true;
   errMsg = '';
 
+  // paginación (si ya la tenías)
+  page = 1;
+  pageSize = 8;
+  totalPages = 1;
+  pages: number[] = [];
+
+  // 🔹 filtro opcional
+  animalId: number | null = null;
+
   readonly BACKEND_BASE = 'http://localhost:3000';
 
-  constructor(private adoptionService: AdoptionService, private router: Router) {}
+  constructor(
+    private adoptionService: AdoptionService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
+    const param = this.route.snapshot.params['id'];
+    this.animalId = param ? Number(param) : null;
     this.load();
   }
 
@@ -27,9 +44,14 @@ export class AdoptListComponent {
     this.loading = true;
     this.errMsg = '';
 
-    this.adoptionService.getShelterAdoptions().subscribe({
+    const obs = this.animalId
+      ? this.adoptionService.getShelterAdoptionsByAnimal(this.animalId)
+      : this.adoptionService.getShelterAdoptions();
+
+    obs.subscribe({
       next: (res) => {
-        this.items = (res as any).data ?? [];
+        this.allItems = (res as any).data ?? [];
+        this.setupPagination();
         this.loading = false;
       },
       error: (err) => {
@@ -39,8 +61,20 @@ export class AdoptListComponent {
     });
   }
 
+  setupPagination() {
+    this.totalPages = Math.max(1, Math.ceil(this.allItems.length / this.pageSize));
+    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+    this.goPage(1);
+  }
+
+  goPage(p: number) {
+    if (p < 1 || p > this.totalPages) return;
+    this.page = p;
+    const start = (this.page - 1) * this.pageSize;
+    this.items = this.allItems.slice(start, start + this.pageSize);
+  }
+
   goDetail(id: number) {
-    // ruta de detalle para shelter (podés definirla como quieras)
     this.router.navigate(['/shelter-adoptions', id]);
   }
 
