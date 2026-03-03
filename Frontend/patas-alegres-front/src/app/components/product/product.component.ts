@@ -5,6 +5,7 @@ import { Product } from '../../models/product/product.js';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { environment } from '../../../environments/environment.js';
 
 @Component({
   selector: 'app-product',
@@ -31,6 +32,7 @@ export class ProductComponent {
       }).subscribe( res => {
         this.products = res.data;
         this.totalProducts = res.total;
+        console.log(this.products);
       });
     } else {
       this.productService.getProducts({ page: 1, limit: 12 }).subscribe( res => {
@@ -38,5 +40,15 @@ export class ProductComponent {
         this.totalProducts = res.total;
       });
     }
+  }
+
+  getProductPhotoUrl(product: Product): string {
+    const url = product?.photos?.length
+      ? product.photos[0].url
+      : null;
+
+    if (!url) return 'assets/nophoto.png';
+
+    return url.startsWith('http') ? url : environment.url + url;
   }
 }

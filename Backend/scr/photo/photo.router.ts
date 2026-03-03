@@ -7,6 +7,7 @@ import { orm } from '../zshare/db/orm.js';
 import { Animal } from '../animal/animal.entity.js';
 import { Photo } from './photo.entity.js';
 import multer from "multer";
+import { Product } from "../product/product.entity.js";
 
 
 
@@ -22,8 +23,8 @@ const em = orm.em.fork();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const animalId = req.params.id;
-    const dir = path.join(process.cwd(), "uploads", "animals", animalId);
+    const { type, id } = req.params;
+    const dir = path.join(process.cwd(), "uploads", type, id);
     fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
   },
@@ -45,31 +46,36 @@ const upload = multer({
 });
 
 photoRouter.post(
-  "/animal/:id",
-  //validateToken,
+  "/:type/:id",
   upload.single("photo"),
   async (req, res) => {
     try {
-      const id = Number(req.params.id);
-      const animal = await em.findOneOrFail(Animal, { id });
+      const { type, id } = req.params;
+      const numericId = Number(id);
 
       if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      // URL pública accesible por el front
-      const publicUrl = `/uploads/animals/${id}/${req.file.filename}`;
-
-      const photo = em.create(Photo, {
-        url: publicUrl,
+      let entity: any;
+      let photoData: any = {
+        url: `/uploads/${type}/${id}/${req.file.filename}`,
         originalName: req.file.originalname,
         mimeType: req.file.mimetype,
         size: req.file.size,
-        animal: animal,
-        // product: null  (si lo dejás nullable)
-      });
+      };
 
-      animal.photos.add(photo);
+      if (type === "animal") {
+        entity = await em.findOneOrFail(Animal, { id: numericId });
+        photoData.animal = entity;
+      } else if (type === "product") {
+        entity = await em.findOneOrFail(Product, { id: numericId });
+        photoData.product = entity;
+      } else {
+        return res.status(400).json({ message: "Invalid type" });
+      }
+
+      const photo = em.create(Photo, photoData);
       await em.flush();
 
       return res.status(201).json({ message: "photo uploaded", data: photo });

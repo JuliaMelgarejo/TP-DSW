@@ -99,6 +99,25 @@ label{
   -moz-appearance: textfield;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.pa-icon-delete {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+  line-height: 18px;
+  padding: 0;
+}
+
 @media (min-width: 992px) {
   .left-column {
     padding-right: 2rem;

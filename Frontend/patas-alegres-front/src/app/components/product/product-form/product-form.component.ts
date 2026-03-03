@@ -8,6 +8,8 @@ import { CategoryService } from '../../../services/Category/category.service.js'
 import { Category } from '../../../models/category/category.js';
 import { CommonModule } from '@angular/common';
 import { PhotoService } from '../../../services/photo/photo.service.js';
+import { environment } from '../../../../environments/environment.js';
+import { Product } from '../../../models/product/product.js';
 
 @Component({
   selector: 'app-product-form',
@@ -19,10 +21,13 @@ import { PhotoService } from '../../../services/photo/photo.service.js';
 export class ProductFormComponent {
   ProductForm: FormGroup;
   categories: Category[] = [];
-  selectedProductFile: File | null = null;
-  selectedProductPreview: string | null = null;
   isEditMode = false;
   productId: number | null = null;
+  selectedProductFile: File | null = null;
+  selectedProductPreview: string | null = null;
+  uploading = false;
+  uploadError: string | null = null;
+  selectedProduct: Product;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,6 +48,7 @@ export class ProductFormComponent {
       crossed_out_price: [0],
       category: [null, Validators.required],
     });
+    this.selectedProduct = {} as Product;
   }
 
   ngOnInit(): void {
@@ -66,17 +72,17 @@ export class ProductFormComponent {
   loadProduct(id: number) {
     this.productService.getProduct(id).subscribe({
       next: (response) => {
-        const product = response.data;
+        this.selectedProduct = response.data;
         this.ProductForm.patchValue({
-          name: product.name,
-          description: product.description,
-          stock: product.stock,
-          crossed_out_price: product.crossed_out_price,
-          price: product.prices[0]?.amount || 0,
-          category: product.category.id,
+          name: this.selectedProduct.name,
+          description: this.selectedProduct.description,
+          stock: this.selectedProduct.stock,
+          crossed_out_price: this.selectedProduct.crossed_out_price,
+          price: this.selectedProduct.prices[0]?.amount || 0,
+          category: this.selectedProduct.category.id,
         });
-        if (product.photos && product.photos.length > 0) {
-          this.selectedProductPreview = product.photos[0].url;
+        if (this.selectedProduct.photos && this.selectedProduct.photos.length > 0) {
+          this.selectedProductPreview = environment.url + this.selectedProduct.photos[0].url;
         }
       },
       error: (error) => {
@@ -99,10 +105,27 @@ export class ProductFormComponent {
 
   createProduct() {
     this.productService.postProduct(this.ProductForm.value).subscribe({
-      next: (data) => {
-        alert(data.message);
-        this.ProductForm.reset();
-        this.router.navigate(['/product'])
+      next: (res) => {
+
+        const createdProduct = res.data;
+        if (!createdProduct?.id) {
+          console.error('El producto creado no tiene ID');
+          return;
+        }
+
+        if (this.selectedProductFile) {
+          this.photoService.uploadPhoto('product', createdProduct.id, this.selectedProductFile).subscribe({
+              next: () => {
+                this.router.navigate(['/product']);
+              },
+              error: (err) => {
+                console.error(err);
+                this.router.navigate(['/product']);
+              }
+            });
+        } else {
+          this.router.navigate(['/product']);
+        }
       },
       error: (error) => {
         console.log(error);
@@ -114,15 +137,24 @@ export class ProductFormComponent {
     if (!this.productId) return;
 
     this.productService.updateProduct({ ...this.ProductForm.value, id: this.productId }).subscribe({
-      next: (data) => {
-        alert(data.message);
-        this.router.navigate(['/product'])
+      next: () => {
+
+        if (this.selectedProductFile) {
+          this.photoService.uploadPhoto('product', this.productId!, this.selectedProductFile)
+            .subscribe({
+              next: () => this.router.navigate(['/product']),
+              error: () => this.router.navigate(['/product'])
+            });
+        } else {
+          this.router.navigate(['/product']);
+        }
+
       },
       error: (error) => {
         console.log(error);
       }
     });
-  }
+}
 
   onProductPhotoChange(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -130,8 +162,9 @@ export class ProductFormComponent {
 
     this.selectedProductFile = file;
 
-    if (this.selectedProductPreview) URL.revokeObjectURL(this.selectedProductPreview);
-    this.selectedProductPreview = file ? URL.createObjectURL(file) : null;
+    if (file) {
+      this.selectedProductPreview = URL.createObjectURL(file);
+    }
   }
 
   incrementStock() {
@@ -145,4 +178,67 @@ export class ProductFormComponent {
       this.ProductForm.get('stock')?.setValue(current - 1);
     }
   }
+
+  uploadPhoto() {
+    if (!this.productId || !this.selectedProductFile) return;
+
+    this.uploading = true;
+
+    this.photoService
+      .uploadPhoto('product', this.productId, this.selectedProductFile)
+      .subscribe({
+        next: () => {
+          this.uploading = false;
+          this.selectedProductFile = null;
+          this.selectedProductPreview = null;
+          this.loadProduct(this.productId!);
+        },
+        error: (err) => {
+          this.uploading = false;
+          this.uploadError = err?.error?.message ?? 'Error subiendo foto';
+        }
+      });
+  }
+
+  deletePhoto(photoId: number) {
+    if (!this.productId) return;
+
+    const ok = confirm('¿Eliminar esta foto?');
+    if (!ok) return;
+
+    this.photoService.deletePhoto(photoId).subscribe({
+      next: () =>{ this.loadProduct(this.productId ? this.productId : 0);
+        this.selectedProductPreview = null;
+        this.selectedProductFile = null;
+    },
+      error: (err) => console.log(err),
+    });
+  }
+
+  getPhotoUrl(p: any): string {
+    const url = p?.url;
+    if (!url) return 'assets/nophoto.png';
+    return url.startsWith('http') ? url : environment.url + url;
+  }
+
+  getMainPhotoUrl(){
+    if (this.selectedProductPreview) return this.selectedProductPreview;
+
+    const url = this.selectedProduct?.photos?.length
+      ? this.selectedProduct.photos[0].url
+      : null;
+
+    if (!url) return null;
+
+    return url.startsWith('http') ? url : environment.url + url;
+  }
+
+  goToSlide(index: number) {
+    const carousel = document.querySelector('#productCarousel');
+    if (!carousel) return;
+
+    const bsCarousel = (window as any).bootstrap?.Carousel.getOrCreateInstance(carousel);
+    bsCarousel.to(index);
+  }
+
 }
