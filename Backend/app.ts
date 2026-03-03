@@ -18,6 +18,8 @@ import { photoRouter } from './scr/photo/photo.router.js';
 import { cityRouter } from './scr/city/city.router.js';
 import { provinceRouter } from './scr/province/province.router.js';
 import { countryRouter } from './scr/country/country.router.js';
+import { productRouter } from './scr/product/product.router.js';
+import { categoryRouter } from './scr/productCategory/productoCategory.router.js';
 
 const app = express();
 app.use(express.json());
@@ -52,6 +54,8 @@ app.use('/api/photo', photoRouter);
 app.use('/api/city', cityRouter)
 app.use('/api/province', provinceRouter)
 app.use('/api/country', countryRouter )
+app.use('/api/product', productRouter)
+app.use('/api/category', categoryRouter)
 
 await syncSchema() //never in production*/
 

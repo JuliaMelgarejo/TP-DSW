@@ -10,7 +10,7 @@ function sanitizePriceInput(req: Request, res: Response, next:NextFunction){
   req.body.sanitizedPrice = {
     date: req.body.date,
     value: req.body.value,
-    product: req.body.product,
+    productId: req.body.productId,
     id: req.body.id,
   }
   if (req.body.sanitizedPrice){
@@ -78,4 +78,14 @@ async function remove( req: Request, res: Response ){
   }
 }
 
-export { findAll, findOne, add, update, remove, sanitizePriceInput }
+async function findAllByProduct( req: Request, res: Response ){
+  try {
+    const productId = Number.parseInt(req.params.productId);
+    const prices = await em.find(Price, { product: productId });
+    res.status(200).json({ message: 'prices for product', data: prices });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+export { findAll, findOne, add, update, remove, sanitizePriceInput, findAllByProduct }

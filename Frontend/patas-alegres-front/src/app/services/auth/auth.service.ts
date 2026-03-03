@@ -33,7 +33,7 @@ export class AuthService {
     }
   }
 
-  getShelterIdToken(): number | null {
+  getShelterIdToken(): number | undefined {
     const decoded = this.getDecodedToken();
     const id = decoded?.shelterId;
     return id ;

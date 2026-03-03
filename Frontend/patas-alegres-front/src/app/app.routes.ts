@@ -28,6 +28,8 @@ import { RescueDetailComponent } from './components/rescue/rescue-detail/rescue-
 import { AnimalPageComponent } from './components/animal/animal-page/animal-page/animal-page.component.js';
 import { SignInShelterAccountComponent } from './components/sign-in/sign-in-shelter/sign-in-shelter-account.component.js';
 import { SignInShelterDetailsComponent } from './components/sign-in/sign-in-shelter/sign-in-shelter-details.component.js';
+import { ProductComponent } from './components/product/product.component.js';
+import { ProductFormComponent } from './components/product/product-form/product-form.component.js';
 
 export const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -38,7 +40,6 @@ export const routes: Routes = [
 
   { path: '',redirectTo: 'login',pathMatch: 'full' }, 
   {path: 'home', component: HomeComponent, canActivate:[authGuard]},
-
 
   {path: 'zone', component: ZoneComponent, canActivate:[authGuard]},
   {path: 'zone/create', component: ZoneFormComponent, canActivate:[authGuard]},
@@ -62,7 +63,6 @@ export const routes: Routes = [
   {path: 'breed/create', component: BreedFormComponent, canActivate:[authGuard]},
   {path: 'breed/:id', component: BreedDetailComponent, canActivate:[authGuard]},
 
-
   {path: 'vet', component: VetComponent, canActivate:[authGuard]},
   {path: 'vet/create', component: VetFormComponent, canActivate:[authGuard]},
   {path: 'vet/:id', component: VetDetailComponent,  canActivate:[authGuard]},
@@ -72,5 +72,10 @@ export const routes: Routes = [
   {path: 'rescue/:id', component:RescueDetailComponent, canActivate:[authGuard]},
 
   { path: 'adopt/:id', component: AdoptAnimalComponent, canActivate:[authGuard] },
-  { path: '**',redirectTo: 'login',pathMatch: 'full' }
+
+  { path: 'product', component: ProductComponent, canActivate: [authGuard] },
+  { path: 'product/create', component: ProductFormComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
+  { path: 'product/edit/:id', component: ProductFormComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
+
+  { path: '**', redirectTo: 'home', pathMatch: 'full' },
 ];

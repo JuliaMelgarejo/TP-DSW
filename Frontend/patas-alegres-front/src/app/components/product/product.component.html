@@ -1,0 +1,63 @@
+<div class="pa-page">
+  <div class="container-fluid px-3">
+
+    <h1 class="pa-title mb-4">Productos</h1>
+    <a class="mb-3 btn-primary btn" routerLink="/product/create">Nuevo producto</a>
+    <div *ngIf ="!products || products.length === 0" class="pa-muted">
+      No hay productos disponibles.
+    </div>
+    <div *ngIf ="products && products.length !== 0" class="pa-muted">
+      <div class="row g-3">
+        <div class="col-12 col-md-6 col-lg-4" *ngFor="let product of products">
+          <a
+            class="pa-card pa-card-hover d-block text-decoration-none"
+            style="color: inherit; overflow: hidden;"
+          >
+            <img
+              [src]="getProductPhotoUrl(product)"
+              [alt]="product?.name || 'Product'"
+              class="w-100 d-block"
+              style="height: 220px; object-fit: cover;"
+            />
+
+            <div class="pa-section">
+
+              <div class="fw-bold mb-2">
+                {{ product?.name || '—' }}
+              </div>
+              <div class="price-container">
+                <div *ngIf="product.crossed_out_price">
+                  <div class="price-row">
+                    <span class="old-price">${{ product.crossed_out_price }}</span>
+                    <span
+                      *ngIf="product.crossed_out_price"
+                      class="discount-badge"
+                    >
+                      {{
+                        Math.round(
+                          (1 - product.prices[0].amount / product.crossed_out_price) * 100
+                        )
+                      }}% OFF
+                    </span>
+                  </div>
+                </div>
+                <div class="price-label">
+                  <span class="current-price">
+                    $ {{ product.prices[0].amount || '—' }}
+                  </span>
+                </div>
+              </div>
+              <div>
+                <div *ngIf="this.auth.isShelter()">
+                  <button class="btn btn-secondary" routerLink="/product/edit/{{ product.id }}">Editar producto</button>
+                </div>
+              </div>
+
+            </div>
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
