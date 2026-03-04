@@ -9,6 +9,9 @@ export class OrderState extends BaseEntity {
   @Property({nullable: false, unique: true})
   type!: string
 
+  @Property({nullable: true})
+  description?: string
+
   @OneToMany(() => OrderStatus, orderStatus => orderStatus.orderState, {cascade: [Cascade.ALL]})
   orderStatus = new Collection<OrderStatus>(this)
 

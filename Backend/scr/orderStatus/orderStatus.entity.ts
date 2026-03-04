@@ -6,7 +6,7 @@ import { OrderState } from "../orderState/orderstate.entity.js";
 export class OrderStatus extends BaseEntity {
   [x: string]: any;
   
-  @Property({nullable: false, unique: true})
+  @Property({nullable: false})
   statusChangeDate!: Date
   
   @Property({ unique: true})

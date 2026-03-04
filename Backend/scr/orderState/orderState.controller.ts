@@ -12,7 +12,6 @@ function sanitizeOrderStateInput(req: Request, res: Response, next:NextFunction)
     animal: req.body.animal,
     person: req.body.person,
     orderState_date: req.body.orderState_date,
-    id: req.body.id,
   }
   if (req.body.sanitizedOrderState){
     Object.keys(req.body.sanitizedOrderState).forEach((key) => {

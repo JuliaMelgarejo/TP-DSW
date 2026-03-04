@@ -1,0 +1,151 @@
+<div class="pa-page">
+  <div class="container px-3" style="max-width: 1100px;">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <a class="btn btn-outline-secondary" routerLink="/orders/shelter" routerLinkActive="active">
+        Volver
+      </a>
+    </div>
+
+    <div *ngIf="loading" class="pa-muted">Cargando...</div>
+
+    <div *ngIf="!loading && order">
+
+      <div class="d-flex justify-content-between align-items-start gap-3 mb-3 flex-wrap">
+        <div>
+          <h2 class="pa-title mb-1">Pedido #{{ order.id }}</h2>
+          <div class="pa-muted">Fecha: {{ order.fecha | date:'dd/MM/yyyy HH:mm' }}</div>
+        </div>
+
+        <div class="text-end">
+          <div class="fw-bold" style="font-size: 22px;">$ {{ order.total }}</div>
+          <span class="badge" [ngClass]="getStatusBadgeClass(order.currentState)">
+            {{ order.currentState }}
+          </span>
+        </div>
+      </div>
+
+      <!-- GRID responsive -->
+      <div class="row g-3">
+
+        <!-- IZQUIERDA: datos cliente + cambiar estado -->
+        <div class="col-12 col-lg-5">
+          <div class="pa-card">
+            <div class="pa-section">
+
+              <div class="fw-bold mb-2">Cliente</div>
+
+              <div class="mb-2">
+                <div class="pa-muted">Nombre</div>
+                <div class="fw-semibold">{{ order.customer?.name || '—' }}</div>
+              </div>
+
+              <div class="mb-2">
+                <div class="pa-muted">Email</div>
+                <div class="fw-semibold">{{ order.customer?.email || '—' }}</div>
+              </div>
+
+              <div class="mb-3">
+                <div class="pa-muted">Teléfono</div>
+                <div class="fw-semibold">{{ order.customer?.phone || '—' }}</div>
+              </div>
+
+              <hr class="my-3" />
+
+              <div class="d-flex justify-content-between align-items-center gap-2">
+                <div>
+                  <div class="fw-bold">Cambiar estado</div>
+                  <div class="pa-muted" style="font-size: 13px;">
+                    Esto agrega un nuevo registro al historial.
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                  <select
+                    class="form-select form-select-sm"
+                    style="width: 190px;"
+                    [disabled]="saving || loadingStates || states.length === 0"
+                    (change)="changeState(($any($event.target)).value)"
+                  >
+                    <option value="" selected disabled>Elegir...</option>
+                    <option *ngFor="let s of states" [value]="s">{{ s }}</option>
+                  </select>
+
+                  <span *ngIf="saving" class="spinner-border spinner-border-sm"></span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Timeline -->
+          <div class="pa-card mt-3">
+            <div class="pa-section">
+              <div class="fw-bold mb-2">Historial de estados</div>
+
+              <div *ngIf="!order.timeline || order.timeline.length === 0" class="pa-muted">
+                Sin historial.
+              </div>
+
+              <div *ngIf="order.timeline && order.timeline.length > 0" class="d-flex flex-column gap-2">
+                <div *ngFor="let t of order.timeline" class="d-flex justify-content-between align-items-start gap-3">
+                  <div>
+                    <span class="badge me-2" [ngClass]="getStatusBadgeClass(t.type)">{{ t.type }}</span>
+                    <span class="pa-muted" style="font-size: 13px;">
+                      {{ t.motive || '—' }}
+                    </span>
+                  </div>
+
+                  <div class="pa-muted text-end" style="font-size: 13px; white-space: nowrap;">
+                    {{ t.date | date:'dd/MM/yyyy HH:mm' }}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- DERECHA: items (solo shelter) -->
+        <div class="col-12 col-lg-7">
+          <div class="pa-card">
+            <div class="pa-section">
+
+              <div class="fw-bold mb-2">Productos de tu refugio</div>
+
+              <div *ngIf="!order.items || order.items.length === 0" class="pa-muted">
+                Esta orden no tiene productos de tu refugio.
+              </div>
+
+              <div *ngIf="order.items && order.items.length > 0" class="d-flex flex-column gap-3">
+                <div class="d-flex gap-3" *ngFor="let it of order.items">
+
+                  <img
+                    [src]="getItemPhotoUrl(it)"
+                    [alt]="it?.product?.name || 'Producto'"
+                    style="width: 90px; height: 90px; object-fit: cover; border-radius: 10px;"
+                  />
+
+                  <div class="flex-grow-1">
+                    <div class="fw-bold">{{ it?.product?.name || '—' }}</div>
+                    <div class="pa-muted">Cantidad: <span class="fw-semibold">{{ it.qty }}</span></div>
+                    <div class="pa-muted">Subtotal: <span class="fw-semibold">$ {{ it.subtotal }}</span></div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div *ngIf="!loading && !order" class="pa-muted">
+      Pedido no encontrado.
+    </div>
+
+  </div>
+</div>

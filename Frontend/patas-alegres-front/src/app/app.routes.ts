@@ -36,6 +36,9 @@ import { AdoptListComponent } from './components/adopt-animal/adopt-list/adopt-l
 import { ShelterAdoptionDetailComponent } from './components/adopt-animal/shelter-adoption-detail/shelter-adoption-detail.component.js';
 import { ProductDetailComponent } from './components/product/product-detail/product-detail.component.js';
 import { CartComponent } from './components/cart/cart.component.js';
+import { OrderShelterComponent } from './components/order/order-shelter/order-shelter.component.js';
+import { OrderComponent } from './components/order/order.component.js';
+import { OrderShelterDetailComponent } from './components/order/order-shelter-detail/order-shelter-detail.component.js';
 
 export const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -85,6 +88,11 @@ export const routes: Routes = [
   { path: 'product/edit/:id', component: ProductFormComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
   { path: 'product/:id',component: ProductDetailComponent, canActivate: [authGuard] },
   { path: 'cart', component: CartComponent, canActivate: [authGuard] },
+
+  { path: 'order', component: OrderComponent, canActivate: [authGuard] },
+  { path: 'order/shelter/:id', component: OrderShelterDetailComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
+  { path: 'order/shelter', component: OrderShelterComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
+
 
   { path: 'my-adoptions', component: MyAdoptionsComponent, canActivate:[authGuard] },
   { path: 'my-adoptions/:id', component: MyAdoptionDetailComponent, canActivate:[authGuard] },
