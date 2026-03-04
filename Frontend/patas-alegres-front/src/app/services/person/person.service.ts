@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Person } from '../../models/person/person.model.js';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PersonService {
-  readonly API_URL = 'http://localhost:3000/api/person'
+  readonly API_URL = `${environment.apiUrl}/person`
 
   people: Person[] = [];
 
@@ -36,5 +37,9 @@ export class PersonService {
 
   searchPerson(docType: string, docNro: string){
     return this.http.get<{data: Person}>(`${this.API_URL}/${docType}/${docNro}`);
+  }
+
+  getDocumentTypes(){
+    return this.http.get<{ value: string, label: string }[]>(`${this.API_URL}/document-types`);
   }
 }
