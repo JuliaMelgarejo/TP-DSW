@@ -3,6 +3,8 @@ import { Request, Response, NextFunction } from 'express';
 import { orm } from '../zshare/db/orm.js';
 import { Order } from './order.entity.js';
 import { LineItemOrder } from '../line_item_order/line_item_order.entity.js';
+import { Product } from '../product/product.entity.js';
+import { Person } from '../person/person.entity.js';
 
 const em = orm.em;
 
@@ -12,7 +14,7 @@ function sanitizeOrderInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedOrder = {
     fecha: req.body.fecha,
     total: req.body.total,
-    id: req.body.id,
+    product: req.body.product,
   };
 
   Object.keys(req.body.sanitizedOrder).forEach(key => {
@@ -111,7 +113,8 @@ async function addLineItem(req: Request, res: Response) {
     const input = req.body.sanitizedLineItem;
     const item = em.create(LineItemOrder, {
       ...input,
-      order
+      order,
+      product: em.getReference(Product, input.product),
     });
 
     order.items.add(item);
@@ -140,6 +143,89 @@ async function removeLineItem(req: Request, res: Response) {
   }
 }
 
+
+async function checkout(req: Request, res: Response) {
+  try {
+    const personId = Number((req as any).user?.personId);
+    if (!personId) return res.status(401).json({ message: 'Token sin personId' });
+
+    const items = req.body?.items;
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: 'Items requeridos' });
+    }
+
+    // traer productos con precio activo (vos ya usás endDate null)
+    const productIds = items.map((i: any) => Number(i.productId));
+    const products = await em.find(
+      Product,
+      { id: { $in: productIds } as any },
+      {
+        populate: ['prices'],
+        populateWhere: { prices: { endDate: null } },
+      } as any
+    );
+
+    const productMap = new Map<number, any>();
+    for (const p of products) productMap.set(p.id as number, p);
+
+    // validar y calcular
+    let total = 0;
+
+    const order = em.create(Order, {
+      fecha: new Date(),
+      total: 0,
+      person: em.getReference(Person, personId),
+    });
+
+    for (const i of items) {
+      const productId = Number(i.productId);
+      const qty = Number(i.qty);
+
+      if (!productId || !qty || qty <= 0) {
+        return res.status(400).json({ message: 'Item inválido' });
+      }
+
+      const product = productMap.get(productId);
+      if (!product) return res.status(404).json({ message: `Producto ${productId} no existe` });
+
+      const activePrice = product.prices?.[0];
+      if (!activePrice) return res.status(400).json({ message: `Producto ${productId} sin precio activo` });
+
+      if (product.stock < qty) {
+        return res.status(400).json({ message: `Stock insuficiente para ${product.name}` });
+      }
+
+      const subtotal = activePrice.amount * qty;
+      total += subtotal;
+
+      const li = em.create(LineItemOrder, {
+        cantidad: qty,
+        fecha: new Date(),
+        subtotal,
+        order,
+        product: em.getReference(Product, productId),
+      });
+
+      order.items.add(li);
+    }
+
+    order.total = total;
+
+    await em.persistAndFlush(order);
+
+    // devolver orden completa
+    const created = await em.findOneOrFail(
+      Order,
+      { id: order.id },
+      { populate: ['items', 'items.product', 'person'] } as any
+    );
+
+    return res.status(201).json({ message: 'order created', data: created });
+  } catch (e: any) {
+    return res.status(500).json({ message: e.message });
+  }
+}
+
 export {
   findAll,
   findOne,
@@ -149,5 +235,6 @@ export {
   addLineItem,
   removeLineItem,
   sanitizeOrderInput,
-  sanitizeLineItemInput
+  sanitizeLineItemInput,
+  checkout
 };

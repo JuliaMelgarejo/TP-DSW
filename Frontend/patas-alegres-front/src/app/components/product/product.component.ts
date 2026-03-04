@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environment.js';
+import { CartService } from '../../services/Cart/cart-service.service.js';
 
 @Component({
   selector: 'app-product',
@@ -19,7 +20,7 @@ export class ProductComponent {
   totalProducts: number = 0;
   Math = Math;
 
-  constructor(public auth: AuthService, public productService: ProductService) 
+  constructor(public auth: AuthService, public productService: ProductService,   private cart: CartService) 
   {
   }
 
@@ -51,4 +52,14 @@ export class ProductComponent {
 
     return url.startsWith('http') ? url : environment.url + url;
   }
+  addToCart(product: Product) {
+    this.cart.add(product.id as number, 1);
+    alert('Producto agregado al carrito');
+  }
+
+  buyNow(product: Product) {
+    this.cart.clear();
+    this.cart.add(product.id as number, 1);
+  }
+  
 }
