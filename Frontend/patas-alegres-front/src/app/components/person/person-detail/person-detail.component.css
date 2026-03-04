@@ -1,56 +1,142 @@
-h1 {
-  font-size: 1.5em;
-  color: #333;
-  text-align: center;
-  margin-bottom: 20px;
+.price-stock-container {
+  max-width: 500px;
 }
 
-.form-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.form-fieldset {
+.form-row {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
-label {
-  font-weight: bold;
-  margin-bottom: 5px;
+.form-row label {
+  flex: 1;
 }
 
-input {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.input-wrapper {
+  flex: 1;
+  max-width: 250px;
 }
 
 .error {
   color: red;
-  font-size: 0.9em;
+  font-size: 0.85rem;
 }
 
-.form-submit {
-  grid-column: span 2;
+label{
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.image-upload-container {
+  width: 100%;
+  max-width: 364px;
+  height: 214px;
+  background-color: white;
+  border: 2px dashed var(--pa-border, #ddd);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  align-items: center;
 }
 
-button {
-  padding: 10px 20px;
-  color: #fff;
-  background-color: #007bff;
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.upload-btn {
+  z-index: 2;
+  padding: 8px 16px;
+  border-radius: 8px;
   border: none;
-  border-radius: 4px;
+  background-color: #0d6efd;
+  color: white;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.upload-btn:hover {
+  background-color: #0b5ed7;
+}
+
+.stock-group {
+  max-width: 200px;
+}
+
+.stock-btn {
+  color: var(--pa-primary);
+  border: 1px solid var(--pa-primary);
+  width: 40px;
+  font-weight: bold;
+  transition: 0.2s ease;
+}
+
+.stock-btn:hover {
+  background-color: var(--pa-primary-dark);
+}
+
+.stock-input {
+  border: 1px solid var(--pa-primary);
+  font-weight: 500;
+  color: var(--pa-primary-dark);
+  max-width: 4rem;
+}
+
+.stock-input::-webkit-outer-spin-button,
+.stock-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.stock-input {
+  -moz-appearance: textfield;
+}
+
+.cursor-pointer {
   cursor: pointer;
 }
 
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+.pa-icon-delete {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+  line-height: 18px;
+  padding: 0;
+}
+
+@media (min-width: 992px) {
+  .left-column {
+    padding-right: 2rem;
+    border-right: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: center;
+  }
+
+  .right-column {
+    padding-left: 2rem;
+  }
+
+  .limited-input{
+    max-width: 364px;
+  }
+
+  .center-content {
+    width: 100%;
+    max-width: 450px;
+    padding: 0 1rem;
+  }
 }

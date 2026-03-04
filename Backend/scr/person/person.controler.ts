@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { orm } from '../zshare/db/orm.js';
 import { Person } from './person.entity.js';
 import { UserRole } from '../common/enums/user-role.enum.js';
+import { DocumentType } from '../common/enums/document-type.enum.js';
+import { DocumentTypeLabels } from '../common/mappings/document-type.labels.js';
 
 const em = orm.em
 
@@ -27,6 +29,11 @@ async function findOne( req: Request, res: Response ){
 async function findOneByDoc( req: Request, res: Response ){
   try {
     const { doc_type, doc_nro } = req.params;
+
+    if (!Object.values(DocumentType).includes(doc_type as DocumentType)) {
+      return res.status(400).json({ message: 'Invalid document type' });
+    }
+
     const id = Number.parseInt(req.params.id);
     const person = await em.findOneOrFail(Person, { doc_type: doc_type, doc_nro: doc_nro });
     res.status(200).json({message: 'person data: ', data: person});
@@ -55,6 +62,7 @@ async function update( req: Request, res: Response ){
     await em.flush();
     res.status(200).json({ message: 'person updated', data: person });
   }catch (error: any) {
+    console.log('Error updating person: ', error);
     res.status(500).json({ message: error.message })
   }
 }
@@ -71,12 +79,6 @@ async function remove( req: Request, res: Response ){
 }
 
 function sanitizePersonInput(req: Request, res: Response, next: NextFunction) {
-  const role = req.body.role;
-
-  if (!Object.values(UserRole).includes(role)) {
-    return res.status(400).json({ message: 'Invalid role' });
-  }
-
   req.body.sanitizedPerson = {
     name: req.body.name,
     surname: req.body.surname,
@@ -84,7 +86,7 @@ function sanitizePersonInput(req: Request, res: Response, next: NextFunction) {
     doc_type: req.body.doc_type,
     email: req.body.email,
     phoneNumber: req.body.phoneNumber,
-    birthdate: req.body.birthdate ? new Date(req.body.birthdate) : null,
+    birthdate: req.body.birthdate,
     street: req.body.street,
     number_street: req.body.number_street,
     city: req.body.city,
@@ -102,4 +104,13 @@ function sanitizePersonInput(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-export { findAll, findOne, add, update, remove, findOneByDoc, sanitizePersonInput }
+function getDocumentTypes (req: Request, res: Response) {
+  const result = Object.values(DocumentType).map(type => ({
+    value: type,
+    label: DocumentTypeLabels[type]
+  }));
+
+  res.json(result);
+};
+
+export { findAll, findOne, add, update, remove, findOneByDoc, sanitizePersonInput, getDocumentTypes }

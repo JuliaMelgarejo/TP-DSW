@@ -6,15 +6,17 @@ import {
   update,
   remove,
   findOneByDoc,
-  sanitizePersonInput
+  sanitizePersonInput,
+  getDocumentTypes
 } from "./person.controler.js";
 import { validateToken } from "../validate-token/validate-token.routes.js";
 
 export const personRouter = Router();
 
-personRouter.get('/',validateToken ,findAll)
-personRouter.get('/:id',validateToken, findOne)
 personRouter.get('/:doc_type/:doc_nro', validateToken,sanitizePersonInput, findOneByDoc)
-personRouter.post('/', sanitizePersonInput, add)
+personRouter.get('/document-types', validateToken, getDocumentTypes);
+personRouter.get('/:id',validateToken, findOne)
+personRouter.get('/',validateToken ,findAll)
 personRouter.put('/:id',validateToken, sanitizePersonInput, update)
+personRouter.post('/', sanitizePersonInput, add)
 personRouter.delete('/:id', validateToken,sanitizePersonInput, remove)
