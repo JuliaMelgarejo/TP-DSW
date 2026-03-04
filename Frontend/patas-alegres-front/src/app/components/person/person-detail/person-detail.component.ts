@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Person } from '../../../models/person/person.model.js';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PersonService } from '../../../services/person/person.service.js';
 import { AuthService } from '../../../services/auth/auth.service.js';
 import { ErrorService } from '../../../services/errors/error.service.js';
@@ -16,7 +16,7 @@ import { City } from '../../../models/city/city.module.js';
 @Component({
   selector: 'app-person-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
   templateUrl: './person-detail.component.html',
   styleUrl: './person-detail.component.css'
 })
