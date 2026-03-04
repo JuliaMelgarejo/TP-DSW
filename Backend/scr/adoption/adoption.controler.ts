@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { Adoption } from './adoption.entity.js';
 import { orm } from '../zshare/db/orm.js';
+
+import { Adoption } from './adoption.entity.js';
 import { Animal } from '../animal/animal.entity.js';
 import { Person } from '../person/person.entity.js';
 import { AdoptionState } from '../adoptionState/adoptionState.entity.js';
@@ -90,39 +91,29 @@ function toMineListDto(a: any) {
   };
 }
 
+async function getState(type: string) {
+  return (
+    (await em.findOne(AdoptionState, { type })) ??
+    (await em.findOne(AdoptionState, { type: type.toLowerCase() }))
+  );
+}
+
 // ===========================
-// LISTS
+// ADMIN / DEBUG (si lo querés)
 // ===========================
 async function findAll(req: Request, res: Response) {
   try {
-    const adoption = await em.find(Adoption, { deleted_at: null as any });
-    res.status(200).json({ message: 'all adoptions: ', data: adoption });
+    const adoptions = await em.find(Adoption, {}, { populate: ['animal', 'person'] });
+    return res.status(200).json({ message: 'all adoptions', data: adoptions });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 }
 
-async function findOne(req: Request, res: Response) {
-  try {
-    const id = Number.parseInt(req.params.id);
-    if (Number.isNaN(id)) return res.status(400).json({ message: 'ID inválido' });
-
-    const adoption = await em.findOne(
-      Adoption,
-      { id, deleted_at: null as any },
-      { populate: ['animal', 'animal.photos', 'person', 'statuses', 'statuses.adoptionState'] }
-    );
-
-    if (!adoption) return res.status(404).json({ message: 'Solicitud no encontrada' });
-
-    res.status(200).json({ message: 'adoption data: ', data: adoption });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
+// ===========================
+// USER: LISTA "MIS ADOPCIONES" (no ve eliminadas)
+// ===========================
 async function findMine(req: Request, res: Response) {
-  // USER: no ve las eliminadas
   try {
     const personId = Number((req as any).user?.personId);
     if (!personId) return res.status(401).json({ message: 'Token sin personId' });
@@ -137,27 +128,29 @@ async function findMine(req: Request, res: Response) {
     );
 
     const data = adoptions.map(toMineListDto);
-    res.status(200).json({ message: 'my adoptions', data });
+    return res.status(200).json({ message: 'my adoptions', data });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 }
 
+// ===========================
+// SHELTER: LISTA "ADOPCIONES DE MI REFUGIO" (ve eliminadas)
+// ===========================
 async function findForShelter(req: Request, res: Response) {
-  // SHELTER: ve eliminadas
   try {
     const shelterId = Number((req as any).user?.shelterId);
     if (!shelterId) return res.status(401).json({ message: 'Token sin shelterId' });
 
     const adoptions = await em.find(
       Adoption,
-      { animal: { rescueClass: { shelters: shelterId as any } } } as any,
+      { animal: { rescueClass: { shelters: shelterId as any } } } as any, // <-- si es singular: shelter
       {
         populate: [
           'animal',
           'animal.photos',
           'animal.rescueClass',
-          'animal.rescueClass.shelters',
+          'animal.rescueClass.shelters', // <-- si es singular: shelter
           'person',
           'statuses',
           'statuses.adoptionState',
@@ -167,59 +160,61 @@ async function findForShelter(req: Request, res: Response) {
     );
 
     const data = adoptions.map(toShelterListDto);
-    res.status(200).json({ message: 'shelter adoptions', data });
+    return res.status(200).json({ message: 'shelter adoptions', data });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
-async function findOneForShelter(req: Request, res: Response) {
-  // SHELTER: puede ver el detalle aunque esté eliminada
-  try {
-    const id = Number(req.params.id);
-    if (Number.isNaN(id)) return res.status(400).json({ message: 'ID inválido' });
-
-    const shelterId = Number((req as any).user?.shelterId);
-    if (!shelterId) return res.status(401).json({ message: 'Token sin shelterId' });
-
-    const adoption = await em.findOne(
-      Adoption,
-      { id },
-      {
-        populate: [
-          'animal',
-          'animal.photos',
-          'animal.rescueClass',
-          'animal.rescueClass.shelters',
-          'person',
-          'statuses',
-          'statuses.adoptionState',
-        ],
-      }
-    );
-
-    if (!adoption) return res.status(404).json({ message: 'Solicitud no encontrada' });
-
-    const adoptionShelterId = (adoption as any).animal?.rescueClass?.shelters?.id;
-    if (Number(adoptionShelterId) !== shelterId) {
-      return res.status(403).json({ message: 'No autorizado' });
-    }
-
-    res.status(200).json({ message: 'adoption detail for shelter', data: adoption });
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 }
 
 // ===========================
-// CREATE: USER
+// SHELTER: DETALLE (usa shelterAdoptionGuard)
+// El guard deja req.adoption ya autorizado
+// ===========================
+async function findOneForShelter(req: Request, res: Response) {
+  try {
+    const adoption = (req as any).adoption;
+    if (!adoption) return res.status(500).json({ message: 'Guard no cargó adoption' });
+
+    return res.status(200).json({ message: 'adoption detail for shelter', data: adoption });
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+// ===========================
+// SHELTER: LISTA POR ANIMAL (usa shelterAnimalGuard)
+// ===========================
+async function findShelterByAnimal(req: Request, res: Response) {
+  try {
+    const animalId = Number(req.params.animalId);
+    if (!animalId) return res.status(400).json({ message: 'animalId inválido' });
+
+    // shelterAnimalGuard ya validó pertenencia del animal
+    const adoptions = await em.find(
+      Adoption,
+      { animal: animalId as any } as any,
+      {
+        populate: ['animal', 'animal.photos', 'person', 'statuses', 'statuses.adoptionState'],
+        orderBy: { adoption_date: 'DESC' as any },
+      }
+    );
+
+    const data = adoptions.map(toShelterListDto);
+    return res.status(200).json({ message: 'adoptions for animal', data });
+  } catch (error: any) {
+    return res.status(500).json({ message: error?.message ?? 'Internal error' });
+  }
+}
+
+// ===========================
+// USER: CREAR SOLICITUD (PENDIENTE)
 // ===========================
 async function add(req: Request, res: Response) {
   try {
     const animalId = Number.parseInt(req.params.animalId);
     const personId = Number((req as any).user?.personId);
 
-    if (Number.isNaN(animalId) || !animalId) return res.status(400).json({ message: 'animalId inválido' });
+    if (!animalId) return res.status(400).json({ message: 'animalId inválido' });
     if (!personId) return res.status(401).json({ message: 'Token sin personId' });
 
     const input = req.body.sanitizedAdoption ?? {};
@@ -243,10 +238,7 @@ async function add(req: Request, res: Response) {
 
     await em.persistAndFlush(adoption);
 
-    const pendingState =
-      (await em.findOne(AdoptionState, { type: 'PENDIENTE' })) ??
-      (await em.findOne(AdoptionState, { type: 'pendiente' }));
-
+    const pendingState = await getState('PENDIENTE');
     if (!pendingState) {
       return res.status(500).json({ message: 'No existe AdoptionState PENDIENTE precargado' });
     }
@@ -268,69 +260,51 @@ async function add(req: Request, res: Response) {
 
     return res.status(201).json({ message: 'adoption created', data: created });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 }
 
 // ===========================
-// LISTA: SHELTER por ANIMAL
-// ===========================
-async function findShelterByAnimal(req: Request, res: Response) {
-  try {
-    const animalId = Number(req.params.animalId);
-    if (Number.isNaN(animalId)) return res.status(400).json({ message: 'animalId inválido' });
-
-    const shelterId = Number((req as any).user?.shelterId);
-    if (!shelterId) return res.status(401).json({ message: 'Token sin shelterId' });
-
-    const adoptions = await em.find(
-      Adoption,
-      {
-        animal: {
-          id: animalId,
-          rescueClass: { shelters: shelterId as any },
-        } as any,
-      },
-      {
-        populate: ['animal', 'animal.photos', 'person', 'statuses', 'statuses.adoptionState'],
-        orderBy: { adoption_date: 'DESC' as any },
-      }
-    );
-
-    const data = adoptions.map(toShelterListDto);
-    return res.status(200).json({ message: 'adoptions for animal', data });
-  } catch (error: any) {
-    console.error(error);
-    return res.status(500).json({ message: error?.message ?? 'Internal error' });
-  }
-}
-
-// ===========================
-// UPDATE (no cambia)
+// USER: UPDATE (solo comments, y solo si es del user y no está eliminada)
 // ===========================
 async function update(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
-    if (Number.isNaN(id)) return res.status(400).json({ message: 'ID inválido' });
+    if (!id) return res.status(400).json({ message: 'ID inválido' });
 
-    const input = req.body.sanitizedAdoption;
-    const adoption = em.getReference(Adoption, id);
-    em.assign(adoption, input);
+    const personId = Number((req as any).user?.personId);
+    if (!personId) return res.status(401).json({ message: 'Token sin personId' });
+
+    const input = req.body.sanitizedAdoption ?? {};
+
+    const adoption = await em.findOne(
+      Adoption,
+      { id, deleted_at: null as any },
+      { populate: ['person'] }
+    );
+
+    if (!adoption) return res.status(404).json({ message: 'Solicitud no encontrada' });
+
+    if ((adoption as any).person?.id !== personId) {
+      return res.status(403).json({ message: 'No autorizado' });
+    }
+
+    em.assign(adoption, { comments: input.comments });
     await em.flush();
 
-    res.status(200).json({ message: 'adoption updated', data: adoption });
+    return res.status(200).json({ message: 'adoption updated', data: adoption });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 }
 
 // ===========================
-// SOFT DELETE: USER + STATUS CANCELADO
+// USER: SOFT DELETE + STATUS CANCELADO
 // ===========================
 async function remove(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
-    if (Number.isNaN(id)) return res.status(400).json({ message: 'ID inválido' });
+    if (!id) return res.status(400).json({ message: 'ID inválido' });
 
     const personId = Number((req as any).user?.personId);
     if (!personId) return res.status(401).json({ message: 'Token sin personId' });
@@ -347,16 +321,10 @@ async function remove(req: Request, res: Response) {
       return res.status(403).json({ message: 'No autorizado' });
     }
 
-    // 1) marcar baja lógica
     (adoption as any).deleted_at = new Date();
 
-    // 2) crear status CANCELADO (si existe el AdoptionState)
-    const cancelState =
-      (await em.findOne(AdoptionState, { type: 'CANCELADO' })) ??
-      (await em.findOne(AdoptionState, { type: 'cancelado' }));
-
+    const cancelState = await getState('CANCELADO');
     if (!cancelState) {
-      // si no existe precargado, devolvemos error claro
       return res.status(500).json({ message: 'No existe AdoptionState CANCELADO precargado' });
     }
 
@@ -372,19 +340,18 @@ async function remove(req: Request, res: Response) {
 
     return res.status(200).json({ message: 'adoption soft-deleted', data: { id } });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 }
 
 export {
   findAll,
-  findOne,
-  add,
-  update,
-  remove,
   findMine,
   findForShelter,
   findOneForShelter,
   findShelterByAnimal,
+  add,
+  update,
+  remove,
   sanitizeAdoptionInput,
 };
