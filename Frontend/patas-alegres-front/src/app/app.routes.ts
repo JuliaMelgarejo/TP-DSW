@@ -81,11 +81,12 @@ export const routes: Routes = [
   { path: 'product/create', component: ProductFormComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
   { path: 'product/edit/:id', component: ProductFormComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
 
-  { path: '**', redirectTo: 'home', pathMatch: 'full' },
+
   { path: 'my-adoptions', component: MyAdoptionsComponent, canActivate:[authGuard] },
   { path: 'my-adoptions/:id', component: MyAdoptionDetailComponent, canActivate:[authGuard] },
   { path: 'animal/:id/adoptions', component: AdoptListComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
   { path: 'shelter-adoptions', component: AdoptListComponent, canActivate:[authGuard], data: { roles: ['SHELTER'] } },
   { path: 'shelter-adoptions/:id', component: ShelterAdoptionDetailComponent, canActivate:[authGuard], data: { roles: ['SHELTER'] } },
+  { path: '**', redirectTo: 'home', pathMatch: 'full' },
   { path: '**',redirectTo: 'login',pathMatch: 'full' }
 ];
