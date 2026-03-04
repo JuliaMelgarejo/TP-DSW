@@ -3,12 +3,10 @@
 
     <h1 class="pa-title mb-4">Productos</h1>
 
-    <!-- Botón crear producto solo para shelter -->
     <a *ngIf="auth.isShelter()" class="mb-3 btn-primary btn" routerLink="/product/create">
       Nuevo producto
     </a>
 
-    <!-- Sin productos -->
     <div *ngIf="!products || products.length === 0" class="pa-muted">
       No hay productos disponibles.
     </div>
@@ -63,23 +61,8 @@
 
               </div>
 
-              <!-- BOTONES -->
               <div class="mt-3">
 
-                <!-- USER -->
-                <div *ngIf="!auth.isShelter()" class="d-flex gap-2">
-
-                <button class="btn btn-primary" (click)="$event.stopPropagation(); addToCart(product)">
-                  Agregar al carrito
-                </button>
-
-                <button class="btn btn-success" (click)="$event.stopPropagation(); buyNow(product)" routerLink="/cart">
-                  Comprar ahora
-                </button>
-
-                </div>
-
-                <!-- SHELTER -->
                 <div *ngIf="auth.isShelter()">
 
                   <button
