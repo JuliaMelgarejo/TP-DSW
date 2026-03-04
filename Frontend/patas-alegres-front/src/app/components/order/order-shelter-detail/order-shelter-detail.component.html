@@ -61,15 +61,20 @@
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
-                  <select
+                    <select
                     class="form-select form-select-sm"
-                    style="width: 190px;"
-                    [disabled]="saving || loadingStates || states.length === 0"
+                    style="width: 220px;"
+                    [disabled]="saving "
                     (change)="changeState(($any($event.target)).value)"
-                  >
-                    <option value="" selected disabled>Elegir...</option>
-                    <option *ngFor="let s of states" [value]="s">{{ s }}</option>
-                  </select>
+                    >
+                    <option value="" selected disabled>
+                        {{ loadingStates ? 'Cargando...' : (states.length === 0 ? 'Sin estados en BD' : 'Elegir...') }}
+                    </option>
+
+                    <option *ngFor="let s of states" [value]="s.type">
+                        {{ s.type }} <span *ngIf="s.description">— {{ s.description }}</span>
+                    </option>
+                    </select>   
 
                   <span *ngIf="saving" class="spinner-border spinner-border-sm"></span>
                 </div>

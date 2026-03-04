@@ -25,7 +25,7 @@ export class OrderService {
   }
 
     
-  getAll() {
+  getOrderStates() {
     return this.http.get<any>(`${this.baseUrl}/api/orderState`);
   }
 }

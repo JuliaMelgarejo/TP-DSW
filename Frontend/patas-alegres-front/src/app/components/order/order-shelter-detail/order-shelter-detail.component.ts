@@ -17,7 +17,7 @@ export class OrderShelterDetailComponent {
 
   saving = false;
 
-  states: string[] = [];
+  states: { id: number; type: string; description?: string }[] = [];
   loadingStates = true;
   BACKEND_BASE = environment.url;
 
@@ -87,4 +87,42 @@ export class OrderShelterDetailComponent {
     if (t === 'CANCELADO') return 'text-bg-danger';
     return 'text-bg-dark';
   }
+
+  loadStates() {
+  this.loadingStates = true;
+
+  // ✅ si usás Opción A:
+  // this.orderStateService.getAll().subscribe({
+
+  // ✅ si usás Opción B:
+  this.orderService.getOrderStates().subscribe({
+    next: (res) => {
+      const data = res?.data;
+      console.log('orderState response:', res);
+
+      if (!Array.isArray(data)) {
+        this.states = [];
+        this.loadingStates = false;
+        return;
+      }
+
+      this.states = data
+        .map((s: any) => ({
+          id: Number(s.id),
+          type: String(s.type || '').toUpperCase(),
+          description: s.description ?? ''
+        }))
+        .filter((s: any) => !!s.type);
+
+      this.loadingStates = false;
+      console.log('states parsed:', this.states);
+    },
+    error: (err) => {
+      console.log('orderState error:', err);
+      this.states = [];
+      this.loadingStates = false;
+    }
+  });
+}
+  
 }
