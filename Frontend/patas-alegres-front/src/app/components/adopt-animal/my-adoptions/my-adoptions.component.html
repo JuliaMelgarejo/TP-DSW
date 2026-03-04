@@ -1,0 +1,76 @@
+<div class="pa-page">
+  <div class="container-fluid px-3">
+
+    <!-- HEADER centrado -->
+    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+      <div class="text-center flex-grow-1">
+        <div class="pa-h2 mb-1">Lista de solicitudes realizadas</div>
+        <div class="pa-muted pa-small">Tus pedidos de adopción</div>
+      </div>
+
+      <a class="pa-btn pa-btn-outline" routerLink="/home">Volver</a>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="pa-card pa-section">
+      <div class="pa-muted">Cargando...</div>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="!loading && errMsg" class="pa-card pa-section">
+      <div class="pa-alert pa-alert-danger">{{ errMsg }}</div>
+    </div>
+
+    <!-- Empty -->
+    <div *ngIf="!loading && !errMsg && items.length === 0" class="pa-card pa-section">
+      <div class="pa-muted">Todavía no realizaste solicitudes.</div>
+    </div>
+
+    <!-- GRID -->
+    <div *ngIf="!loading && !errMsg && items.length > 0" class="row g-3">
+
+      <div class="col-12 col-md-6 col-lg-4" *ngFor="let a of items">
+
+        <button
+          type="button"
+          class="pa-card pa-card-hover d-block text-start w-100"
+          (click)="goDetail(a.id)"
+          style="color: inherit; overflow: hidden; padding: 0; border: none;">
+
+          <!-- Imagen -->
+          <img
+            [src]="getPhoto(a)"
+            [alt]="a?.animal?.name || 'Animal'"
+            class="w-100 d-block"
+            style="height: 220px; object-fit: cover;"
+          />
+
+          <!-- Contenido -->
+          <div class="pa-section">
+
+            <div class="fw-bold mb-2">
+              Nombre: {{ a?.animal?.name || '—' }}
+            </div>
+
+            <div class="pa-muted pa-small">Estado</div>
+            <div class="fw-semibold mb-2">
+              {{ a?.currentState ?? 'PENDIENTE' }}
+            </div>
+
+            <div class="pa-muted pa-small">Fecha de pedido</div>
+            <div class="fw-semibold mb-2">
+              {{ a?.adoption_date ? (a.adoption_date | date:'dd/MM/yyyy') : '—' }}
+            </div>
+
+            <div class="mt-2 fw-bold" style="color: var(--pa-primary-dark);">
+              Ver detalle →
+            </div>
+
+          </div>
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+</div>

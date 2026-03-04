@@ -13,9 +13,9 @@
       <!-- Botones desktop -->
       <div class="d-none d-lg-flex gap-2">
         <a class="pa-btn pa-btn-outline" routerLink="/animal">Volver</a>
-        <a class="pa-btn pa-btn-primary" [routerLink]="['/adopt', selectedAnimal.id]">
-          Interesado en adoptar
-        </a>
+          <button type="button" class="pa-btn pa-btn-primary" (click)="openAdoptModal()">
+            Interesado en adoptar
+          </button>
       </div>
     </div>
 
@@ -157,13 +157,18 @@
          ====================== -->
     <div class="d-lg-none d-flex gap-2 mt-3">
       <a class="pa-btn pa-btn-outline flex-shrink-0" routerLink="/animal">Volver</a>
-      <a class="pa-btn pa-btn-primary w-100" [routerLink]="['/adopt', selectedAnimal.id]">
+      <button type="button" class="pa-btn pa-btn-primary w-100" (click)="openAdoptModal()">
         Interesado en adoptar
-      </a>
+      </button>
     </div>
 
   </div>
 </div>
+
+<app-adopt-modal
+  *ngIf="selectedAnimal"
+  [animalId]="selectedAnimal.id">
+</app-adopt-modal>
 
 <ng-template #loadingTpl>
   <div class="pa-page">

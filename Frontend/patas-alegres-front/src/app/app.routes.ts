@@ -30,6 +30,10 @@ import { SignInShelterAccountComponent } from './components/sign-in/sign-in-shel
 import { SignInShelterDetailsComponent } from './components/sign-in/sign-in-shelter/sign-in-shelter-details.component.js';
 import { ProductComponent } from './components/product/product.component.js';
 import { ProductFormComponent } from './components/product/product-form/product-form.component.js';
+import { MyAdoptionsComponent } from './components/adopt-animal/my-adoptions/my-adoptions.component.js';
+import { MyAdoptionDetailComponent } from './components/adopt-animal/my-adoption-detail/my-adoption-detail.component.js';
+import { AdoptListComponent } from './components/adopt-animal/adopt-list/adopt-list.component.js';
+import { ShelterAdoptionDetailComponent } from './components/adopt-animal/shelter-adoption-detail/shelter-adoption-detail.component.js';
 
 export const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -78,4 +82,10 @@ export const routes: Routes = [
   { path: 'product/edit/:id', component: ProductFormComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
 
   { path: '**', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'my-adoptions', component: MyAdoptionsComponent, canActivate:[authGuard] },
+  { path: 'my-adoptions/:id', component: MyAdoptionDetailComponent, canActivate:[authGuard] },
+  { path: 'animal/:id/adoptions', component: AdoptListComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
+  { path: 'shelter-adoptions', component: AdoptListComponent, canActivate:[authGuard], data: { roles: ['SHELTER'] } },
+  { path: 'shelter-adoptions/:id', component: ShelterAdoptionDetailComponent, canActivate:[authGuard], data: { roles: ['SHELTER'] } },
+  { path: '**',redirectTo: 'login',pathMatch: 'full' }
 ];

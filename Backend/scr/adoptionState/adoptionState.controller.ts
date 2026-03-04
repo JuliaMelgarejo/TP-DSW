@@ -25,12 +25,23 @@ function sanitizeAdoptionStateInput(req: Request, res: Response, next:NextFuncti
   next();
 }
 
-async function findAll( req: Request, res: Response ){
-  try{
-    const adoptionState = await em.find(AdoptionState, {});
-    res.status(200).json({message: 'all adoptionStates: ', data: adoptionState});
-  } catch (error: any){
-    res.status(500).json({message: error.message});
+async function findAll(req: Request, res: Response) {
+  try {
+    const role = String((req as any).user?.role ?? '').toUpperCase();
+
+    // Si es shelter, no devolver CANCELADO
+    const where =
+      role === 'SHELTER'
+        ? ({ type: { $ne: 'CANCELADO' } } as any)
+        : ({} as any);
+
+    const adoptionState = await em.find(AdoptionState, where, {
+      orderBy: { type: 'ASC' as any },
+    });
+
+    res.status(200).json({ message: 'all adoptionStates', data: adoptionState });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
   }
 }
 

@@ -20,6 +20,9 @@ export class Adoption extends BaseEntity{
 
   @Property({nullable: false})
   adoption_date!: Date
+  
+  @Property({ nullable: true })
+  deleted_at?: Date;
 
   @ManyToOne(() => Animal, {nullable: false})
   animal!: Rel<Animal>;
@@ -28,5 +31,5 @@ export class Adoption extends BaseEntity{
   person!: Rel<Person>;
 
   @OneToMany(() => AdoptionStatus, adoptionStatus => adoptionStatus.adoption, { cascade: [Cascade.ALL] })
-  adoptions = new Collection<Adoption>(this)
+  statuses = new Collection<AdoptionStatus>(this)
 }

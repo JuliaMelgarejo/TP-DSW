@@ -1,0 +1,53 @@
+<div class="modal fade pa-modal" [id]="modalId" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered pa-modal-dialog">
+    <div class="modal-content pa-card pa-modal-content">
+
+      <div class="modal-header pa-modal-header">
+        <div>
+          <div class="pa-h3 mb-0">Solicitud de adopción</div>
+          <div class="pa-muted pa-small">Dejá un comentario opcional para el refugio</div>
+        </div>
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body pa-section">
+        <label class="pa-small pa-muted mb-2 d-block">Comentario (opcional)</label>
+
+        <textarea
+          class="pa-input w-100"
+          rows="4"
+          [(ngModel)]="comments"
+          placeholder="Ej: tengo patio, horarios disponibles, experiencia con mascotas..."></textarea>
+
+        <!-- Feedback -->
+        <div *ngIf="errMsg" class="pa-alert pa-alert-danger mt-3">
+          {{ errMsg }}
+        </div>
+
+        <div *ngIf="okMsg" class="pa-alert pa-alert-success mt-3">
+          {{ okMsg }}
+        </div>
+      </div>
+
+      <div class="modal-footer pa-modal-footer">
+        <button
+          type="button"
+          class="pa-btn pa-btn-outline"
+          data-bs-dismiss="modal"
+          [disabled]="loading">
+          Cancelar
+        </button>
+
+        <button
+          type="button"
+          class="pa-btn pa-btn-primary"
+          (click)="submit()"
+          [disabled]="loading">
+          {{ loading ? 'Enviando...' : 'Enviar solicitud' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
