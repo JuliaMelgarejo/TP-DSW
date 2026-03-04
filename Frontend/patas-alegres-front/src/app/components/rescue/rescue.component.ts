@@ -96,7 +96,7 @@ export class RescueComponent {
       comments: formData.comments ?? '',
       street: formData.street,
       number_street: Number(formData.number_street),
-      city: Number(formData.cityId),
+      city: Number(formData.city),
       shelters: shelterId,
       animals: this.animals.map(a => ({
         name: a.name,

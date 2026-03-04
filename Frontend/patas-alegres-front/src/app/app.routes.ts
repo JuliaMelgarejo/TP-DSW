@@ -59,6 +59,7 @@ export const routes: Routes = [
   {path: 'shelter', component: ShelterComponent, canActivate:[authGuard]},
   {path: 'shelter/create', component: ShelterFormComponent, canActivate:[authGuard]},
   {path: 'shelter/:id', component: ShelterDetailComponent, canActivate:[authGuard]},
+  {path: 'my-shelter', component: ShelterDetailComponent, canActivate:[authGuard]},
 
   {path: 'person', component: PersonComponent, canActivate:[authGuard], data: { roles: ['ADMIN'] }},
   {path: 'person/create', component: PersonFormComponent, canActivate:[authGuard]},

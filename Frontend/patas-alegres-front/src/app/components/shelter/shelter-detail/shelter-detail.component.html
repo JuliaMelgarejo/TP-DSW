@@ -1,28 +1,103 @@
-<div class="card" style="width: fit-content;">
-  <div class="card-body" *ngIf="selectedShelter" id="{{ selectedShelter?.id }}">
-    <form [formGroup]="shelterForm" (ngSubmit)="updateShelter()">
-      <fieldset>
-        <label for="name" class="p-3">Nombre:</label>
-        <input type="text" id="shelter-name" formControlName="name">
+<div class="pa-page">
+  <div class="pa-container">
+    <div class="pa-card pa-section pa-panel">
 
-        <label for="name" class="p-3">Direccion:</label>
-        <input type="text" id="shelter-address" formControlName="address">
+      <div class="mb-3 btn-header-container">
+        <div>
+          <div class="pa-h3 mb-0">Mi refugio</div>
+          <div class="pa-muted pa-small">Modificá los datos del refugio</div>
+        </div>
+        <div>
+          <button routerLink="/profile" class="btn btn-secondary">
+            Modificar mi perfil
+          </button>
+        </div>
+      </div>
 
-        <label for="name" class="p-3">Capacidad maxima:</label>
-        <input type="number" id="shelter-max_capacity" formControlName="max_capacity">
+      <form [formGroup]="shelterForm" (submit)="updateShelter()" class="form-container">
+        <div class="row g-3">
+          <div class="col-12 col-lg-6 left-column">
+            <div calss="center-content">
+              <div class="form-fieldset mb-3 d-flex flex-column rounded">
+                <label>Nombre:</label>
+                <input type="text" formControlName="name">
+                <p class="error" *ngIf="shelterForm.get('name')?.invalid && shelterForm.get('name')?.touched">El nombre es obligatorio</p>
+              </div>
 
-        <label for="zone" class="p-3">Zona:</label>
-        <select id="shelter-zone" formControlName="zone">
-          <option *ngFor="let zone of zones" [ngValue]="zone">{{ zone.name }}</option>
-        </select>
+              <div class="form-fieldset mb-3 d-flex flex-column rounded">
+                <label>Teléfono:</label>
+                <input type="text" formControlName="phoneNumber">
+                <p class="error" *ngIf="shelterForm.get('phoneNumber')?.invalid && shelterForm.get('phoneNumber')?.touched">El teléfono es obligatorio</p>
+              </div>
 
-        <p class="card-text">
-          UpdatedAt: {{ selectedShelter?.updatedAt }}<br>
-          CreatedAt: {{ selectedShelter?.createdAt }}<br>
-        </p>
+              <div class="form-fieldset mb-3 d-flex flex-column rounded">
+                <label>Matrícula Veterinaria:</label>
+                <input type="text" formControlName="tuitionVet">
+                <p class="error" *ngIf="shelterForm.get('tuitionVet')?.invalid && shelterForm.get('tuitionVet')?.touched">La matrícula es obligatoria</p>
+              </div>
 
-        <button type="submit" class="btn btn-primary">Actualizar refugio</button>
-      </fieldset>
-    </form>
+              <div class="form-fieldset mb-3 d-flex flex-column rounded">
+                <label>Capacidad máxima:</label>
+                <input type="number" formControlName="max_capacity">
+                <p class="error" *ngIf="shelterForm.get('max_capacity')?.invalid && shelterForm.get('max_capacity')?.touched">La capacidad es obligatoria</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-6 mt-3 mt-lg-0 right-column pt-lg-1">
+            <!-- PAIS -->
+            <div class="mb-4">
+              <label for="country">País</label>
+              <select formControlName="country" (change)="onCountryChange()" class="w-100">
+                <option [ngValue]="null" disabled selected>Seleccione un país</option>
+                <option *ngFor="let country of countries" [value]="country.id">
+                  {{ country.name }}
+                </option>
+              </select>
+            </div>
+
+            <!-- PROVINCIA -->
+            <div class="mb-4">
+              <label for="country">Provincia</label>
+              <select formControlName="province" (change)="onProvinceChange()" class="w-100">
+                <option [ngValue]="null" disabled selected>Seleccione una provincia</option>
+                <option *ngFor="let province of provinces" [value]="province.id">
+                  {{ province.name }}
+                </option>
+              </select>
+            </div>
+
+              <!-- CIUDAD -->
+            <div class="mb-4">
+              <label for="country">Ciudad</label>
+              <select formControlName="city" class="w-100">
+                <option [ngValue]="null" disabled selected>Seleccione una ciudad</option>
+                <option *ngFor="let city of cities" [value]="city.id">
+                  {{ city.name }}
+                </option>
+              </select>
+              <p class="error" *ngIf="shelterForm.get('city')?.invalid && shelterForm.get('city')?.touched">La ciudad es obligatoria</p>
+            </div>
+
+            <div class="form-fieldset mb-3 d-flex flex-column rounded">
+              <label>Calle:</label>
+              <input type="text" formControlName="street">
+              <p class="error" *ngIf="shelterForm.get('street')?.invalid && shelterForm.get('street')?.touched">La calle es obligatoria</p>
+            </div>
+
+            <div class="form-fieldset mb-3 d-flex flex-column rounded">
+              <label>Número:</label>
+              <input type="number" formControlName="streetNumber">
+              <p class="error" *ngIf="shelterForm.get('streetNumber')?.invalid && shelterForm.get('streetNumber')?.touched">El número es obligatorio</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-submit">
+          <button type="submit" [disabled]="shelterForm.invalid" class="btn btn-primary w-100">
+            Actualizar Refugio
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
