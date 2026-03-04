@@ -62,6 +62,10 @@ export class AdoptionService {
   deleteAdoption(id: number){
     return this.http.delete<{message: string, data: Adoption}>(`${this.API_URL}/adoption/${id}`);
   }
+
+  softDeleteAdoption(id: number) {
+  return this.http.delete<{ message: string }>(`${this.API_URL}/adoption/${id}`);
+  }
   
   getMyAdoptions() {
   return this.http.get<{ message: string; data: any[] }>(`${this.API_URL}/adoption/me`);
@@ -70,5 +74,7 @@ export class AdoptionService {
   getAdoptionDetail(id: number) {
     return this.http.get<{ message: string; data: any }>(`${this.API_URL}/adoption/${id}`);
   }
+
+  
 
 }

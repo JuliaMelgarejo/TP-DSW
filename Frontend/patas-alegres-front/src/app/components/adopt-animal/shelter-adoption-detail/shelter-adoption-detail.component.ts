@@ -200,4 +200,9 @@ export class ShelterAdoptionDetailComponent {
         },
       });
   }
+
+  isCancelled(): boolean {
+  const state = (this.item?.currentState ?? '').toUpperCase();
+  return !!this.item?.deleted_at || !!this.item?.isDeleted || state === 'CANCELADO' || state === 'CANCELADA';
+}
 }

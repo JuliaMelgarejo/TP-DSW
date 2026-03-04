@@ -20,6 +20,9 @@ export class Adoption extends BaseEntity{
 
   @Property({nullable: false})
   adoption_date!: Date
+  
+  @Property({ nullable: true })
+  deleted_at?: Date;
 
   @ManyToOne(() => Animal, {nullable: false})
   animal!: Rel<Animal>;
