@@ -32,7 +32,7 @@ export class RescueFormComponent implements OnInit {
   // Form SOLO datos rescate
   rescueForm = new FormGroup({
     rescue_date: new FormControl('', { validators: [Validators.required] }),
-    cityId: new FormControl('', { validators: [Validators.required] }),
+    city: new FormControl('', { validators: [Validators.required] }),
     street: new FormControl('', { validators: [Validators.required] }),
     number_street: new FormControl('', { validators: [Validators.required] }),
     description: new FormControl(''),
@@ -63,7 +63,7 @@ export class RescueFormComponent implements OnInit {
     this.selectedProvince = 0;
     this.provinces = [];
     this.cities = [];
-    this.rescueForm.patchValue({ cityId: '' });
+    this.rescueForm.patchValue({ city: '' });
 
     if (!this.selectedCountry || this.selectedCountry === 0) return;
 
@@ -78,7 +78,7 @@ export class RescueFormComponent implements OnInit {
   onProvinceChange(): void {
     // reset ciudades
     this.cities = [];
-    this.rescueForm.patchValue({ cityId: '' });
+    this.rescueForm.patchValue({ city: '' });
 
     if (!this.selectedProvince || this.selectedProvince === 0) return;
 
@@ -104,7 +104,7 @@ export class RescueFormComponent implements OnInit {
       comments: v.comments ?? '',
       street: v.street,
       number_street: v.number_street,
-      cityId: Number(v.cityId),
+      city: Number(v.city),
     };
 
     if (!v.number_street || Number.isNaN(Number(v.number_street))) {

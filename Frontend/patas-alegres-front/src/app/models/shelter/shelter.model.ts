@@ -11,10 +11,10 @@ export class Shelter {
   streetNumber?: number;
   max_capacity: number;
   zone: Zone;
-  cityId?: number;
+  city!: number;
   rescues: Rescue[] = [];
 
-  constructor(name: string, phoneNumber: string, tuitionVet: string, address: string, street: string, streetNumber: number, max_capacity: number, zone: Zone, cityId: number, rescues: Rescue[] = [], id?: number){
+  constructor(name: string, phoneNumber: string, tuitionVet: string, address: string, street: string, streetNumber: number, max_capacity: number, zone: Zone, city: number, rescues: Rescue[] = [], id?: number){
     this.name = name;
     this.phoneNumber = phoneNumber;
     this.tuitionVet = tuitionVet;
@@ -23,7 +23,7 @@ export class Shelter {
     this.streetNumber = streetNumber;
     this.max_capacity = max_capacity;
     this.zone = zone;
-    this.cityId = cityId;
+    this.city = city;
     this.rescues = rescues;
     this.id = id;
   }

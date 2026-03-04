@@ -87,7 +87,7 @@
       <div class="fw-bold mb-1">Ciudad (Zona de rescate)</div>
       <select
         class="pa-input w-100"
-        formControlName="cityId"
+        formControlName="city"
         [disabled]="!selectedProvince"
       >
         <option value="" selected>Seleccione una ciudad</option>
@@ -97,7 +97,7 @@
       </select>
 
       <div class="text-danger small"
-           *ngIf="rescueForm.get('cityId')?.touched && rescueForm.get('cityId')?.invalid">
+           *ngIf="rescueForm.get('city')?.touched && rescueForm.get('city')?.invalid">
         Requerido
       </div>
     </div>

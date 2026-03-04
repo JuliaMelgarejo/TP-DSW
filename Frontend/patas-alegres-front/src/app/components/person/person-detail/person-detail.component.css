@@ -118,6 +118,12 @@ label{
   padding: 0;
 }
 
+.btn-header-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 @media (min-width: 992px) {
   .left-column {
     padding-right: 2rem;

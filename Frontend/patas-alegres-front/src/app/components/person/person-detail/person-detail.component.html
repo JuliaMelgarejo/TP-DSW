@@ -1,9 +1,16 @@
 <div class="pa-page">
   <div class="pa-container">
     <div class="pa-card pa-section pa-panel">
-      <div class="mb-3">
-        <div class="pa-h3 mb-0">Mi perfil</div>
-        <div class="pa-muted pa-small">Completá tus datos personales</div>
+      <div class="mb-3 btn-header-container">
+        <div>
+          <div class="pa-h3 mb-0">Mi perfil</div>
+          <div class="pa-muted pa-small">Completá tus datos personales</div>
+        </div>
+        <div *ngIf="this.auth.isShelter()">
+          <button routerLink="/my-shelter" class="btn btn-secondary">
+            Modificar mi refugio
+          </button>
+        </div>
       </div>
       <form [formGroup]="PersonForm" (submit)="updatePerson()" class="form-container">
         <div class="row g-3">
@@ -53,7 +60,7 @@
               <input type="date" id="person-birthdate" formControlName="birthdate">
               <p class="error" *ngIf="PersonForm.get('birthdate')?.invalid && PersonForm.get('birthdate')?.touched">La fecha de nacimiento es obligatoria</p>
             </div>
-            
+
             <!-- PAIS -->
             <div class="mb-4">
               <label for="country">País</label>
