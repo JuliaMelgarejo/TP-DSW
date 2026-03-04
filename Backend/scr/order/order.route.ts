@@ -12,16 +12,5 @@ orderRouter.get('/:id', validateToken, findOne);
 orderRouter.post('/', validateToken, sanitizeOrderInput, add);
 orderRouter.put('/:id', validateToken, sanitizeOrderInput, update);
 orderRouter.delete('/:id', validateToken, remove);
-// LineItems dentro de Pedido
-orderRouter.post(
-  '/:id/items',
-  validateToken,
-  sanitizeLineItemInput,
-  addLineItem
-);
-
-orderRouter.delete(
-  '/:id/items/:itemId',
-  validateToken,
-  removeLineItem
-);
+orderRouter.post('/:id/items',validateToken, sanitizeLineItemInput, addLineItem);
+orderRouter.delete('/:id/items/:itemId',validateToken,removeLineItem);

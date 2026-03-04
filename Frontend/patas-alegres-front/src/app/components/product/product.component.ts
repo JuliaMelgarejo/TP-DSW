@@ -52,14 +52,6 @@ export class ProductComponent {
 
     return url.startsWith('http') ? url : environment.url + url;
   }
-  addToCart(product: Product) {
-    this.cart.add(product.id as number, 1);
-    alert('Producto agregado al carrito');
-  }
 
-  buyNow(product: Product) {
-    this.cart.clear();
-    this.cart.add(product.id as number, 1);
-  }
   
 }
