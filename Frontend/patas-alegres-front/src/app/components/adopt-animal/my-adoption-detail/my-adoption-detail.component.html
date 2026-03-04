@@ -47,6 +47,19 @@
         <div class="pa-muted">{{ item?.comments || '—' }}</div>
       </div>
 
+      <button
+        type="button"
+        class="pa-btn pa-btn-outline"
+        (click)="softDelete()"
+        [disabled]="deleting"
+      >
+        {{ deleting ? 'Eliminando...' : 'Eliminar solicitud' }}
+      </button>
+
+      <div *ngIf="deleteErrMsg" class="pa-card pa-section" style="border-color: var(--pa-danger);">
+        <div class="pa-muted">{{ deleteErrMsg }}</div>
+      </div>
+
     </div>
 
   </div>

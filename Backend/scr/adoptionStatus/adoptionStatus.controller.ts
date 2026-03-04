@@ -78,12 +78,27 @@ async function addStatusForShelter(req: Request, res: Response) {
     const adoption = await em.findOneOrFail(
       Adoption,
       { id: adoptionId },
-      { populate: ['animal', 'animal.rescueClass', 'animal.rescueClass.shelters'] }
+      { populate: ['animal', 'animal.rescueClass', 'animal.rescueClass.shelters', 'statuses', 'statuses.adoptionState'] }
     );
 
     const adoptionShelterId = Number((adoption as any).animal?.rescueClass?.shelters?.id);
     if (adoptionShelterId !== shelterId) {
       return res.status(403).json({ message: 'No autorizado' });
+    }
+
+        // si está soft deleted → no se puede cambiar
+    if ((adoption as any).deleted_at) {
+      return res.status(409).json({ message: 'La solicitud está CANCELADA. No se puede modificar.' });
+    }
+
+    // si el último estado es CANCELADO → no se puede cambiar
+    const statuses = (adoption as any).statuses?.getItems ? (adoption as any).statuses.getItems() : ((adoption as any).statuses ?? []);
+    const latest = [...statuses].sort(
+      (x: any, y: any) => new Date(y?.statusChangeDate ?? 0).getTime() - new Date(x?.statusChangeDate ?? 0).getTime()
+    )[0];
+
+    if (latest?.adoptionState?.type?.toUpperCase() === 'CANCELADO') {
+      return res.status(409).json({ message: 'La solicitud está CANCELADA. No se puede modificar.' });
     }
 
     const state = await em.findOne(AdoptionState, { type: stateType });
