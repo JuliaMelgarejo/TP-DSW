@@ -36,7 +36,7 @@ export class SignInComponent {
       person: new FormGroup({
         name: new FormControl('', [Validators.required]),
         surname: new FormControl('', [Validators.required]),
-        doc_type: new FormControl('', [Validators.required]),
+        doc_type: new FormControl(null, [Validators.required]),
         doc_nro: new FormControl('', [Validators.required]),
         email: new FormControl(''),
         phoneNumber: new FormControl(''),

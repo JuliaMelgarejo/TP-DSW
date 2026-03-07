@@ -63,32 +63,44 @@
             </div>
 
             <!-- DOC TYPE -->
-            <div class="form-fieldset mb-3 d-flex flex-column rounded">
-              <label for="doc_type">Tipo de documento:</label>
-              <select id="person-doc_type" formControlName="doc_type">
+            <div class="form-fieldset mb-3 d-flex flex-column rounded text-center">
+              <label class="form-label fw-semibold" for="doc_type">Tipo de documento:</label>
+              <select id="person-doc_type" formControlName="doc_type" class="form-select form-select-lg">
                 <option [ngValue]="null" disabled selected>Seleccione un tipo de documento</option>
                 <option *ngFor="let doc of documentTypes" [ngValue]="doc.value">{{ doc.label }}</option>
               </select>
               <p class="error" *ngIf="UserForm.get('doc_type')?.invalid && UserForm.get('doc_type')?.touched">El tipo de documento es obligatorio</p>
             </div>
+            
+            <!-- DOC NUMBER -->
+            <div class="mb-4 text-center">
+              <label class="form-label fw-semibold">Numero de documento</label>
+              <input
+                type="text"
+                class="form-control form-control-lg"
+                formControlName="doc_nro"
+                placeholder="Ingresar aqui el numero"
+              />
+              <p class="error" *ngIf="UserForm.get('doc_nro')?.invalid && UserForm.get('doc_nro')?.touched">El tipo de documento es obligatorio</p>
+            </div>
+            
+            <!-- BIRTHDATE -->
+            <div class="mb-4 text-center">
+              <label class="form-label fw-semibold">Fecha de nacimiento</label>
+              <input
+                type="date"
+                class="form-control form-control-lg"
+                formControlName="birthdate"
+              />
+              <p class="error" *ngIf="UserForm.get('birthdate')?.invalid && UserForm.get('birthdate')?.touched">El tipo de documento es obligatorio</p>
+            </div>
           </div>
         </div>
 
         <div class="col-12 col-lg-6" formGroupName="person">
-          <!-- DOC NUMBER -->
-          <div class="mb-4 text-center">
-            <label class="form-label fw-semibold">Numero de documento</label>
-            <input
-              type="text"
-              class="form-control form-control-lg"
-              formControlName="doc_nro"
-              placeholder="Ingresar aqui el numero"
-            />
-            <p class="error" *ngIf="UserForm.get('doc_nro')?.invalid && UserForm.get('doc_nro')?.touched">El tipo de documento es obligatorio</p>
-          </div>
 
           <!-- CUIT -->
-          <div class="mb-4">
+          <div class="mb-4 text-center">
             <label class="form-label fw-semibold">Numero de cuit</label>
             <input
               type="text"
@@ -96,17 +108,6 @@
               formControlName="nroCuit"
               placeholder="Ingresar aqui el numero de cuit"
             />
-          </div>
-
-          <!-- BIRTHDATE -->
-          <div class="mb-4 text-center">
-            <label class="form-label fw-semibold">Fecha de nacimiento</label>
-            <input
-              type="date"
-              class="form-control form-control-lg"
-              formControlName="birthdate"
-            />
-            <p class="error" *ngIf="UserForm.get('birthdate')?.invalid && UserForm.get('birthdate')?.touched">El tipo de documento es obligatorio</p>
           </div>
           
           <!-- PHONENUMBER -->
@@ -132,7 +133,8 @@
             />
           </div>
 
-          <div class="form-fieldset mb-3 d-flex flex-column rounded">
+          <div class="form-fieldset mb-3 d-flex flex-column rounded text-center">
+            <label class="form-label fw-semibold">Dirección</label>
             <app-address-picker
               [form]="addressForm">
             </app-address-picker>
