@@ -1,3 +1,4 @@
+import { Address } from "../address/address.js";
 import { User } from "../user/user.model.js";
 
 export class Person {
@@ -9,13 +10,12 @@ export class Person {
   email?: string; // nullable
   phoneNumber?: string; // nullable
   birthdate: string; // no
-  street: string; // no
-  number_street: string; 
   nroCuit?: string; // nullable
-  city!: number; // normalmente se envía el id
   user: User;
+  address: Address;
 
-  constructor(name: string, surname: string, doc_type: string, doc_nro: string, email: string, phoneNumber: string, birthdate: string, street: string, number_street: string, nroCuit: string, createdAt: Date, updatedAt: Date, user: User, city : number, role: string) {
+  constructor(name: string, surname: string, doc_type: string, doc_nro: string, email: string, phoneNumber: string, birthdate: string, nroCuit: string, createdAt: Date, updatedAt: Date, user: User, address: Address
+  ) {
     this.name = name;
     this.surname = surname;
     this.doc_type = doc_type;
@@ -23,10 +23,8 @@ export class Person {
     this.email = email;
     this.phoneNumber = phoneNumber;
     this.birthdate = birthdate;
-    this.street = street;
-    this.number_street = number_street;
     this.nroCuit = nroCuit;
-    this.city = city;
     this.user = user;
+    this.address = address;
   }
 }

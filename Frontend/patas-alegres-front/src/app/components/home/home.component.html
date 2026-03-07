@@ -6,7 +6,52 @@
       <div class="pa-h2 mb-1">Patas Alegres</div>
       <div class="pa-muted">Adoptá, comprá y ayuda a refugios.</div>
     </div>
+    
+    <div class="pa-card pa-panel mt-3 shelters-layout" *ngIf="this.auth.isUser()">
+      <div class="shelters-list">
+        <div class="pa-h3 mb-1">Refugios cercanos</div>
+        <div class="pa-muted mb-2">
+          Encontrá refugios cerca tuyo y ayudalos con donaciones o adoptando a sus animales.
+        </div>
 
+        <div class="shelter-item" *ngFor="let shelter of shelters">
+          <dt>{{ shelter.name }}</dt>
+          <dd>{{ shelter.phoneNumber }}</dd>
+        </div>
+      </div>
+
+      <div class="shelters-map">
+        <google-map
+          mapId="7ac99889f13ef58f327f82cd"
+          height="100%"
+          width="100%"
+          [center]="center"
+          [zoom]="zoom"
+          [options]="mapOptions"
+          (idle)="loadShelters()">
+
+          @for (shelter of shelters; track shelter.id) {
+            <map-advanced-marker
+              #marker="mapAdvancedMarker"
+              [position]="{
+                lat: +shelter.address.latitude,
+                lng: +shelter.address.longitude
+              }"
+              (mapClick)="openInfoWindow(marker, shelter)">
+            </map-advanced-marker>
+          }
+
+          <map-info-window>
+            <div *ngIf="selectedShelter">
+              <strong>{{ selectedShelter.name }}</strong><br>
+              {{ selectedShelter.address.formattedAddress }}<br>
+              {{ selectedShelter.phoneNumber }}
+            </div>
+          </map-info-window>
+
+        </google-map>
+      </div>
+    </div>
     <!-- CAROUSEL (Bootstrap) -->
     <div id="homeCarousel" class="carousel slide animal-carousel home-carousel pa-card pa-panel" data-bs-ride="carousel">
       

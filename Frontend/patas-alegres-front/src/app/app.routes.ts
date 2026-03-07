@@ -47,10 +47,6 @@ export const routes: Routes = [
   { path: '',redirectTo: 'login',pathMatch: 'full' }, 
   {path: 'home', component: HomeComponent, canActivate:[authGuard]},
 
-  {path: 'zone', component: ZoneComponent, canActivate:[authGuard]},
-  {path: 'zone/create', component: ZoneFormComponent, canActivate:[authGuard]},
-  {path: 'zone/:id', component: ZoneDetailComponent, canActivate:[authGuard]},
-
   {path: 'animal/create', component: AnimalFormComponent, canActivate:[authGuard], data: { roles: ['ROLE_ADMIN'] }},
   {path: 'animal', component: AnimalComponent, canActivate:[authGuard]},
   {path: 'animal/:id', component:AnimalPageComponent, canActivate:[authGuard]},

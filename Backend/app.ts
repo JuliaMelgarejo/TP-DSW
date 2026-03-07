@@ -23,6 +23,7 @@ import { categoryRouter } from './scr/productCategory/productoCategory.router.js
 import { adoptionStateRouter } from './scr/adoptionState/adoptionState.router.js';
 import { adoptionStatusRouter } from './scr/adoptionStatus/adoptionStatus.router.js';
 import { orderRouter } from './scr/order/order.route.js';
+import { addressRouter } from './scr/address/address.router.js';
 
 const app = express();
 app.use(express.json());
@@ -62,7 +63,7 @@ app.use('/api/category', categoryRouter)
 app.use("/api/adoptionState", adoptionStateRouter);
 app.use('/api/adoptionStatus', adoptionStatusRouter);
 app.use('/api/order', orderRouter);
-
+app.use('/api/address', addressRouter);
 
 await syncSchema() //never in production*/
 

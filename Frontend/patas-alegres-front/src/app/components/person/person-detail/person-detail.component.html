@@ -61,55 +61,16 @@
               <p class="error" *ngIf="PersonForm.get('birthdate')?.invalid && PersonForm.get('birthdate')?.touched">La fecha de nacimiento es obligatoria</p>
             </div>
 
-            <!-- PAIS -->
-            <div class="mb-4">
-              <label for="country">País</label>
-              <select formControlName="country" (change)="onCountryChange()" class="w-100">
-                <option [ngValue]="null" disabled selected>Seleccione un país</option>
-                <option *ngFor="let country of countries" [value]="country.id">
-                  {{ country.name }}
-                </option>
-              </select>
-            </div>
-
-            <!-- PROVINCIA -->
-            <div class="mb-4">
-              <label for="country">Provincia</label>
-              <select formControlName="province" (change)="onProvinceChange()" class="w-100">
-                <option [ngValue]="null" disabled selected>Seleccione una provincia</option>
-                <option *ngFor="let province of provinces" [value]="province.id">
-                  {{ province.name }}
-                </option>
-              </select>
-            </div>
-
-            <!-- CIUDAD -->
-            <div class="mb-4">
-              <label for="country">Ciudad</label>
-              <select formControlName="city" class="w-100">
-                <option [ngValue]="null" disabled selected>Seleccione una ciudad</option>
-                <option *ngFor="let city of cities" [value]="city.id">
-                  {{ city.name }}
-                </option>
-              </select>
-              <p class="error" *ngIf="PersonForm.get('city')?.invalid && PersonForm.get('city')?.touched">La ciudad es obligatoria</p>
-            </div>
-
-            <div class="form-fieldset mb-3 d-flex flex-column rounded">
-              <label for="street">Calle:</label>
-              <input type="text" id="person-street" formControlName="street">
-              <p class="error" *ngIf="PersonForm.get('street')?.invalid && PersonForm.get('street')?.touched">La calle es obligatoria</p>
-            </div>
-
-            <div class="form-fieldset mb-3 d-flex flex-column rounded">
-              <label for="street_number">Número de calle:</label>
-              <input type="text" id="person-number_street" formControlName="number_street">
-              <p class="error" *ngIf="PersonForm.get('number_street')?.invalid && PersonForm.get('number_street')?.touched">El número de calle es obligatorio</p>
-            </div>
             <div class="form-fieldset mb-3 d-flex flex-column rounded">
               <label for="nroCuit">CUIT:</label>
               <input type="number" id="person-nroCuit" formControlName="nroCuit">
             </div>
+          </div>
+
+          <div class="form-fieldset mb-3 d-flex flex-column rounded">
+            <app-address-picker
+              [form]="addressForm">
+            </app-address-picker>
           </div>
           <div class="form-submit">
             <button type="submit" [disabled]="PersonForm.invalid" class="btn btn-primary w-100">Actualizar Persona</button>

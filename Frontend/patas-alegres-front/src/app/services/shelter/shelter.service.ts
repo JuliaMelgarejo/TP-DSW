@@ -33,4 +33,8 @@ export class ShelterService {
   deleteShelter(id: number){
     return this.http.delete<{message: string, data: Shelter}>(`${this.API_URL}/${id}`);
   }
+
+  findByBoundary(north: number, south: number, east: number, west: number){
+    return this.http.get<{message: string, data: Shelter[]}>(`${this.API_URL}/findByBoundary?nort=${north}&south=${south}&east=${east}&west=${west}`);
+  }
 }

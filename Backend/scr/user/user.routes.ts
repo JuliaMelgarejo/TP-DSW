@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { login, newUser } from './user.controler.js';
+import { login, newUser, sanitizeUserInput } from './user.controler.js';
 
 export const userRouter = Router();
 
-userRouter.post('/', newUser)
+userRouter.post('/', sanitizeUserInput, newUser)
 userRouter.post('/login', login)

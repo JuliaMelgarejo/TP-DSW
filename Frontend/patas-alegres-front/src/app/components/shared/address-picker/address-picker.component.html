@@ -1,0 +1,22 @@
+<div class="address-container">
+  <input
+    #addressInput
+    type="text"
+    class="form-control mb-3"
+    placeholder="Escribí tu dirección"
+  />
+  <google-map
+    height="350px"
+    width="100%"
+    mapId="7ac99889f13ef58f327f82cd"
+    [center]="center"
+    [zoom]="zoom"
+    [options]="mapOptions"
+    (mapClick)="addMarker($event)"
+  >
+    <map-advanced-marker
+      *ngIf="markerPosition"
+      [position]="markerPosition">
+    </map-advanced-marker>
+  </google-map>
+</div>

@@ -5,12 +5,14 @@ import {
   add, 
   update, 
   remove, 
-  sanitizeShelterInput
+  sanitizeShelterInput,
+  findByBoundary,
 } from "./shelter.controler.js";
 import { validateToken } from "../validate-token/validate-token.routes.js";
 
 export const shelterRouter = Router();
 
+shelterRouter.get('/findByBoundary', validateToken, findByBoundary)
 shelterRouter.get('/',validateToken ,findAll)
 shelterRouter.get('/:id', validateToken,findOne)
 shelterRouter.post('/', validateToken, sanitizeShelterInput, add)
