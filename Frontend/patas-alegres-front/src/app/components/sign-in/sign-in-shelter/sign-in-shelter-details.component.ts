@@ -7,12 +7,6 @@ import { UserService } from '../../../services/user/user.service.js';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorService } from '../../../services/errors/error.service.js';
 import { PersonService } from '../../../services/person/person.service.js';
-import { City } from '../../../models/city/city.module.js';
-import { Province } from '../../../models/province/province.module.js';
-import { Country } from '../../../models/country/country.module.js';
-import { CityService } from '../../../services/city/city.service.js';
-import { ProvinceService } from '../../../services/province/province.service.js';
-import { CountryService } from '../../../services/country/country.service.js';
 import { AddressPickerComponent } from "../../shared/address-picker/address-picker.component";
 
 @Component({

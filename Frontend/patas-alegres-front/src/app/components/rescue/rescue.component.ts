@@ -9,9 +9,6 @@ import { BreedService } from '../../services/breed/breed.service';
 import { ViewChild } from '@angular/core';
 
 import { AnimalLite, Rescue } from '../../models/rescue/rescue.model';
-import { CityService } from '../../services/city/city.service';
-import { ProvinceService } from '../../services/province/province.service';
-import { CountryService } from '../../services/country/country.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { PhotoService } from '../../services/photo/photo.service';
 type Option = { id: number; name: string };
@@ -94,9 +91,7 @@ export class RescueComponent {
       rescue_date: formData.rescue_date,
       description: formData.description ?? '',
       comments: formData.comments ?? '',
-      street: formData.street,
-      number_street: Number(formData.number_street),
-      city: Number(formData.city),
+      address: formData.address,
       shelters: shelterId,
       animals: this.animals.map(a => ({
         name: a.name,

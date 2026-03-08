@@ -1,9 +1,4 @@
-export class City {
-  constructor(
-    public id: number = 0,
-    public name: string = ''
-  ) {}
-}
+import { Address } from "../address/address.js";
 
 export class Shelter {
   constructor(
@@ -32,12 +27,10 @@ export class Rescue {
     public rescue_date: string = '',       // yyyy-mm-dd para el input
     public description: string = '',
     public comments: string = '',
-    public street: string = '',
-    public number_street: number | null = null,
 
     // En tu entity son obligatorias
     public shelters: number | Shelter | null = null,
-    public city: number | City | null = null,
+    public address: Address | number | null = null,
 
     public animals: AnimalLite[] = []
   ) {}

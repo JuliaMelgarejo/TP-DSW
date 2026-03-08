@@ -15,9 +15,6 @@ import { adoptionRouter } from './scr/adoption/adoption.router.js';
 import { userRouter } from './scr/user/user.routes.js';
 import path from 'path';
 import { photoRouter } from './scr/photo/photo.router.js';
-import { cityRouter } from './scr/city/city.router.js';
-import { provinceRouter } from './scr/province/province.router.js';
-import { countryRouter } from './scr/country/country.router.js';
 import { productRouter } from './scr/product/product.router.js';
 import { categoryRouter } from './scr/productCategory/productoCategory.router.js';
 import { adoptionStateRouter } from './scr/adoptionState/adoptionState.router.js';
@@ -55,9 +52,6 @@ app.use('/api/adoption', adoptionRouter)
 app.use('/api/user', userRouter)
 app.use('/api/login', userRouter)
 app.use('/api/photo', photoRouter);
-app.use('/api/city', cityRouter)
-app.use('/api/province', provinceRouter)
-app.use('/api/country', countryRouter )
 app.use('/api/product', productRouter)
 app.use('/api/category', categoryRouter)
 app.use("/api/adoptionState", adoptionStateRouter);

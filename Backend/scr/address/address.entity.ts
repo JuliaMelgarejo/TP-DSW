@@ -1,7 +1,6 @@
-import{ Entity, Property, OneToOne, Rel } from "@mikro-orm/core";
+import{ Entity, Property, OneToOne, Rel, Collection, OneToMany } from "@mikro-orm/core";
 import { BaseEntity } from "../zshare/db/baseEntity.entity.js";
-import { Person } from "../person/person.entity.js";
-import { Shelter } from "../shelter/shelter.entity.js";
+import { Rescue } from "../rescue/rescue.entity.js";
 
 @Entity()
 export class Address extends BaseEntity {
@@ -34,4 +33,8 @@ export class Address extends BaseEntity {
 
   @Property({nullable: true})
   country!: string
+
+  @OneToMany(() => Rescue, rescue => rescue.address)
+  rescues = new Collection<Rescue>(this);
+
 }
