@@ -33,10 +33,8 @@ export class AddressPickerComponent implements OnInit, AfterViewInit {
 
   mapOptions: google.maps.MapOptions = {
     mapId: environment.googleMapsMapId,
-    mapTypeControl: false,
-    streetViewControl: false,
-    fullscreenControl: false,
-    clickableIcons: false
+    disableDefaultUI: true,
+    zoomControl: true,
   };
   private geocoder = new google.maps.Geocoder();
 

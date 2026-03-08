@@ -6,6 +6,7 @@ import { GoogleMap, MapInfoWindow, MapAdvancedMarker } from '@angular/google-map
 import { PersonService } from '../../services/person/person.service.js';
 import { ShelterService } from '../../services/shelter/shelter.service.js';
 import { Shelter } from '../../models/shelter/shelter.model.js';
+import { environment } from '../../../environments/environments.local.js';
 type Banner = {
   src: string;
   alt: string;
@@ -32,8 +33,9 @@ export class HomeComponent {
   selectedShelter?: Shelter;
   markerShelterPositions: google.maps.LatLngLiteral[] = [];
   mapOptions: google.maps.MapOptions = {
+    mapId: environment.googleMapsMapId,
     disableDefaultUI: true,
-    zoomControl: true
+    zoomControl: true,
   }
 
   constructor(

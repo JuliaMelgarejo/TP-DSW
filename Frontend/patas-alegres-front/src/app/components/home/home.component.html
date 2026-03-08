@@ -1,5 +1,5 @@
 <div class="pa-page">
-  <div class="pa-container">
+  <div class="pa-container p-0 p-lg-3">
 
     <!-- TÍTULO / HERO -->
     <div class="pa-card pa-section pa-panel mb-3">
@@ -7,20 +7,46 @@
       <div class="pa-muted">Adoptá, comprá y ayuda a refugios.</div>
     </div>
     
-    <div class="pa-card pa-panel mt-3 shelters-layout" *ngIf="this.auth.isUser()">
-      <div class="shelters-list">
-        <div class="pa-h3 mb-1">Refugios cercanos</div>
+    <div class="pa-card pa-panel mt-3 d-flex flex-column flex-lg-row" *ngIf="auth.isUser()">
+      <div class="shelters-list col-12 col-lg-6 mb-3 mb-lg-0 order-2 order-lg-1">
+        <div class="pa-h3 mb-0">Refugios cercanos</div>
         <div class="pa-muted mb-2">
           Encontrá refugios cerca tuyo y ayudalos con donaciones o adoptando a sus animales.
         </div>
 
-        <div class="shelter-item" *ngFor="let shelter of shelters">
-          <dt>{{ shelter.name }}</dt>
-          <dd>{{ shelter.phoneNumber }}</dd>
+        <div class="shelter-item mb-2" *ngFor="let shelter of shelters">
+          <a [routerLink]="['/shelter', shelter.id]" class="text-decoration-none text-dark">
+            <div class="card shadow-sm border-0">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                  <h6 class="card-title mb-1">
+                    {{ shelter.name }}
+                  </h6>
+                  <span class="badge bg-primary">
+                    1.2 km
+                  </span>
+                </div>
+                <p class="card-text small mb-1">
+                  {{ shelter.address.street }} {{ shelter.address.streetNumber }}
+                </p>
+                <p class="card-text small text-muted mb-2">
+                  {{ shelter.address.city }} - {{ shelter.address.postalCode }}
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="small text-muted">
+                    📞 {{ shelter.phoneNumber }}
+                  </span>
+                  <span class="btn btn-sm btn-outline-primary">
+                    Ver refugio
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
         </div>
       </div>
 
-      <div class="shelters-map">
+      <div class="shelters-map col-12 col-lg-6 order-1 order-lg-2">
         <google-map
           height="100%"
           width="100%"
@@ -51,6 +77,7 @@
         </google-map>
       </div>
     </div>
+
     <!-- CAROUSEL (Bootstrap) -->
     <div id="homeCarousel" class="carousel slide animal-carousel home-carousel pa-card pa-panel" data-bs-ride="carousel">
       
