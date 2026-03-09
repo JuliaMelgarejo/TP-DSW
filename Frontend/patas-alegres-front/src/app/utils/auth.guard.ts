@@ -8,8 +8,9 @@ export const authGuard: CanActivateFn = (route, _state) => {
 
   // 1) logueado
   if (!auth.isLogged()) {
-    alert('Debe iniciar sesión para continuar');
-    router.navigate(['/login']);
+    router.navigate(['/login'], {
+      queryParams: { returnUrl: _state.url }
+    });
     return false;
   }
 

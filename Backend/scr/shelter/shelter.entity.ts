@@ -11,13 +11,11 @@ import {
 } from "@mikro-orm/core";
 import { BaseEntity } from "../zshare/db/baseEntity.entity.js";
 import { Rescue } from "../rescue/rescue.entity.js";
-import { Zone } from "../zone/zone.entity.js";
 import { Vet } from "../vet/vet.entity.js";
-import { City } from "../city/city.entity.js";
-import { Person } from "../person/person.entity.js";
 import { Product } from "../product/product.entity.js";
 import { ShippingTypeStatus } from "../shippingTypeStatus/shippingTypeStatus.entity.js";
 import { User } from "../user/user.entity.js";
+import { Address } from "../address/address.entity.js";
 @Entity()
 export class Shelter extends BaseEntity {
   [x: string]: any;
@@ -27,17 +25,8 @@ export class Shelter extends BaseEntity {
   phoneNumber!: string
   @Property({nullable: false})
   tuitionVet!: string
-  @Property({nullable: true})
-  address!: string
-  @Property({nullable: false})
-  street!: string
-  @Property({nullable: false})
-  streetNumber!: number
   @Property({nullable: false})
   max_capacity!: number
-
-  @ManyToOne(() => Zone, {nullable: true})
-  zone!: Rel<Zone>;
 
   @OneToMany(() => Rescue, rescue => rescue.shelters, { cascade: [Cascade.ALL], nullable: true })
   rescues = new Collection<Rescue>(this);
@@ -50,10 +39,14 @@ export class Shelter extends BaseEntity {
 
   @ManyToOne(() => Vet, {  nullable: true,   cascade: [Cascade.ALL] }, )
   vet?: Rel<Vet>; 
-
-  @ManyToOne(() => City, {nullable: false})
-  city!: Rel<City>;
   
   @OneToOne(() => User, (user) => user.shelter, { mappedBy: 'shelter'} )
   user!: Rel<User>;
+
+  @OneToOne(() => Address, {
+    owner: true,
+    nullable: true,
+    cascade: [Cascade.ALL]
+  })
+  address?: Rel<Address>;
 }

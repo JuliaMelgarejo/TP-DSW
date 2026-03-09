@@ -2,7 +2,7 @@ import { Entity, OneToMany, Property, Collection, Cascade, ManyToMany, ManyToOne
 import { BaseEntity } from "../zshare/db/baseEntity.entity.js";
 import { Animal } from "../animal/animal.entity.js";
 import { Shelter } from "../shelter/shelter.entity.js";
-import { City } from "../city/city.entity.js";
+import { Address } from "../address/address.entity.js";
 
 @Entity()
 export class Rescue extends BaseEntity {
@@ -15,19 +15,13 @@ export class Rescue extends BaseEntity {
   @Property()
   comments!: string;
 
-  @Property()
-  street!: string;
-
-  @Property()
-  number_street!: number;
-
   @OneToMany(() => Animal, animal => animal.rescueClass, { cascade: [Cascade.ALL] })
   animals = new Collection<Animal>(this);
 
   @ManyToOne(() => Shelter, {nullable: false})
   shelters!: Rel<Shelter>;
 
-  @ManyToOne(() => City, {nullable: false})
-  city!: Rel<City>;
+  @ManyToOne(() => Address, { nullable: false })
+  address!: Rel<Address>;
 
 }

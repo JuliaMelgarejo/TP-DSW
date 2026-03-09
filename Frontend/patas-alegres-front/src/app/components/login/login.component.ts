@@ -6,6 +6,7 @@ import { User } from '../../models/user/user.model.js';
 import { UserService } from '../../services/user/user.service.js';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorService } from '../../services/errors/error.service.js';
+import { AuthService } from '../../services/auth/auth.service.js';
 
 
 @Component({
@@ -19,8 +20,15 @@ export class LoginComponent {
   username: string = ""
   password: string = ""
 
-  constructor(private userservice :UserService,
-    private router :Router , private errorservice: ErrorService){}
+  constructor(
+    private userservice :UserService,
+    private router :Router,
+    private errorservice: ErrorService,
+    private authService: AuthService
+  ){
+
+  }
+
   login(){
     // Validamos que el usuario ingrese datos
     if (this.username == '' || this.password == '') {
@@ -31,21 +39,18 @@ export class LoginComponent {
     // Creamos el body
     const user: User = {
       username: this.username,
-      password: this.password,
-      role: 'USER'
+      password: this.password
     }
 
     this.userservice.login(user).subscribe({
       next: (token) => {
-        localStorage.setItem('token', token);
+        this.authService.setToken(token);
         this.router.navigate(['/home'])
       },
      error: (e: HttpErrorResponse) => {
           this.errorservice.msjError(e);
       }
     })
-  
-
   }
 
 }

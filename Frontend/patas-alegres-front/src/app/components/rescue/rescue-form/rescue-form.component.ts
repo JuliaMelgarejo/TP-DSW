@@ -1,93 +1,39 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-
-import { ProvinceService } from '../../../services/province/province.service';
-import { CityService } from '../../../services/city/city.service';
-import { CountryService } from '../../../services/country/country.service';
-
-import { Province } from '../../../models/province/province.module';
-import { Country } from '../../../models/country/country.module';
-import { City } from '../../../models/city/city.module';
+import { AddressPickerComponent } from "../../shared/address-picker/address-picker.component";
 
 @Component({
   selector: 'app-rescue-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, AddressPickerComponent],
   templateUrl: './rescue-form.component.html',
   styleUrl: './rescue-form.component.css',
 })
-export class RescueFormComponent implements OnInit {
-
+export class RescueFormComponent {
   @Output() submitRescue = new EventEmitter<any>();
-
-  // Dropdowns estilo SignIn
-  countries: Country[] = [];
-  provinces: Province[] = [];
-  cities: City[] = [];
-
-  selectedCountry: number = 0;
-  selectedProvince: number = 0;
 
   // Form SOLO datos rescate
   rescueForm = new FormGroup({
     rescue_date: new FormControl('', { validators: [Validators.required] }),
-    city: new FormControl('', { validators: [Validators.required] }),
-    street: new FormControl('', { validators: [Validators.required] }),
-    number_street: new FormControl('', { validators: [Validators.required] }),
     description: new FormControl(''),
     comments: new FormControl(''),
+    address: new FormGroup({
+      latitude: new FormControl('', [Validators.required]),
+      longitude: new FormControl('', [Validators.required]),
+      province: new FormControl('', [Validators.required]),
+      city: new FormControl('', [Validators.required]),
+      formattedAddress: new FormControl(''),
+      placeId: new FormControl(''),
+      street: new FormControl(''),
+      streetNumber: new FormControl(''),
+      postalCode: new FormControl(''),
+      country: new FormControl('', [Validators.required])
+    })
   });
 
-  constructor(
-    public cityService: CityService,
-    public provinceService: ProvinceService,
-    public countryService: CountryService
-  ) {}
-
-  ngOnInit(): void {
-    this.loadCountries();
-  }
-
-  loadCountries(): void {
-    this.countryService.getCountries().subscribe({
-      next: (res: any) => {
-        this.countries = res?.data ?? [];
-      },
-      error: (err: any) => console.log(err),
-    });
-  }
-
-  onCountryChange(): void {
-    // reset cascada
-    this.selectedProvince = 0;
-    this.provinces = [];
-    this.cities = [];
-    this.rescueForm.patchValue({ city: '' });
-
-    if (!this.selectedCountry || this.selectedCountry === 0) return;
-
-    this.provinceService.getByCountry(this.selectedCountry).subscribe({
-      next: (res: any) => {
-        this.provinces = res?.data ?? [];
-      },
-      error: (err: any) => console.log(err),
-    });
-  }
-
-  onProvinceChange(): void {
-    // reset ciudades
-    this.cities = [];
-    this.rescueForm.patchValue({ city: '' });
-
-    if (!this.selectedProvince || this.selectedProvince === 0) return;
-
-    this.cityService.getByProvince(this.selectedProvince).subscribe({
-      next: (res: any) => {
-        this.cities = res?.data ?? [];
-      },
-      error: (err: any) => console.log(err),
-    });
+  get addressForm(): FormGroup {
+    return this.rescueForm.get('address') as FormGroup;
   }
 
   onSubmit(): void {
@@ -102,16 +48,19 @@ export class RescueFormComponent implements OnInit {
       rescue_date: v.rescue_date,
       description: v.description ?? '',
       comments: v.comments ?? '',
-      street: v.street,
-      number_street: v.number_street,
-      city: Number(v.city),
+      address: {
+        latitude: v.address.latitude,
+        longitude: v.address.longitude,
+        province: v.address.province,
+        city: v.address.city,
+        formattedAddress: v.address.formattedAddress,
+        placeId: v.address.placeId,
+        street: v.address.street,
+        streetNumber: v.address.streetNumber,
+        postalCode: v.address.postalCode,
+        country: v.address.country
+      }
     };
-
-    if (!v.number_street || Number.isNaN(Number(v.number_street))) {
-    alert('Número de calle inválido');
-    return;
-}
-
     this.submitRescue.emit(formPayload);
   }
 }

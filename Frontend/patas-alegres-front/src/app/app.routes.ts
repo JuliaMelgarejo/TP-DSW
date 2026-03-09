@@ -1,10 +1,7 @@
 import { Routes } from '@angular/router';
-import { ZoneComponent } from './components/zone/zone.component.js';
 import { AnimalComponent } from './components/animal/animal.component.js';
 import { AnimalFormComponent } from './components/animal/animal-form/animal-form.component.js';
 import { AnimalDetailsComponent } from './components/animal/animal-details/animal-details.component.js';
-import { ZoneDetailComponent } from './components/zone/zone-detail/zone-detail/zone-detail.component.js';
-import { ZoneFormComponent } from './components/zone/zone-form/zone-form/zone-form.component.js';
 import { ShelterComponent } from './components/shelter/shelter.component.js';
 import { ShelterDetailComponent } from './components/shelter/shelter-detail/shelter-detail.component.js';
 import { ShelterFormComponent } from './components/shelter/shelter-form/shelter-form.component.js';
@@ -39,20 +36,17 @@ import { CartComponent } from './components/cart/cart.component.js';
 import { OrderShelterComponent } from './components/order/order-shelter/order-shelter.component.js';
 import { OrderComponent } from './components/order/order.component.js';
 import { OrderShelterDetailComponent } from './components/order/order-shelter-detail/order-shelter-detail.component.js';
+import { guestGuard } from './utils/guest.guard.js';
 
 export const routes: Routes = [
-  {path: 'login', component: LoginComponent},
-  { path: 'signIn', component: SignInComponent },
-  { path: 'signIn/user', component: SignInComponent },
-  { path: 'signIn/shelter/account', component: SignInShelterAccountComponent },
-  { path: 'signIn/shelter/details', component: SignInShelterDetailsComponent },
+  { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
+  { path: 'signIn', component: SignInComponent, canActivate: [guestGuard] },
+  { path: 'signIn/user', component: SignInComponent, canActivate: [guestGuard] },
+  { path: 'signIn/shelter/account', component: SignInShelterAccountComponent, canActivate: [guestGuard] },
+  { path: 'signIn/shelter/details', component: SignInShelterDetailsComponent, canActivate: [guestGuard] },
 
-  { path: '',redirectTo: 'login',pathMatch: 'full' }, 
+  { path: '', redirectTo: 'home', pathMatch: 'full' }, 
   {path: 'home', component: HomeComponent, canActivate:[authGuard]},
-
-  {path: 'zone', component: ZoneComponent, canActivate:[authGuard]},
-  {path: 'zone/create', component: ZoneFormComponent, canActivate:[authGuard]},
-  {path: 'zone/:id', component: ZoneDetailComponent, canActivate:[authGuard]},
 
   {path: 'animal/create', component: AnimalFormComponent, canActivate:[authGuard], data: { roles: ['ROLE_ADMIN'] }},
   {path: 'animal', component: AnimalComponent, canActivate:[authGuard]},
@@ -61,8 +55,8 @@ export const routes: Routes = [
 
   {path: 'shelter', component: ShelterComponent, canActivate:[authGuard]},
   {path: 'shelter/create', component: ShelterFormComponent, canActivate:[authGuard]},
-  {path: 'shelter/:id', component: ShelterDetailComponent, canActivate:[authGuard]},
-  {path: 'my-shelter', component: ShelterDetailComponent, canActivate:[authGuard]},
+  {path: 'shelter/:id', component: ShelterDetailComponent, canActivate:[authGuard], data: { roles: ['SHELTER'] }},
+  {path: 'my-shelter', component: ShelterDetailComponent, canActivate:[authGuard], data: { roles: ['SHELTER'] }},
 
   {path: 'person', component: PersonComponent, canActivate:[authGuard], data: { roles: ['ADMIN'] }},
   {path: 'person/create', component: PersonFormComponent, canActivate:[authGuard]},
@@ -99,8 +93,6 @@ export const routes: Routes = [
   { path: 'animal/:id/adoptions', component: AdoptListComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
   { path: 'shelter-adoptions', component: AdoptListComponent, canActivate:[authGuard], data: { roles: ['SHELTER'] } },
   { path: 'shelter-adoptions/:id', component: ShelterAdoptionDetailComponent, canActivate:[authGuard], data: { roles: ['SHELTER'] } },
-  
-  
-  { path: '**', redirectTo: 'home', pathMatch: 'full' },
+
   { path: '**',redirectTo: 'login',pathMatch: 'full' }
 ];
