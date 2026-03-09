@@ -21,7 +21,6 @@ export class AuthService {
   }
 
   // --- Role ---
-
   getDecodedToken(): any {
     const token = localStorage.getItem('token');
     if (!token) return null;
@@ -44,9 +43,6 @@ export class AuthService {
     const id = decoded?.personId;
     return id ;
   }
-
-  
-
 
   getRole(): AppRole | null {
     const decoded = this.getDecodedToken();
