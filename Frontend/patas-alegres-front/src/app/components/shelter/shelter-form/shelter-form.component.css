@@ -5,14 +5,6 @@ h1 {
   margin-bottom: 20px;
 }
 
-.form-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
 .form-fieldset {
   display: flex;
   flex-direction: column;

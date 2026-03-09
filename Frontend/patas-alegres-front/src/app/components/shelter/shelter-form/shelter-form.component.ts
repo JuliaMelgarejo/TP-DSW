@@ -1,81 +1,61 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ShelterService } from '../../../services/shelter/shelter.service.js';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ZoneService } from '../../../services/zone/zone.service.js';
 import { VetService } from '../../../services/vet/vet.service.js';
+import { AddressPickerComponent } from "../../shared/address-picker/address-picker.component";
 
 @Component({
   selector: 'app-shelter-form',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, AddressPickerComponent],
   templateUrl: './shelter-form.component.html',
   styleUrl: './shelter-form.component.css'
 })
 export class ShelterFormComponent {
-  shelterForm: FormGroup;
-  name: FormControl;
-  address: FormControl;
-  max_capacity: FormControl;
-  zone: FormControl;
-  rescue: FormControl;
-  vet: FormControl;
-  zones: any[] = [];
-  vets: any[] = [];
+  ShelterForm: FormGroup;
 
-  constructor(private route: ActivatedRoute, public shelterService: ShelterService, private zoneService: ZoneService, private vetService: VetService){
-    this.name = new FormControl('', [Validators.required]);
-    this.address = new FormControl('', [Validators.required]);
-    this.max_capacity = new FormControl('', [Validators.required]);
-    this.zone = new FormControl('', [Validators.required]);
-    this.rescue = new FormControl('');
-    this.vet = new FormControl('', [Validators.required]);
-
-    this.shelterForm = new FormGroup({
-      name: this.name,
-      address: this.address,
-      max_capacity: this.max_capacity,
-      zone: this.zone,
-      rescue: this.rescue,
-      vet: this.vet,
-    })
+  constructor(private route: ActivatedRoute, public shelterService: ShelterService, private zoneService: ZoneService, private vetService: VetService
+    , private fb: FormBuilder,
+  ){
+    this.ShelterForm = this.fb.group({
+      name: ['', Validators.required],
+      phoneNumber: [''],
+      tuitionVet: [''],
+      max_capacity: [0],
+      address: new FormGroup({
+        latitude: new FormControl('', [Validators.required]),
+        longitude: new FormControl('', [Validators.required]),
+        province: new FormControl('', [Validators.required]),
+        city: new FormControl('', [Validators.required]),
+        formattedAddress: new FormControl(''),
+        placeId: new FormControl(''),
+        street: new FormControl(''),
+        streetNumber: new FormControl(''),
+        postalCode: new FormControl(''),
+        country: new FormControl('', [Validators.required])
+      })
+    });
   }
 
   ngOnInit() {
-    this.loadZones();
-    this.loadVets();
   }
 
-  loadZones() {
-    this.zoneService.getZones().subscribe({
-      next: (data) => {
-        this.zones = data.data;
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-
-  loadVets(){
-    this.vetService.getVets().subscribe({
-      next: (data) => {
-        this.vets = data.data;
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
+  get addressForm(): FormGroup {
+    return this.ShelterForm.get('address') as FormGroup;
   }
 
   postShelter(){
-    this.shelterService.postShelter(this.shelterForm.value).subscribe({
+    this.shelterService.postShelter(this.ShelterForm.value).subscribe({
       next: (data) => {
         console.log(data);
+        alert('Refugio creado con éxito');
       },
       error: (error) => {
         console.log(error);
+        alert('Error al crear el refugio: ' + (error.error?.message || 'Error desconocido'));
       }
     })
   }

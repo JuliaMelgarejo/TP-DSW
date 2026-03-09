@@ -38,6 +38,14 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
+    const user = (req as any).user;
+    // Validacion de ownership
+    if(user.role === 'SHELTER' && user.shelterId !== id){
+      return res.status(403).json({
+        message: 'No puede modificar otro refugio'
+      })
+    }
+
     const shelter = await em.findOneOrFail(Shelter, id, { populate: ['address'] })
 
     const data = req.body.sanitizedShelter
@@ -63,6 +71,13 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
+    const user = (req as any).user;
+    // Validacion de ownership
+    if(user.role === 'SHELTER' && user.shelterId !== id){
+      return res.status(403).json({
+        message: 'No puede eliminar otro refugio'
+      })
+    }
     const shelter = em.getReference(Shelter, id)
     await em.removeAndFlush(shelter)
     res.status(200).send({ message: 'character class deleted' })

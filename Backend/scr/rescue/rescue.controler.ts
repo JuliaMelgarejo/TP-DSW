@@ -79,22 +79,28 @@ async function add(req: Request, res: Response) {
         })
       });
 
-    const animalsPayload = Array.isArray(req.body.animals) ? req.body.animals : [];
-      for (const a of animalsPayload) {
-        const animal = trx.create(Animal, {
-          name: a.name,
-          birth_date: a.birth_date ? new Date(a.birth_date) : null,
-          description: a.description ?? '',
-          breed: trx.getReference(Breed, Number(a.breed)),
-          rescueClass: rescue, // ✅ clave
-        });
-
-        rescue.animals.add(animal); // ✅ también lo agregamos al collection
+      const user = (req as any).user;
+      // Validacion de ownership
+      if(user.role === 'SHELTER' && user.shelterId !== rescue.shelters.id){
+        throw new Error('No puede crear rescates para otro refugio')
       }
-    
-    await trx.flush()
-    await trx.populate(rescue, ['animals','animals.breed' ,'shelters', 'address'])
-    return rescue
+
+      const animalsPayload = Array.isArray(req.body.animals) ? req.body.animals : [];
+        for (const a of animalsPayload) {
+          const animal = trx.create(Animal, {
+            name: a.name,
+            birth_date: a.birth_date ? new Date(a.birth_date) : null,
+            description: a.description ?? '',
+            breed: trx.getReference(Breed, Number(a.breed)),
+            rescueClass: rescue, // ✅ clave
+          });
+
+          rescue.animals.add(animal); // ✅ también lo agregamos al collection
+        }
+      
+      await trx.flush()
+      await trx.populate(rescue, ['animals','animals.breed' ,'shelters', 'address'])
+      return rescue
     })
     res.status(201).json({ message: 'rescue created', data: result })
   } catch (error: any) {
@@ -107,6 +113,13 @@ async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
     const input = req.body.sanitizedRescue;
+    const user = (req as any).user;
+    // Validacion de ownership
+    if(user.role === 'SHELTER' && user.shelterId !== input.shelters){
+      return res.status(403).json({
+        message: 'No puede modificar rescates de otro refugio'
+      })
+    }
     const rescue = em.getReference(Rescue, id)
     em.assign(rescue, req.body)
     await em.flush()
@@ -119,6 +132,13 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
+    const user = (req as any).user;
+    // Validacion de ownership
+    if(user.role === 'SHELTER' && user.shelterId !== id){
+      return res.status(403).json({
+        message: 'No puede modificar rescates de otro refugio'
+      })
+    }
     const rescue = em.getReference(Rescue, id)
     await em.removeAndFlush(rescue)
     res.status(200).send({ message: 'rescue deleted' })
