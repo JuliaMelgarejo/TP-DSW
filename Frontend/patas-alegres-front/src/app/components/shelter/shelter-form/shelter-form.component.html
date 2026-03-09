@@ -1,40 +1,65 @@
 <h1> Creacion de un refugio </h1>
-<form [formGroup]="shelterForm" (submit)="postShelter()" class="form-container">
-  <div class="form-fieldset">
-    <label for="name">Nombre</label>
-    <input type="text" id="shelter-name" formControlName="name">
-    <p class="error" *ngIf="shelterForm.get('name')?.invalid && shelterForm.get('name')?.touched">El nombre es obligatorio</p>
-  </div>
-  
-  <div class="form-fieldset">
-    <label for="address">Direccion</label>
-    <input type="text" id="shelter-address" formControlName="address">
-    <p class="error" *ngIf="shelterForm.get('address')?.invalid && shelterForm.get('address')?.touched">La direccion es obligatoria</p>
-  </div>
+<form [formGroup]="ShelterForm" (submit)="postShelter()" class="form-container">
+  <div class = "row">
+    <div class="col-12 col-lg-6">
+      <!-- NAME -->
+      <div class="mb-4 text-center">
+        <label class="form-label fw-semibold">Nombre de tu refugio</label>
+        <input
+          type="text"
+          class="form-control form-control-lg"
+          formControlName="name"
+          placeholder="Ingresar aqui el nombre del refugio"
+        />
+        <p class="error" *ngIf="ShelterForm.get('name')?.invalid && ShelterForm.get('name')?.touched">El nombre del refugio es obligatorio</p>
+      </div>
 
-  <div class="form-fieldset">
-    <label for="max_capacity">Capacidad maxima</label>
-    <input type="number" id="shelter-max_capacity" formControlName="max_capacity">
-    <p class="error" *ngIf="shelterForm.get('max_capacity')?.invalid && shelterForm.get('max_capacity')?.touched">La capacidad es obligatoria</p>
-  </div>
+      <!-- Contacto -->
+      <div class="mb-4 text-center">
+        <label class="form-label fw-semibold">Numero de contacto</label>
+        <input
+          type="text"
+          class="form-control form-control-lg"
+          formControlName="phoneNumber"
+          placeholder="Ingresar aqui el numero de contacto"
+        />
+      </div>
 
-  <div class="form-fieldset">
-    <label for="zone">Zona</label>
-    <select id="shelter-zone" formControlName="zone">
-      <option *ngFor="let zone of zones" [ngValue]="zone">{{ zone.name }}</option>
-    </select>
-    <p class="error" *ngIf="shelterForm.get('zone')?.invalid && shelterForm.get('zone')?.touched">La zona es obligatoria</p>
-  </div>
+      <!-- Veterinaria -->
+      <div class="mb-4 text-center">
+        <label class="form-label fw-semibold">Matricula de veterinaria</label>
+        <input
+          type="text"
+          class="form-control form-control-lg"
+          formControlName="tuitionVet"
+          placeholder="Ingresar aqui la matricula de veterinaria"
+        />
+        <p class="error" *ngIf="ShelterForm.get('tuitionVet')?.invalid && ShelterForm.get('tuitionVet')?.touched">La matricula de veterinaria es obligatoria</p>
+      </div>
 
-  <div class="form-fieldset">
-    <label for="vet">Veterinaria</label>
-    <select id="shelter-vet" formControlName="vet">
-      <option *ngFor="let vet of vets" [ngValue]="vet">{{ vet.name }}</option>
-    </select>
-    <p class="error" *ngIf="shelterForm.get('vet')?.invalid && shelterForm.get('vet')?.touched">La veterinaria es obligatoria</p>
+      <!-- Capacidad maxima -->
+      <div class="mb-4 text-center">
+        <label class="form-label fw-semibold">Capacidad maxima</label>
+        <input
+          type="number"
+          class="form-control form-control-lg"
+          formControlName="max_capacity"
+          placeholder="Ingresar aqui la capacidad maxima del refugio"
+        />
+        <p class="error" *ngIf="ShelterForm.get('max_capacity')?.invalid && ShelterForm.get('max_capacity')?.touched">La capacidad maxima es obligatoria</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+      <div class="form-fieldset mb-3 d-flex flex-column rounded">
+        <app-address-picker
+          [form]="addressForm">
+        </app-address-picker>
+      </div>
+    </div>
   </div>
 
   <div class="form-submit">
-    <button type="submit" [disabled]="shelterForm.invalid">Añadir refugio</button>
+    <button type="submit" [disabled]="ShelterForm.invalid">Añadir refugio</button>
   </div>
 </form>

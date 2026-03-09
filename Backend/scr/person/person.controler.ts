@@ -56,6 +56,13 @@ async function add( req: Request, res: Response ){
 async function update( req: Request, res: Response ){
   try{
     const id = Number.parseInt(req.params.id);
+    const user = (req as any).user;
+    // Validacion de ownership
+    if(user.id !== id){
+      return res.status(403).json({
+        message: 'No puede modificar otro usuario'
+      })
+    }
     const input = req.body.sanitizedPerson;
     const person = em.getReference(Person, id);
     em.assign(person, input);
@@ -70,6 +77,13 @@ async function update( req: Request, res: Response ){
 async function remove( req: Request, res: Response ){
   try{
     const id = Number.parseInt(req.params.id);
+    const user = (req as any).user;
+    // Validacion de ownership
+    if(user.id !== id){
+      return res.status(403).json({
+        message: 'No puede eliminar otro usuario'
+      })
+    }
     const person = em.getReference(Person, id);
     em.removeAndFlush(person);
     res.status(200).json({ message: 'person deleted', data: person });
