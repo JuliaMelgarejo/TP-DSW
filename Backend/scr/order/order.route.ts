@@ -11,6 +11,7 @@ orderRouter.post('/checkout', validateToken, checkout);
 orderRouter.get('/shelter', validateToken, findForShelter);
 orderRouter.get('/shelter/:id', validateToken, findOneForShelter);
 orderRouter.post('/:id/status', validateToken, addStatusForShelter);
+
 orderRouter.get('/:id', validateToken, findOne);
 orderRouter.post('/', validateToken, sanitizeOrderInput, add);
 orderRouter.put('/:id', validateToken, sanitizeOrderInput, update);

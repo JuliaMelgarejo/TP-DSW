@@ -9,7 +9,7 @@ export class OrderStatus extends BaseEntity {
   @Property({nullable: false})
   statusChangeDate!: Date
   
-  @Property({ unique: true})
+  @Property({ nullable: true })
   motive?: string
   
   @ManyToOne(() => OrderState, {nullable: false})

@@ -14,11 +14,11 @@ import { environment } from '../../../../environments/environment.js';
 export class OrderShelterDetailComponent {
   loading = true;
   order: any = null;
-
   saving = false;
 
   states: { id: number; type: string; description?: string }[] = [];
   loadingStates = true;
+
   BACKEND_BASE = environment.url;
 
   constructor(
@@ -28,6 +28,7 @@ export class OrderShelterDetailComponent {
 
   ngOnInit() {
     this.load();
+    this.loadStates();
   }
 
   load() {
@@ -50,6 +51,55 @@ export class OrderShelterDetailComponent {
     });
   }
 
+  loadStates() {
+    this.loadingStates = true;
+
+    this.orderService.getOrderStates().subscribe({
+      next: (res) => {
+        const data = res?.data;
+        console.log('orderState response:', res);
+
+        if (!Array.isArray(data)) {
+          this.states = [];
+          this.loadingStates = false;
+          return;
+        }
+
+        this.states = data
+          .map((s: any) => ({
+            id: Number(s.id),
+            type: String(s.type || '').toUpperCase(),
+            description: s.description ?? ''
+          }))
+          .filter((s: any) => !!s.type);
+
+        this.loadingStates = false;
+        console.log('states parsed:', this.states);
+      },
+      error: (err) => {
+        console.log('orderState error:', err);
+        this.states = [];
+        this.loadingStates = false;
+      }
+    });
+  }
+
+getAvailableStates(): { id: number; type: string; description?: string }[] {
+  const current = String(this.order?.currentState || '').toUpperCase();
+
+  const allowedTransitions: Record<string, string[]> = {
+    PENDIENTE: ['ACEPTADO', 'RECHAZADO'],
+    ACEPTADO: ['ENVIADO', 'RECHAZADO'],
+    ENVIADO: ['ENTREGADO', 'RECHAZADO'],
+    ENTREGADO: [],
+    RECHAZADO: [],
+    CANCELADO: [],
+  };
+
+  const allowed = allowedTransitions[current] ?? [];
+
+  return this.states.filter(s => allowed.includes(String(s.type || '').toUpperCase()));
+}
   getItemPhotoUrl(item: any): string {
     const url = item?.product?.photo;
     if (!url) return 'assets/nophoto.png';
@@ -68,7 +118,6 @@ export class OrderShelterDetailComponent {
     }).subscribe({
       next: () => {
         this.saving = false;
-        // recargar para actualizar currentState + timeline
         this.load();
       },
       error: (err) => {
@@ -80,49 +129,13 @@ export class OrderShelterDetailComponent {
 
   getStatusBadgeClass(type: string): string {
     const t = String(type || '').toUpperCase();
+
     if (t === 'PENDIENTE') return 'text-bg-secondary';
     if (t === 'ACEPTADO') return 'text-bg-primary';
     if (t === 'ENVIADO') return 'text-bg-warning';
     if (t === 'ENTREGADO') return 'text-bg-success';
     if (t === 'CANCELADO') return 'text-bg-danger';
+
     return 'text-bg-dark';
   }
-
-  loadStates() {
-  this.loadingStates = true;
-
-  // ✅ si usás Opción A:
-  // this.orderStateService.getAll().subscribe({
-
-  // ✅ si usás Opción B:
-  this.orderService.getOrderStates().subscribe({
-    next: (res) => {
-      const data = res?.data;
-      console.log('orderState response:', res);
-
-      if (!Array.isArray(data)) {
-        this.states = [];
-        this.loadingStates = false;
-        return;
-      }
-
-      this.states = data
-        .map((s: any) => ({
-          id: Number(s.id),
-          type: String(s.type || '').toUpperCase(),
-          description: s.description ?? ''
-        }))
-        .filter((s: any) => !!s.type);
-
-      this.loadingStates = false;
-      console.log('states parsed:', this.states);
-    },
-    error: (err) => {
-      console.log('orderState error:', err);
-      this.states = [];
-      this.loadingStates = false;
-    }
-  });
-}
-  
 }

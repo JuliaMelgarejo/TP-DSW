@@ -1,4 +1,3 @@
-// order.controller.ts
 import { Request, Response, NextFunction } from 'express';
 import { orm } from '../zshare/db/orm.js';
 import { Order } from './order.entity.js';
@@ -9,6 +8,12 @@ import { OrderState } from '../orderState/orderstate.entity.js';
 import { OrderStatus } from '../orderStatus/orderStatus.entity.js';
 
 const em = orm.em;
+
+// ===========================
+// HELPERS
+// ===========================
+const SHELTER_FORBIDDEN_TARGETS = new Set(['PENDIENTE', 'CANCELADO']);
+const FINAL_STATES = new Set(['ENTREGADO', 'CANCELADO']);
 
 function sanitizeOrderInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedOrder = {
@@ -32,6 +37,7 @@ function sanitizeLineItemInput(req: Request, res: Response, next: NextFunction) 
     fecha: req.body.fecha,
     subtotal: req.body.subtotal,
     id: req.body.id,
+    product: req.body.product,
   };
 
   Object.keys(req.body.sanitizedLineItem).forEach(key => {
@@ -57,29 +63,65 @@ function getLatestStateType(o: any): string {
       new Date(b?.statusChangeDate ?? 0).getTime() - new Date(a?.statusChangeDate ?? 0).getTime()
   )[0];
 
-  return latest?.orderState?.type ?? 'PENDIENTE';
+  return String(latest?.orderState?.type || 'PENDIENTE').toUpperCase();
 }
 
+const ALLOWED_TRANSITIONS_BY_SHELTER: Record<string, string[]> = {
+  PENDIENTE: ['ACEPTADO', 'RECHAZADO'],
+  ACEPTADO: ['ENVIADO'],
+  ENVIADO: ['ENTREGADO'],
+  ENTREGADO: [],
+  RECHAZADO: [],
+  CANCELADO: [],
+};
+
+function validateShelterOrderTransition(current: string, next: string): { ok: boolean; message?: string; statusCode?: number } {
+  if (current === next) {
+    return {
+      ok: false,
+      message: `La orden ya está en estado ${current}`,
+      statusCode: 409,
+    };
+  }
+
+  const allowed = ALLOWED_TRANSITIONS_BY_SHELTER[current] ?? [];
+
+  if (!allowed.includes(next)) {
+    return {
+      ok: false,
+      message: `No se puede cambiar de ${current} a ${next}`,
+      statusCode: 409,
+    };
+  }
+
+  return { ok: true };
+}
+// ===========================
+// CRUD BÁSICO
+// ===========================
 async function findAll(req: Request, res: Response) {
   try {
     const orders = await em.find(Order, {}, {
       populate: ['items', 'orderStatus', 'person']
     });
-    res.status(200).json({ message: 'all orders', data: orders });
-  } catch (e:any) {
-    res.status(500).json({ message: e.message });
+
+    return res.status(200).json({ message: 'all orders', data: orders });
+  } catch (e: any) {
+    return res.status(500).json({ message: e.message });
   }
 }
 
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
+
     const order = await em.findOneOrFail(Order, id, {
       populate: ['items', 'orderStatus', 'person']
     });
-    res.status(200).json({ message: 'order data', data: order });
-  } catch (e:any) {
-    res.status(404).json({ message: e.message });
+
+    return res.status(200).json({ message: 'order data', data: order });
+  } catch (e: any) {
+    return res.status(404).json({ message: e.message });
   }
 }
 
@@ -87,10 +129,12 @@ async function add(req: Request, res: Response) {
   try {
     const input = req.body.sanitizedOrder;
     const order = em.create(Order, input);
+
     await em.flush();
-    res.status(201).json({ message: 'order created', data: order });
-  } catch (e:any) {
-    res.status(500).json({ message: e.message });
+
+    return res.status(201).json({ message: 'order created', data: order });
+  } catch (e: any) {
+    return res.status(500).json({ message: e.message });
   }
 }
 
@@ -99,11 +143,13 @@ async function update(req: Request, res: Response) {
     const id = Number(req.params.id);
     const input = req.body.sanitizedOrder;
     const order = em.getReference(Order, id);
+
     em.assign(order, input);
     await em.flush();
-    res.status(200).json({ message: 'order updated', data: order });
-  } catch (e:any) {
-    res.status(500).json({ message: e.message });
+
+    return res.status(200).json({ message: 'order updated', data: order });
+  } catch (e: any) {
+    return res.status(500).json({ message: e.message });
   }
 }
 
@@ -111,13 +157,18 @@ async function remove(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
     const order = em.getReference(Order, id);
+
     await em.removeAndFlush(order);
-    res.status(200).json({ message: 'order deleted' });
-  } catch (e:any) {
-    res.status(500).json({ message: e.message });
+
+    return res.status(200).json({ message: 'order deleted' });
+  } catch (e: any) {
+    return res.status(500).json({ message: e.message });
   }
 }
 
+// ===========================
+// LINE ITEMS
+// ===========================
 async function addLineItem(req: Request, res: Response) {
   try {
     const orderId = Number(req.params.id);
@@ -134,9 +185,10 @@ async function addLineItem(req: Request, res: Response) {
     order.total += item.subtotal;
 
     await em.flush();
-    res.status(201).json({ message: 'item agregado', data: item });
-  } catch (e:any) {
-    res.status(400).json({ message: e.message });
+
+    return res.status(201).json({ message: 'item agregado', data: item });
+  } catch (e: any) {
+    return res.status(400).json({ message: e.message });
   }
 }
 
@@ -145,29 +197,32 @@ async function removeLineItem(req: Request, res: Response) {
     const itemId = Number(req.params.itemId);
     const item = await em.findOneOrFail(LineItemOrder, itemId, {
       populate: ['order']
-});
+    });
 
     item.order.total -= item.subtotal;
     await em.removeAndFlush(item);
 
-    res.status(200).json({ message: 'item eliminado' });
-  } catch (e:any) {
-    res.status(400).json({ message: e.message });
+    return res.status(200).json({ message: 'item eliminado' });
+  } catch (e: any) {
+    return res.status(400).json({ message: e.message });
   }
 }
 
-
+// ===========================
+// CHECKOUT USER
+// ===========================
 async function checkout(req: Request, res: Response) {
   try {
     const personId = Number((req as any).user?.personId);
-    if (!personId) return res.status(401).json({ message: 'Token sin personId' });
+    if (!personId) {
+      return res.status(401).json({ message: 'Token sin personId' });
+    }
 
     const items = req.body?.items as { productId: number; qty: number }[];
     if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ message: 'items es requerido' });
     }
 
-    // 1) Crear order (sin total por ahora)
     const order = em.create(Order, {
       fecha: new Date(),
       total: 0,
@@ -176,7 +231,6 @@ async function checkout(req: Request, res: Response) {
 
     let total = 0;
 
-    // 2) Recorrer items: validar stock, calcular subtotal, crear line items, descontar stock
     for (const it of items) {
       const productId = Number(it.productId);
       const qty = Number(it.qty);
@@ -185,7 +239,6 @@ async function checkout(req: Request, res: Response) {
         return res.status(400).json({ message: 'Item inválido' });
       }
 
-      // Traer producto con precio activo
       const product = await em.findOne(
         Product,
         { id: productId },
@@ -201,14 +254,12 @@ async function checkout(req: Request, res: Response) {
         return res.status(400).json({ message: `Producto "${product.name}" sin precio activo` });
       }
 
-      // ✅ Validar stock
       if (product.stock < qty) {
         return res.status(409).json({
           message: `Stock insuficiente para "${product.name}". Disponible: ${product.stock}, pedido: ${qty}`,
         });
       }
 
-      // ✅ Descontar stock
       product.stock = product.stock - qty;
 
       const subtotal = Number(activePrice.amount) * qty;
@@ -219,38 +270,30 @@ async function checkout(req: Request, res: Response) {
         fecha: new Date(),
         subtotal,
         order,
-        product, // relación ManyToOne
+        product,
       });
 
       order.items.add(lineItem);
     }
 
-    // 3) Set total y persistir order + items (cascade)
     order.total = total;
 
     await em.persistAndFlush(order);
 
-    // ==========================================================
-    // ✅ 4) ACÁ VA EL STATUS INICIAL (igual a Adoption)
-    // ==========================================================
-    const pending =
-      (await em.findOne(OrderState, { type: 'PENDIENTE' })) ??
-      (await em.findOne(OrderState, { type: 'pendiente' }));
-
+    const pending = await em.findOne(OrderState, { type: 'PENDIENTE' });
     if (!pending) {
       return res.status(500).json({ message: 'No existe OrderState PENDIENTE precargado' });
     }
 
-    const s = em.create(OrderStatus, {
+    const status = em.create(OrderStatus, {
       statusChangeDate: new Date(),
       motive: 'Pedido creado',
       order,
       orderState: pending,
     });
 
-    await em.persistAndFlush(s);
+    await em.persistAndFlush(status);
 
-    // 5) (Opcional) devolver la order con populate
     const created = await em.findOneOrFail(
       Order,
       { id: order.id },
@@ -272,37 +315,62 @@ async function checkout(req: Request, res: Response) {
   }
 }
 
-//manejo de estados del pedido y filtrado por shelter  
+// ===========================
+// SHELTER: CAMBIAR ESTADO
+// ===========================
 async function addStatusForShelter(req: Request, res: Response) {
   try {
     const orderId = Number(req.params.id);
-    if (Number.isNaN(orderId)) return res.status(400).json({ message: 'ID inválido' });
+    if (Number.isNaN(orderId)) {
+      return res.status(400).json({ message: 'ID inválido' });
+    }
 
     const role = String((req as any).user?.role || '').toUpperCase();
     const shelterId = Number((req as any).user?.shelterId);
 
-    if (role !== 'SHELTER') return res.status(403).json({ message: 'No autorizado' });
-    if (!shelterId) return res.status(401).json({ message: 'Token sin shelterId' });
+    if (role !== 'SHELTER') {
+      return res.status(403).json({ message: 'No autorizado' });
+    }
+
+    if (!shelterId) {
+      return res.status(401).json({ message: 'Token sin shelterId' });
+    }
 
     const { type, motive } = req.body;
     const nextType = String(type || '').toUpperCase();
-    if (!nextType) return res.status(400).json({ message: 'type requerido' });
 
-    // Traigo la orden y verifico que tenga items de este shelter
+    if (!nextType) {
+      return res.status(400).json({ message: 'type requerido' });
+    }
+
     const order = await em.findOne(
       Order,
       { id: orderId, items: { product: { shelter: shelterId as any } } } as any,
-      { populate: ['orderStatus', 'orderStatus.orderState', 'items', 'items.product', 'items.product.shelter'] }
+      {
+        populate: [
+          'orderStatus',
+          'orderStatus.orderState',
+          'items',
+          'items.product',
+          'items.product.shelter',
+        ],
+      }
     );
 
-    if (!order) return res.status(404).json({ message: 'Orden no encontrada para este shelter' });
+    if (!order) {
+      return res.status(404).json({ message: 'Orden no encontrada para este shelter' });
+    }
+
+    const current = String(getLatestStateType(order) || '').toUpperCase();
+    const transition = validateShelterOrderTransition(current, nextType);
+
+    if (!transition.ok) {
+      return res.status(transition.statusCode || 400).json({ message: transition.message });
+    }
 
     const state = await em.findOne(OrderState, { type: nextType });
-    if (!state) return res.status(400).json({ message: `OrderState ${nextType} no existe` });
-
-    const current = getLatestStateType(order);
-    if (current === state.type) {
-      return res.status(409).json({ message: `La orden ya está en estado ${current}` });
+    if (!state) {
+      return res.status(400).json({ message: `OrderState ${nextType} no existe` });
     }
 
     const status = em.create(OrderStatus, {
@@ -316,20 +384,31 @@ async function addStatusForShelter(req: Request, res: Response) {
 
     return res.status(201).json({
       message: 'order status created',
-      data: { orderId: order.id, currentState: state.type }
+      data: {
+        orderId: order.id,
+        currentState: state.type,
+      },
     });
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }
 }
 
+// ===========================
+// SHELTER: LISTA DE ÓRDENES
+// ===========================
 async function findForShelter(req: Request, res: Response) {
   try {
     const role = String((req as any).user?.role || '').toUpperCase();
     const shelterId = Number((req as any).user?.shelterId);
 
-    if (role !== 'SHELTER') return res.status(403).json({ message: 'No autorizado' });
-    if (!shelterId) return res.status(401).json({ message: 'Token sin shelterId' });
+    if (role !== 'SHELTER') {
+      return res.status(403).json({ message: 'No autorizado' });
+    }
+
+    if (!shelterId) {
+      return res.status(401).json({ message: 'Token sin shelterId' });
+    }
 
     const orders = await em.find(
       Order,
@@ -366,8 +445,8 @@ async function findForShelter(req: Request, res: Response) {
           id: li.product?.id,
           name: li.product?.name,
           photo: li.product?.photos?.[0]?.url ?? null,
-        }
-      }))
+        },
+      })),
     }));
 
     return res.status(200).json({ message: 'shelter orders', data });
@@ -376,16 +455,27 @@ async function findForShelter(req: Request, res: Response) {
   }
 }
 
+// ===========================
+// SHELTER: DETALLE DE ORDEN
+// ===========================
 async function findOneForShelter(req: Request, res: Response) {
   try {
     const orderId = Number(req.params.id);
-    if (Number.isNaN(orderId)) return res.status(400).json({ message: 'ID inválido' });
+    if (Number.isNaN(orderId)) {
+      return res.status(400).json({ message: 'ID inválido' });
+    }
 
     const role = String((req as any).user?.role || '').toUpperCase();
     const shelterId = Number((req as any).user?.shelterId);
 
-    if (role !== 'SHELTER') return res.status(403).json({ message: 'No autorizado' });
-    if (!shelterId) return res.status(401).json({ message: 'Token sin shelterId' });
+    if (role !== 'SHELTER') {
+      return res.status(403).json({ message: 'No autorizado' });
+    }
+
+    if (!shelterId) {
+      return res.status(401).json({ message: 'Token sin shelterId' });
+    }
+
     const order = await em.findOne(
       Order,
       { id: orderId, items: { product: { shelter: shelterId as any } } } as any,
@@ -402,7 +492,10 @@ async function findOneForShelter(req: Request, res: Response) {
       }
     );
 
-    if (!order) return res.status(404).json({ message: 'Orden no encontrada para este shelter' });
+    if (!order) {
+      return res.status(404).json({ message: 'Orden no encontrada para este shelter' });
+    }
+
     const allItems = order.items.getItems ? order.items.getItems() : (order as any).items;
     const shelterItems = allItems.filter((li: any) => Number(li?.product?.shelter?.id) === shelterId);
 
@@ -424,14 +517,15 @@ async function findOneForShelter(req: Request, res: Response) {
           id: li.product?.id,
           name: li.product?.name,
           photo: li.product?.photos?.[0]?.url ?? null,
-        }
+        },
       })),
       timeline: getStatusesArray(order)
         .map((s: any) => ({
           id: s.id,
           date: s.statusChangeDate,
           motive: s.motive ?? '',
-          type: s.orderState?.type ?? '—'
+          type: s.orderState?.type ?? '—',
+          description: s.orderState?.description ?? '',
         }))
         .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime()),
     };
@@ -442,5 +536,18 @@ async function findOneForShelter(req: Request, res: Response) {
   }
 }
 
-
-export {findAll,findOne,add,update,remove,addLineItem,removeLineItem,sanitizeOrderInput,sanitizeLineItemInput,checkout, findForShelter, addStatusForShelter, findOneForShelter};
+export {
+  findAll,
+  findOne,
+  add,
+  update,
+  remove,
+  addLineItem,
+  removeLineItem,
+  sanitizeOrderInput,
+  sanitizeLineItemInput,
+  checkout,
+  findForShelter,
+  addStatusForShelter,
+  findOneForShelter,
+};
