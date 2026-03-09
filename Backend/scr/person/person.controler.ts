@@ -58,7 +58,7 @@ async function update( req: Request, res: Response ){
     const id = Number.parseInt(req.params.id);
     const user = (req as any).user;
     // Validacion de ownership
-    if(user.id !== id){
+    if(user.personId !== id){
       return res.status(403).json({
         message: 'No puede modificar otro usuario'
       })
@@ -79,7 +79,7 @@ async function remove( req: Request, res: Response ){
     const id = Number.parseInt(req.params.id);
     const user = (req as any).user;
     // Validacion de ownership
-    if(user.id !== id){
+    if(user.personId !== id){
       return res.status(403).json({
         message: 'No puede eliminar otro usuario'
       })
