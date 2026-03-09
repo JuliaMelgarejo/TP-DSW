@@ -24,7 +24,7 @@ async function findAll(req: Request, res: Response) {
         'breed',
         'user',
         'photos',
-        'rescueClass.city',
+        'rescueClass.address',
         'rescueClass.shelters',
       ],
     });
@@ -48,7 +48,7 @@ async function findOne(req: Request, res: Response) {
       const animal = (req as any).animal;
 
       // si querés el populate completo:
-      await em.populate(animal, ['rescueClass', 'breed', 'user', 'photos', 'rescueClass.city', 'rescueClass.shelters']);
+      await em.populate(animal, ['rescueClass', 'breed', 'user', 'photos', 'rescueClass.address', 'rescueClass.shelters']);
 
       return res.status(200).json({ data: animal });
     }
@@ -58,7 +58,7 @@ async function findOne(req: Request, res: Response) {
     const animal = await em.findOneOrFail(
       Animal,
       { id },
-      { populate: ['rescueClass', 'breed', 'user', 'photos', 'rescueClass.city', 'rescueClass.shelters'] }
+      { populate: ['rescueClass', 'breed', 'user', 'photos', 'rescueClass.address', 'rescueClass.shelters'] }
     );
 
     return res.status(200).json({ data: animal });

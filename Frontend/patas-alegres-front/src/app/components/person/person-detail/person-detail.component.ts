@@ -6,17 +6,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PersonService } from '../../../services/person/person.service.js';
 import { AuthService } from '../../../services/auth/auth.service.js';
 import { ErrorService } from '../../../services/errors/error.service.js';
-import { Province } from '../../../models/province/province.module.js';
-import { Country } from '../../../models/country/country.module.js';
-import { CountryService } from '../../../services/country/country.service.js';
-import { ProvinceService } from '../../../services/province/province.service.js';
-import { CityService } from '../../../services/city/city.service.js';
-import { City } from '../../../models/city/city.module.js';
+import { AddressPickerComponent } from "../../shared/address-picker/address-picker.component";
 
 @Component({
   selector: 'app-person-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, AddressPickerComponent],
   templateUrl: './person-detail.component.html',
   styleUrl: './person-detail.component.css'
 })
@@ -24,9 +19,6 @@ export class PersonDetailComponent {
   selectedPerson: Person | any;
   PersonForm: FormGroup;
   documentTypes: { value: string, label: string }[] = [];
-  cities: City[] = [];
-  provinces: Province[] = [];
-  countries: Country[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -35,9 +27,6 @@ export class PersonDetailComponent {
     public errorService: ErrorService,
     public personService: PersonService,
     public auth: AuthService,
-    public cityService: CityService,
-    public provinceService: ProvinceService,
-    public countryService: CountryService
   ) {
     this.PersonForm = this.fb.group({
       name: ['', Validators.required],
@@ -47,19 +36,25 @@ export class PersonDetailComponent {
       email: ['', Validators.email],
       phoneNumber: [''],
       birthdate: ['', Validators.required],
-      street: ['', Validators.required],
-      number_street: [0, Validators.required],
       nroCuit: [''],
-      country: [{ value: null, disabled: true }, Validators.required],
-      province: [{ value: null, disabled: true }, Validators.required],
-      city: [{ value: null, disabled: true }, Validators.required],
+      address: new FormGroup({
+        latitude: new FormControl('', [Validators.required]),
+        longitude: new FormControl('', [Validators.required]),
+        province: new FormControl(''),
+        city: new FormControl(''),
+        formattedAddress: new FormControl(''),
+        placeId: new FormControl(''),
+        street: new FormControl(''),
+        streetNumber: new FormControl(''),
+        postalCode: new FormControl(''),
+        country: new FormControl('')
+      })
     });
   }
 
   ngOnInit(): void {
     const idFromRoute = this.route.snapshot.paramMap.get('id');
     const id = idFromRoute ? Number(idFromRoute) : this.auth.getUserIdToken();
-    this.loadCountries();
     if (id) {
       this.getPerson(id);
     }
@@ -82,13 +77,20 @@ export class PersonDetailComponent {
           phoneNumber: this.selectedPerson.phoneNumber,
           birthdate: this.selectedPerson.birthdate,
           nroCuit: this.selectedPerson.nroCuit,
-          street: this.selectedPerson.street,
-          number_street: this.selectedPerson.number_street,
-          country: [{ value: null, disabled: true }, Validators.required],
-          province: [{ value: null, disabled: true }, Validators.required],
-          city: [{ value: null, disabled: true }, Validators.required],
+          address: {
+            latitude: this.selectedPerson.address?.latitude,
+            longitude: this.selectedPerson.address?.longitude,
+            formattedAddress: this.selectedPerson.address?.formattedAddress,
+            placeId: this.selectedPerson.address?.placeId,
+            street: this.selectedPerson.address?.street,
+            streetNumber: this.selectedPerson.address?.streetNumber,
+            city: this.selectedPerson.address?.city,
+            province: this.selectedPerson.address?.province,
+            postalCode: this.selectedPerson.address?.postalCode,
+            country: this.selectedPerson.address?.country
+          }
         });
-        this.loadLocationHierarchy(this.selectedPerson.city);
+        this.addressForm.updateValueAndValidity({ emitEvent: true });
       },
       error: (error) => {
         alert('Ups, ocurrio un error: ' + error.message);
@@ -113,93 +115,7 @@ export class PersonDetailComponent {
     })
   }
 
-  loadCountries() {
-    this.countryService.getCountries().subscribe({
-      next: (data) => {
-        this.countries = data.data;
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-  
-  onCountryChange() {
-    const countryId = this.PersonForm.get('country')?.value;
-
-    this.PersonForm.get('province')?.reset();
-    this.PersonForm.get('city')?.reset();
-
-    this.PersonForm.get('province')?.enable();
-    this.PersonForm.get('city')?.disable();
-
-    this.cities = [];
-
-    this.provinceService.getByCountry(countryId).subscribe({
-      next: (data) => {
-        this.provinces = data.data;
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-
-  onProvinceChange() {
-    const provinceId = this.PersonForm.get('province')?.value;
-
-    this.PersonForm.get('city')?.reset();
-    this.PersonForm.get('city')?.enable();
-
-    this.cityService.getByProvince(provinceId).subscribe({
-      next: (res) => {
-        this.cities = res.data;
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-
-  loadLocationHierarchy(cityId: number) {
-    this.cityService.getCity(cityId).subscribe({
-      next: (res) => {
-        const city = res.data;
-
-        this.provinceService.getProvince(city.province).subscribe({
-          next: (res) => {
-            const province = res.data;
-
-            // Habilitamos controles en orden
-            this.PersonForm.get('country')?.enable();
-            this.PersonForm.get('province')?.enable();
-            this.PersonForm.get('city')?.enable();
-
-            // Seteamos valores
-            this.PersonForm.patchValue({
-              country: province.country,
-              province: province.id,
-              city: city.id
-            });
-
-            // Cargamos listas
-            this.provinceService.getByCountry(province.country).subscribe({
-              next: (data) => {
-                this.provinces = data.data;
-              }
-            });
-
-            this.cityService.getByProvince(province.id).subscribe({
-              next: (data) => {
-                this.cities = data.data;
-              }
-            });
-          }
-        });
-      },
-      error: (error) => {
-        console.log('Error al obtener la ciudad:', error);
-      }
-    });
+  get addressForm(): FormGroup {
+    return this.PersonForm.get('address') as FormGroup;
   }
 }

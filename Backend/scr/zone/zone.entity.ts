@@ -13,7 +13,4 @@ import { Shelter } from "../shelter/shelter.entity.js";
 export class Zone extends BaseEntity{
   @Property({nullable: false})
   name!: string
-
-  @OneToMany (() => Shelter, (shelter) => shelter.zone, {cascade: [Cascade.ALL]})
-  shelters = new Collection<Shelter>(this)
 }

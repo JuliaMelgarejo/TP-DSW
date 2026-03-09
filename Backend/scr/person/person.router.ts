@@ -13,8 +13,8 @@ import { validateToken } from "../validate-token/validate-token.routes.js";
 
 export const personRouter = Router();
 
-personRouter.get('/:doc_type/:doc_nro', validateToken,sanitizePersonInput, findOneByDoc)
-personRouter.get('/document-types', validateToken, getDocumentTypes);
+personRouter.get('/:doc_type/:doc_nro', validateToken, sanitizePersonInput, findOneByDoc)
+personRouter.get('/document-types', getDocumentTypes);
 personRouter.get('/:id',validateToken, findOne)
 personRouter.get('/',validateToken ,findAll)
 personRouter.put('/:id',validateToken, sanitizePersonInput, update)

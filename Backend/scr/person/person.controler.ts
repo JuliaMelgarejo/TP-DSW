@@ -19,7 +19,7 @@ async function findAll( req: Request, res: Response ){
 async function findOne( req: Request, res: Response ){
   try{
     const id = Number.parseInt(req.params.id);
-    const person = await em.findOneOrFail(Person, { id: id });
+    const person = await em.findOneOrFail(Person, { id: id }, { populate: ['address'] });
     res.status(200).json({message: 'person data: ', data: person});
   } catch (error: any){
     res.status(500).json({message: error.message});
@@ -87,10 +87,19 @@ function sanitizePersonInput(req: Request, res: Response, next: NextFunction) {
     email: req.body.email,
     phoneNumber: req.body.phoneNumber,
     birthdate: req.body.birthdate,
-    street: req.body.street,
-    number_street: req.body.number_street,
-    city: req.body.city,
     nroCuit: req.body.nroCuit,
+    address: {
+      latitude: req.body.address.latitude,
+      longitude: req.body.address.longitude,
+      formattedAddress: req.body.address.formattedAddress,
+      placeId: req.body.address.placeId,
+      street: req.body.address.street,
+      streetNumber: req.body.address.streetNumber,
+      city: req.body.address.city,
+      postalCode: req.body.address.postalCode,
+      province: req.body.address.province,
+      country: req.body.address.country,
+    }
   };
 
   if (req.body.sanitizedPerson) {

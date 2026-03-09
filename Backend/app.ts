@@ -15,14 +15,12 @@ import { adoptionRouter } from './scr/adoption/adoption.router.js';
 import { userRouter } from './scr/user/user.routes.js';
 import path from 'path';
 import { photoRouter } from './scr/photo/photo.router.js';
-import { cityRouter } from './scr/city/city.router.js';
-import { provinceRouter } from './scr/province/province.router.js';
-import { countryRouter } from './scr/country/country.router.js';
 import { productRouter } from './scr/product/product.router.js';
 import { categoryRouter } from './scr/productCategory/productoCategory.router.js';
 import { adoptionStateRouter } from './scr/adoptionState/adoptionState.router.js';
 import { adoptionStatusRouter } from './scr/adoptionStatus/adoptionStatus.router.js';
 import { orderRouter } from './scr/order/order.route.js';
+import { addressRouter } from './scr/address/address.router.js';
 
 const app = express();
 app.use(express.json());
@@ -54,15 +52,12 @@ app.use('/api/adoption', adoptionRouter)
 app.use('/api/user', userRouter)
 app.use('/api/login', userRouter)
 app.use('/api/photo', photoRouter);
-app.use('/api/city', cityRouter)
-app.use('/api/province', provinceRouter)
-app.use('/api/country', countryRouter )
 app.use('/api/product', productRouter)
 app.use('/api/category', categoryRouter)
 app.use("/api/adoptionState", adoptionStateRouter);
 app.use('/api/adoptionStatus', adoptionStatusRouter);
 app.use('/api/order', orderRouter);
-
+app.use('/api/address', addressRouter);
 
 await syncSchema() //never in production*/
 

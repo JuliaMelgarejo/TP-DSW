@@ -9,7 +9,6 @@
         <p class="card-text" *ngIf="person.email">email: {{ person.email }}</p>
         <p class="card-text" *ngIf="person.phoneNumber">telefono: {{ person.phoneNumber }}</p>
         <p class="card-text">fecha de nacimiento: {{ person.birthdate | date: 'dd/MM/yyyy' }}</p>
-        <p class="card-text">Domicilio: {{ person.street }}</p>
         <p class="card-text" *ngIf="person.nroCuit">CUIT: {{ person.nroCuit.toString() }}</p>
         <a *ngIf="person.id" [routerLink]="person.id.toString()" class="btn btn-primary">Editar</a>
         <div class="pl-3">

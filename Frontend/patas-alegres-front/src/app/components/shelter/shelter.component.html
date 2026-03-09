@@ -6,7 +6,6 @@
         <h5 class="card-title">{{ shelter.name }}</h5>
         <p class="card-text">Direccion: {{ shelter.address }}</p><br>
         <p class="card-text">capacidad maxima: {{shelter.max_capacity }}</p><br>
-        <p class="card-text">Zona: {{shelter.zone.name }}</p><br>
         <a *ngIf="shelter.id" [routerLink]="shelter.id.toString()" class="btn btn-primary">Editar</a>
         <div class="pl-3">
           <button class="btn btn-danger" *ngIf="shelter.id !== undefined" (click)="deleteShelter(shelter.id!)">Eliminar</button>
