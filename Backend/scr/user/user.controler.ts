@@ -78,7 +78,7 @@ async function newUser(req: Request, res: Response) {
     }
   } catch (error) {
       res.status(400).json({
-      msg: 'Upps ocurrio un error',
+      msg: 'Upps ocurrio un error' + error,
       error,
       person,
     })
@@ -122,7 +122,7 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
     username: req.body.username,
     password: req.body.password,
     role: req.body.role,
-    person: req.body.shelter ? {
+    person: req.body.person ? {
       name: req.body.person.name,
       surname: req.body.person.surname,
       doc_nro: req.body.person.doc_nro,

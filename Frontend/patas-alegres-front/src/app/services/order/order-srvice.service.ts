@@ -7,7 +7,15 @@ export class OrderService {
   private baseUrl = environment.url;
 
   constructor(private http: HttpClient) {}
-  
+
+  getMyOrders() {
+    return this.http.get<any>(`${this.baseUrl}/api/order/mine`);
+  }
+
+  getMyOrderDetail(id: number) {
+    return this.http.get<any>(`${this.baseUrl}/api/order/mine/${id}`);
+  }
+
   getShelterOrders() {
     return this.http.get<any>(`${this.baseUrl}/api/order/shelter`);
   }

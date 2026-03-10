@@ -12,16 +12,34 @@ import { OrderService } from '../../../services/order/order-srvice.service';
 export class OrderShelterComponent {
   loading = true;
   orders: any[] = [];
+  role = '';
 
   constructor(private orderService: OrderService) {}
 
   ngOnInit() {
+    this.loadRole();
     this.load();
+  }
+
+  loadRole() {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      this.role = '';
+      return;
+    }
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      this.role = String(payload?.role || '').toUpperCase();
+    } catch {
+      this.role = '';
+    }
   }
 
   load() {
     this.loading = true;
-    this.orderService.getShelterOrders().subscribe({
+    this.orderService.getMyOrders().subscribe({
       next: (res) => {
         this.orders = res.data || [];
         this.loading = false;
@@ -40,12 +58,19 @@ export class OrderShelterComponent {
     if (t === 'ENVIADO') return 'text-bg-warning';
     if (t === 'ENTREGADO') return 'text-bg-success';
     if (t === 'CANCELADO') return 'text-bg-danger';
+    if (t === 'RECHAZADO') return 'text-bg-danger';
     return 'text-bg-dark';
   }
 
-  // opcional: resumen de items para mostrar "x productos"
   getItemsCount(o: any): number {
-    const items = o?.items ?? [];
-    return Array.isArray(items) ? items.length : 0;
+    return Number(o?.itemsCount || 0);
+  }
+
+  isShelter(): boolean {
+    return this.role === 'SHELTER';
+  }
+
+  isUser(): boolean {
+    return this.role === 'USER';
   }
 }
