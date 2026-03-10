@@ -1,24 +1,23 @@
 <div class="pa-page">
   <div class="container-fluid px-3">
 
-        <!-- HEADER -->
     <div class="position-relative mb-4">
-
-      <!-- Título centrado -->
       <div class="text-center">
-        <div class="pa-h2">Lista de de animales esperando TU rescate</div>
+        <div class="pa-h2">{{ getTitle() }}</div>
         <div class="pa-muted pa-small">
-          lista de animales
+          {{ getSubtitle() }}
         </div>
       </div>
 
-      <!-- Botón Volver a la derecha -->
       <div class="position-absolute top-0 end-0">
-        <a class="pa-btn pa-btn-outline" routerLink="/home">
+        <a class="pa-btn pa-btn-outline" [routerLink]="getBackLink()">
           Volver
         </a>
       </div>
+    </div>
 
+    <div *ngIf="loading" class="pa-muted text-center mb-3">
+      Cargando...
     </div>
 
     <div class="row g-3">

@@ -134,4 +134,35 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { findAll, findOne, add, update, remove };
+async function findByShelter(req: Request, res: Response) {
+  try {
+    const shelterId = Number(req.params.shelterId);
+
+    if (!shelterId || Number.isNaN(shelterId)) {
+      return res.status(400).json({ message: 'shelterId inválido' });
+    }
+
+    const animals = await em.find(
+      Animal,
+      { rescueClass: { shelters: shelterId as any } } as any,
+      {
+        populate: [
+          'rescueClass',
+          'breed',
+          'user',
+          'photos',
+          'rescueClass.address',
+          'rescueClass.shelters',
+        ],
+      }
+    );
+
+    return res.status(200).json({ message: 'found animals by shelter', data: animals });
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+
+
+export { findAll, findOne, add, update, remove, findByShelter };
