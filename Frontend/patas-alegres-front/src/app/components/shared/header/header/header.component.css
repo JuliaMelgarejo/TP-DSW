@@ -1,28 +1,11 @@
-/* Header siempre por arriba */
+/* Header sticky */
 .pa-header{
   position: sticky;
   top: 0;
-  z-index: 2000; /* más alto que cards */
+  z-index: 1020; /* Bootstrap sticky navbar level */
 }
 
-/* nav en contexto */
-.pa-nav{
-  position: relative;
-  z-index: 2000;
-}
-
-/* Drawer arriba de todo el contenido */
-.pa-mobile-drawer{
-  z-index: 2100;
-}
-
-/* Backdrop arriba del contenido pero abajo del drawer */
-.pa-backdrop{
-  z-index: 2050;
-}
-
-
-/* Container del nav */
+/* Navbar container */
 .pa-nav{
   position: relative;
 }
@@ -44,21 +27,23 @@
   border-radius: 10px;
   transition: .2s ease;
 }
+
 .pa-nav-link:hover{
   color: var(--pa-primary-dark);
   background: rgba(255,255,255,.55);
 }
+
 .pa-nav-active{
   color: var(--pa-primary-dark);
   background: rgba(255,255,255,.65);
 }
 
-/* Logout desktop (rojo como tu mock) */
+/* Logout */
 .pa-logout{
   color: var(--pa-danger);
 }
 
-/* Botones ícono (mobile) */
+/* Botón icono mobile */
 .pa-icon-btn{
   width: 38px;
   height: 38px;
@@ -70,16 +55,18 @@
   justify-content: center;
   cursor: pointer;
 }
+
 .pa-icon-btn:hover{
   border-color: var(--pa-primary);
 }
 
-/* Drawer mobile */
+/* Drawer mobile (no competir con offcanvas) */
 .pa-mobile-drawer{
   display: none;
 }
 
 @media (max-width: 991.98px){
+
   .pa-mobile-drawer{
     display: block;
     position: absolute;
@@ -93,7 +80,6 @@
     opacity: 0;
     pointer-events: none;
     transition: .2s ease;
-    z-index: 50;
   }
 
   .pa-mobile-drawer.is-open{
@@ -118,25 +104,27 @@
   }
 
   .pa-mobile-active{
-    background: rgba(107,46,58,.1); /* tint borgoña */
+    background: rgba(107,46,58,.1);
     color: var(--pa-primary-dark);
   }
+
 }
 
-/* Backdrop para mobile */
+/* backdrop propio (si lo usas) */
 .pa-backdrop{
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,.25);
-  z-index: 40;
+  z-index: 1010; /* debajo del navbar */
 }
 
-/* Botón danger (si no lo tenés aún en global styles) */
+/* botón danger */
 .pa-btn-danger{
   background: var(--pa-danger);
   border-color: var(--pa-danger);
   color: #fff;
 }
+
 .pa-btn-danger:hover{
   filter: brightness(.95);
 }
