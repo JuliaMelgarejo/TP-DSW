@@ -104,7 +104,7 @@ async function add( req: Request, res: Response ){
     const input = req.body.sanitizedProduct;
     const { price, ...productData } = input;
     const product = em.create(Product, productData);
-
+    console.log(product);
     const newPrice = em.create(Price, {
       amount: price,
       startDate: new Date(),

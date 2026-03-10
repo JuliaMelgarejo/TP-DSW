@@ -1,6 +1,6 @@
 // order.routes.ts
 import { Router } from "express";
-import {findAll,findOne,add,update,remove,checkout,addLineItem,removeLineItem,sanitizeOrderInput,sanitizeLineItemInput, findForShelter, addStatusForShelter, findOneForShelter,
+import {findAll,findOne,add,update,remove,checkout,addLineItem,removeLineItem,sanitizeOrderInput,sanitizeLineItemInput, findForShelter, addStatusForShelter, findOneForShelter, findMine, findOneMine,
 } from "./order.controller.js";
 import { validateToken } from "../validate-token/validate-token.routes.js";
 
@@ -8,6 +8,8 @@ export const orderRouter = Router();
 
 orderRouter.get('/', validateToken, findAll);
 orderRouter.post('/checkout', validateToken, checkout);
+orderRouter.get('/mine', validateToken, findMine);
+orderRouter.get('/mine/:id', validateToken, findOneMine);
 orderRouter.get('/shelter', validateToken, findForShelter);
 orderRouter.get('/shelter/:id', validateToken, findOneForShelter);
 orderRouter.post('/:id/status', validateToken, addStatusForShelter);

@@ -96,6 +96,83 @@ function validateShelterOrderTransition(current: string, next: string): { ok: bo
 
   return { ok: true };
 }
+
+function buildOrderListDto(o: any, role: string, personId?: number, shelterId?: number) {
+  const items = o.items?.getItems ? o.items.getItems() : o.items ?? [];
+
+  let visibleItems = items;
+
+  if (role === 'SHELTER') {
+    visibleItems = items.filter((li: any) => Number(li?.product?.shelter?.id) === Number(shelterId));
+  }
+
+  const firstItem = visibleItems[0];
+
+  return {
+    id: o.id,
+    fecha: o.fecha,
+    total: o.total,
+    currentState: getLatestStateType(o),
+    customer: {
+      id: o.person?.id ?? null,
+      name: o.person?.name ?? o.person?.firstName ?? '—',
+      email: o.person?.email ?? null,
+      phone: o.person?.phone ?? null,
+    },
+    items: visibleItems.map((li: any) => ({
+      qty: li.cantidad,
+      subtotal: li.subtotal,
+      product: {
+        id: li.product?.id,
+        name: li.product?.name,
+        photo: li.product?.photos?.[0]?.url ?? null,
+      },
+    })),
+    itemsCount: visibleItems.length,
+    firstProductName: firstItem?.product?.name ?? null,
+  };
+}
+
+function buildOrderDetailDto(order: any, role: string, shelterId?: number) {
+  const allItems = order.items?.getItems ? order.items.getItems() : order.items ?? [];
+
+  const visibleItems =
+    role === 'SHELTER'
+      ? allItems.filter((li: any) => Number(li?.product?.shelter?.id) === Number(shelterId))
+      : allItems;
+
+  return {
+    id: order.id,
+    fecha: order.fecha,
+    total: order.total,
+    currentState: getLatestStateType(order),
+    customer: {
+      id: order?.person?.id ?? null,
+      name: order?.person?.name ?? order?.person?.firstName ?? '—',
+      email: order?.person?.email ?? null,
+      phone: order?.person?.phone ?? null,
+    },
+    items: visibleItems.map((li: any) => ({
+      qty: li.cantidad,
+      subtotal: li.subtotal,
+      product: {
+        id: li.product?.id,
+        name: li.product?.name,
+        photo: li.product?.photos?.[0]?.url ?? null,
+      },
+    })),
+    timeline: getStatusesArray(order)
+      .map((s: any) => ({
+        id: s.id,
+        date: s.statusChangeDate,
+        motive: s.motive ?? '',
+        type: s.orderState?.type ?? '—',
+        description: s.orderState?.description ?? '',
+      }))
+      .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+  };
+}
+
 // ===========================
 // CRUD BÁSICO
 // ===========================
@@ -395,70 +472,76 @@ async function addStatusForShelter(req: Request, res: Response) {
 }
 
 // ===========================
-// SHELTER: LISTA DE ÓRDENES
+// LISTA DE ÓRDENES DEL USUARIO LOGUEADO
 // ===========================
-async function findForShelter(req: Request, res: Response) {
+async function findMine(req: Request, res: Response) {
   try {
     const role = String((req as any).user?.role || '').toUpperCase();
     const shelterId = Number((req as any).user?.shelterId);
+    const personId = Number((req as any).user?.personId);
 
-    if (role !== 'SHELTER') {
-      return res.status(403).json({ message: 'No autorizado' });
-    }
-
-    if (!shelterId) {
-      return res.status(401).json({ message: 'Token sin shelterId' });
-    }
-
-    const orders = await em.find(
-      Order,
-      { items: { product: { shelter: shelterId as any } } } as any,
-      {
-        populate: [
-          'person',
-          'items',
-          'items.product',
-          'items.product.photos',
-          'items.product.shelter',
-          'orderStatus',
-          'orderStatus.orderState',
-        ],
-        orderBy: { fecha: 'DESC' as any },
+    if (role === 'SHELTER') {
+      if (!shelterId) {
+        return res.status(401).json({ message: 'Token sin shelterId' });
       }
-    );
 
-    const data = orders.map((o: any) => ({
-      id: o.id,
-      fecha: o.fecha,
-      total: o.total,
-      currentState: getLatestStateType(o),
-      customer: {
-        id: o.person?.id ?? null,
-        name: o.person?.name ?? o.person?.firstName ?? '—',
-        email: o.person?.email ?? null,
-        phone: o.person?.phone ?? null,
-      },
-      items: (o.items?.getItems ? o.items.getItems() : o.items).map((li: any) => ({
-        qty: li.cantidad,
-        subtotal: li.subtotal,
-        product: {
-          id: li.product?.id,
-          name: li.product?.name,
-          photo: li.product?.photos?.[0]?.url ?? null,
-        },
-      })),
-    }));
+      const orders = await em.find(
+        Order,
+        { items: { product: { shelter: shelterId as any } } } as any,
+        {
+          populate: [
+            'person',
+            'items',
+            'items.product',
+            'items.product.photos',
+            'items.product.shelter',
+            'orderStatus',
+            'orderStatus.orderState',
+          ],
+          orderBy: { fecha: 'DESC' as any },
+        }
+      );
 
-    return res.status(200).json({ message: 'shelter orders', data });
+      const data = orders.map((o: any) => buildOrderListDto(o, role, undefined, shelterId));
+      return res.status(200).json({ message: 'orders ok', data });
+    }
+
+    if (role === 'USER') {
+      if (!personId) {
+        return res.status(401).json({ message: 'Token sin personId' });
+      }
+
+      const orders = await em.find(
+        Order,
+        { person: personId as any },
+        {
+          populate: [
+            'person',
+            'items',
+            'items.product',
+            'items.product.photos',
+            'items.product.shelter',
+            'orderStatus',
+            'orderStatus.orderState',
+          ],
+          orderBy: { fecha: 'DESC' as any },
+        }
+      );
+
+      const data = orders.map((o: any) => buildOrderListDto(o, role, personId));
+      return res.status(200).json({ message: 'orders ok', data });
+    }
+
+    return res.status(403).json({ message: 'No autorizado' });
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }
 }
 
 // ===========================
-// SHELTER: DETALLE DE ORDEN
+// DETALLE DE ORDEN DEL USUARIO LOGUEADO
 // ===========================
-async function findOneForShelter(req: Request, res: Response) {
+async function findOneMine(req: Request, res: Response) {
   try {
     const orderId = Number(req.params.id);
     if (Number.isNaN(orderId)) {
@@ -467,73 +550,81 @@ async function findOneForShelter(req: Request, res: Response) {
 
     const role = String((req as any).user?.role || '').toUpperCase();
     const shelterId = Number((req as any).user?.shelterId);
+    const personId = Number((req as any).user?.personId);
 
-    if (role !== 'SHELTER') {
-      return res.status(403).json({ message: 'No autorizado' });
-    }
-
-    if (!shelterId) {
-      return res.status(401).json({ message: 'Token sin shelterId' });
-    }
-
-    const order = await em.findOne(
-      Order,
-      { id: orderId, items: { product: { shelter: shelterId as any } } } as any,
-      {
-        populate: [
-          'person',
-          'items',
-          'items.product',
-          'items.product.photos',
-          'items.product.shelter',
-          'orderStatus',
-          'orderStatus.orderState',
-        ],
+    if (role === 'SHELTER') {
+      if (!shelterId) {
+        return res.status(401).json({ message: 'Token sin shelterId' });
       }
-    );
 
-    if (!order) {
-      return res.status(404).json({ message: 'Orden no encontrada para este shelter' });
+      const order = await em.findOne(
+        Order,
+        { id: orderId, items: { product: { shelter: shelterId as any } } } as any,
+        {
+          populate: [
+            'person',
+            'items',
+            'items.product',
+            'items.product.photos',
+            'items.product.shelter',
+            'orderStatus',
+            'orderStatus.orderState',
+          ],
+        }
+      );
+
+      if (!order) {
+        return res.status(404).json({ message: 'Orden no encontrada para este shelter' });
+      }
+
+      const dto = buildOrderDetailDto(order, role, shelterId);
+      return res.status(200).json({ message: 'order detail ok', data: dto });
     }
 
-    const allItems = order.items.getItems ? order.items.getItems() : (order as any).items;
-    const shelterItems = allItems.filter((li: any) => Number(li?.product?.shelter?.id) === shelterId);
+    if (role === 'USER') {
+      if (!personId) {
+        return res.status(401).json({ message: 'Token sin personId' });
+      }
 
-    const dto = {
-      id: order.id,
-      fecha: order.fecha,
-      total: order.total,
-      currentState: getLatestStateType(order),
-      customer: {
-        id: (order as any).person?.id ?? null,
-        name: (order as any).person?.name ?? (order as any).person?.firstName ?? '—',
-        email: (order as any).person?.email ?? null,
-        phone: (order as any).person?.phone ?? null,
-      },
-      items: shelterItems.map((li: any) => ({
-        qty: li.cantidad,
-        subtotal: li.subtotal,
-        product: {
-          id: li.product?.id,
-          name: li.product?.name,
-          photo: li.product?.photos?.[0]?.url ?? null,
-        },
-      })),
-      timeline: getStatusesArray(order)
-        .map((s: any) => ({
-          id: s.id,
-          date: s.statusChangeDate,
-          motive: s.motive ?? '',
-          type: s.orderState?.type ?? '—',
-          description: s.orderState?.description ?? '',
-        }))
-        .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime()),
-    };
+      const order = await em.findOne(
+        Order,
+        { id: orderId, person: personId as any },
+        {
+          populate: [
+            'person',
+            'items',
+            'items.product',
+            'items.product.photos',
+            'items.product.shelter',
+            'orderStatus',
+            'orderStatus.orderState',
+          ],
+        }
+      );
 
-    return res.status(200).json({ message: 'order detail for shelter', data: dto });
+      if (!order) {
+        return res.status(404).json({ message: 'Orden no encontrada para este usuario' });
+      }
+
+      const dto = buildOrderDetailDto(order, role);
+      return res.status(200).json({ message: 'order detail ok', data: dto });
+    }
+
+    return res.status(403).json({ message: 'No autorizado' });
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }
+}
+
+// ===========================
+// MANTENER COMPATIBILIDAD
+// ===========================
+async function findForShelter(req: Request, res: Response) {
+  return findMine(req, res);
+}
+
+async function findOneForShelter(req: Request, res: Response) {
+  return findOneMine(req, res);
 }
 
 export {
@@ -550,4 +641,6 @@ export {
   findForShelter,
   addStatusForShelter,
   findOneForShelter,
+  findMine,
+  findOneMine,
 };

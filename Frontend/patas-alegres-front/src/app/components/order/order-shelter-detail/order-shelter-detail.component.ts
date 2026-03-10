@@ -20,6 +20,7 @@ export class OrderShelterDetailComponent {
   loadingStates = true;
 
   BACKEND_BASE = environment.url;
+  role = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -27,8 +28,25 @@ export class OrderShelterDetailComponent {
   ) {}
 
   ngOnInit() {
+    this.loadRole();
     this.load();
     this.loadStates();
+  }
+
+  loadRole() {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      this.role = '';
+      return;
+    }
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      this.role = String(payload?.role || '').toUpperCase();
+    } catch {
+      this.role = '';
+    }
   }
 
   load() {
@@ -39,7 +57,7 @@ export class OrderShelterDetailComponent {
     }
 
     this.loading = true;
-    this.orderService.getShelterOrderDetail(id).subscribe({
+    this.orderService.getMyOrderDetail(id).subscribe({
       next: (res) => {
         this.order = res.data;
         this.loading = false;
@@ -57,7 +75,6 @@ export class OrderShelterDetailComponent {
     this.orderService.getOrderStates().subscribe({
       next: (res) => {
         const data = res?.data;
-        console.log('orderState response:', res);
 
         if (!Array.isArray(data)) {
           this.states = [];
@@ -74,32 +91,39 @@ export class OrderShelterDetailComponent {
           .filter((s: any) => !!s.type);
 
         this.loadingStates = false;
-        console.log('states parsed:', this.states);
       },
-      error: (err) => {
-        console.log('orderState error:', err);
+      error: () => {
         this.states = [];
         this.loadingStates = false;
       }
     });
   }
 
-getAvailableStates(): { id: number; type: string; description?: string }[] {
-  const current = String(this.order?.currentState || '').toUpperCase();
+  isShelter(): boolean {
+    return this.role === 'SHELTER';
+  }
 
-  const allowedTransitions: Record<string, string[]> = {
-    PENDIENTE: ['ACEPTADO', 'RECHAZADO'],
-    ACEPTADO: ['ENVIADO', 'RECHAZADO'],
-    ENVIADO: ['ENTREGADO', 'RECHAZADO'],
-    ENTREGADO: [],
-    RECHAZADO: [],
-    CANCELADO: [],
-  };
+  isUser(): boolean {
+    return this.role === 'USER';
+  }
 
-  const allowed = allowedTransitions[current] ?? [];
+  getAvailableStates(): { id: number; type: string; description?: string }[] {
+    const current = String(this.order?.currentState || '').toUpperCase();
 
-  return this.states.filter(s => allowed.includes(String(s.type || '').toUpperCase()));
-}
+    const allowedTransitions: Record<string, string[]> = {
+      PENDIENTE: ['ACEPTADO', 'RECHAZADO'],
+      ACEPTADO: ['ENVIADO'],
+      ENVIADO: ['ENTREGADO'],
+      ENTREGADO: [],
+      RECHAZADO: [],
+      CANCELADO: [],
+    };
+
+    const allowed = allowedTransitions[current] ?? [];
+
+    return this.states.filter(s => allowed.includes(String(s.type || '').toUpperCase()));
+  }
+
   getItemPhotoUrl(item: any): string {
     const url = item?.product?.photo;
     if (!url) return 'assets/nophoto.png';
@@ -107,6 +131,7 @@ getAvailableStates(): { id: number; type: string; description?: string }[] {
   }
 
   changeState(newState: string) {
+    if (!this.isShelter()) return;
     if (!this.order?.id) return;
     if (!newState) return;
 
@@ -135,6 +160,7 @@ getAvailableStates(): { id: number; type: string; description?: string }[] {
     if (t === 'ENVIADO') return 'text-bg-warning';
     if (t === 'ENTREGADO') return 'text-bg-success';
     if (t === 'CANCELADO') return 'text-bg-danger';
+    if (t === 'RECHAZADO') return 'text-bg-danger';
 
     return 'text-bg-dark';
   }

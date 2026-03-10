@@ -1,7 +1,9 @@
 <div class="pa-page">
   <div class="container px-3" style="max-width: 1100px;">
 
-    <h2 class="pa-title mb-3">Pedidos (tu refugio)</h2>
+    <h2 class="pa-title mb-3">
+      {{ isShelter() ? 'Pedidos (tu refugio)' : 'Mis pedidos' }}
+    </h2>
 
     <div *ngIf="loading" class="pa-muted">Cargando...</div>
 
@@ -15,7 +17,7 @@
         <a
           class="pa-card pa-card-hover d-block text-decoration-none"
           style="color: inherit; overflow: hidden;"
-          [routerLink]="['/order/shelter', o.id]"
+          [routerLink]="['/orders', o.id]"
         >
           <div class="pa-section">
 
@@ -26,12 +28,26 @@
                   {{ o.fecha | date:'dd/MM/yyyy HH:mm' }}
                 </div>
 
-                <div class="pa-muted mt-1" style="font-size: 13px;">
+                <div class="pa-muted mt-1" style="font-size: 13px;" *ngIf="isShelter()">
                   Cliente: <span class="fw-semibold">{{ o.customer?.name || '—' }}</span>
+                </div>
+
+                <div class="pa-muted mt-1" style="font-size: 13px;" *ngIf="isUser()">
+                  Estado actual:
+                  <span class="fw-semibold">{{ o.currentState }}</span>
                 </div>
 
                 <div class="pa-muted" style="font-size: 13px;">
                   Items: <span class="fw-semibold">{{ getItemsCount(o) }}</span>
+                </div>
+
+                <div
+                  class="pa-muted"
+                  style="font-size: 13px;"
+                  *ngIf="o.firstProductName"
+                >
+                  Primer producto:
+                  <span class="fw-semibold">{{ o.firstProductName }}</span>
                 </div>
               </div>
 

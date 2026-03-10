@@ -9,7 +9,7 @@ import { Category } from "../productCategory/productCategory.entity.js";
 export class Product extends BaseEntity {
   [x: string]: any;
 
-  @Property({ nullable: false, unique: true })
+  @Property({ nullable: false })
   name!: string
 
   @Property({ nullable: true }) 

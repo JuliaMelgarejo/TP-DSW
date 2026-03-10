@@ -28,10 +28,13 @@
             <a routerLink="/animal" class="pa-nav-link" (click)="closeMenu()">Animales</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/my-adoptions" class="pa-nav-link">Pedidos de adopción</a>
+            <a routerLink="/my-adoptions" class="pa-nav-link" (click)="closeMenu()">Pedidos de adopción</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/purchases" class="pa-nav-link disabled">Compras</a>
+            <a routerLink="/orders" class="pa-nav-link  " (click)="closeMenu()">Compras</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/product" class="pa-nav-link " (click)="closeMenu()">Productos</a>
           </li>
         </ul>
         <!-- Usuario refugio -->
@@ -49,7 +52,7 @@
             <a routerLink="/product" class="pa-nav-link" (click)="closeMenu()">Productos</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/home" class="pa-nav-link disabled">Pedidos</a>
+            <a routerLink="/order-shelter" class="pa-nav-link " (click)="closeMenu()">Pedidos</a>
           </li>
           <li class="nav-item">
             <a routerLink="/shelter-adoptions" class="pa-nav-link">Solicitudes</a>

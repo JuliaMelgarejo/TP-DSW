@@ -84,8 +84,10 @@ export const routes: Routes = [
   { path: 'cart', component: CartComponent, canActivate: [authGuard] },
 
   { path: 'order', component: OrderComponent, canActivate: [authGuard] },
-  { path: 'order/shelter/:id', component: OrderShelterDetailComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
-  { path: 'order/shelter', component: OrderShelterComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
+  { path: 'orders', component: OrderShelterComponent, canActivate: [authGuard] },
+  { path: 'orders/:id', component: OrderShelterDetailComponent, canActivate: [authGuard] },
+  { path: 'order-shelter/:id', component: OrderShelterDetailComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
+  { path: 'order-shelter', component: OrderShelterComponent, canActivate: [authGuard], data: { roles: ['SHELTER'] } },
 
 
   { path: 'my-adoptions', component: MyAdoptionsComponent, canActivate:[authGuard] },
