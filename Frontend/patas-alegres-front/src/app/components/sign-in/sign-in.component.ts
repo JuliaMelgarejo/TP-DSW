@@ -79,7 +79,8 @@ export class SignInComponent {
         next: () => {
               alert('Usuario y Persona creados exitosamente!');
               this.router.navigate(['/login']);
-            },});
+            },
+          });
     } else {
       alert('Por favor, complete todos los campos requeridos correctamente.');
       console.log('Formulario inválido');

@@ -32,7 +32,7 @@ function sanitizeProductInput(req: Request, res: Response, next:NextFunction){
 
 async function findAll( req: Request, res: Response ){
   try{
-    const { shelterId, categoryId, minPrice, maxPrice, page = 1, limit = 10 } = req.query;
+    const { shelterId, categoryId, minPrice, maxPrice, sort, page = 1, limit = 10 } = req.query;
 
     const where: any = {
       prices: {
@@ -53,19 +53,31 @@ async function findAll( req: Request, res: Response ){
         prices: {
           endDate: null
         }
-      }
-     });
+      },
+    });
 
     let filteredProducts = products;
 
     if (minPrice || maxPrice) {
-      filteredProducts = products.filter(product => {
+      filteredProducts = filteredProducts.filter(product => {
         const activePrice = product.prices[0];
         if (!activePrice) return false;
         if (minPrice && activePrice.amount < Number(minPrice)) return false;
         if (maxPrice && activePrice.amount > Number(maxPrice)) return false;
         return true;
       });
+    }
+
+    if (sort === 'price_asc') {
+      filteredProducts = [...filteredProducts].sort(
+        (a, b) => a.prices[0].amount - b.prices[0].amount
+      );
+    }
+
+    if (sort === 'price_desc') {
+      filteredProducts = [...filteredProducts].sort(
+        (a, b) => b.prices[0].amount - a.prices[0].amount
+      );
     }
 
     // Paginación
@@ -81,6 +93,7 @@ async function findAll( req: Request, res: Response ){
       message: 'filtered products',
       total: filteredProducts.length,
       page: pageNumber,
+      totalPages: Math.ceil(filteredProducts.length / limitNumber),
       limit: limitNumber,
       data: paginatedProducts
     });

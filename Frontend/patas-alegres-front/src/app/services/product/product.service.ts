@@ -28,6 +28,7 @@ export class ProductService {
       message: string,
       total: number,
       page: number,
+      totalPages: number,
       limit: number,
       data: Product[]
     }>(this.API_URL, { params })

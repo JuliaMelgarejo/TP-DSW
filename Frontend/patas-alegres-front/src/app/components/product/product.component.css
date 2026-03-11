@@ -35,3 +35,12 @@
   padding: 4px 10px;
   border-radius: 8px;
 }
+
+.pa-filter-bar .form-select,
+.pa-filter-bar .form-control{
+  min-width: 160px;
+}
+
+#filtersPanel {
+  --bs-offcanvas-width: min(700px, 90vw);
+}
