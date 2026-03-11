@@ -6,7 +6,7 @@ import { shelterAnimalGuard } from "../guards/shelter-animal.guard.js";
 
 export const animalRouter = Router();
 
-animalRouter.get('/',validateToken, findAll)
+animalRouter.get('/', validateToken, findAll)
 animalRouter.get('/shelter/:shelterId', validateToken, findByShelter);
 animalRouter.get('/:id',validateToken,shelterAnimalGuard, findOne)
 animalRouter.post('/', validateToken,shelterAnimalGuard ,add)

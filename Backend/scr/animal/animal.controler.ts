@@ -9,16 +9,51 @@ const em = orm.em;
 // ===========================
 async function findAll(req: Request, res: Response) {
   try {
+    const { sort, breedId, shelterId, minRescueDate, maxRescueDate, page = 1, limit = 10} = req.query;
+
     const user = (req as any).user;
-    const role = String(user?.role || '').toUpperCase();
-    const shelterId = Number(user?.shelterId);
+    const userShelterId = Number(user?.shelterId);
 
-    const where =
-      role === 'SHELTER'
-        ? ({ rescueClass: { shelters: shelterId as any } } as any)
-        : {};
+    const where: any = {}
+    const orderBy: any = {}
 
-    const animals = await em.find(Animal, where, {
+    // Filtros
+    if (breedId){
+      where.breed = { id: Number(breedId) }
+    }
+
+    if (shelterId && !userShelterId) {
+      where.rescueClass = { shelters: Number(shelterId) };
+    } else if (userShelterId) {
+      where.rescueClass = { shelters: Number(userShelterId) };
+    }
+
+    if (minRescueDate || maxRescueDate) {
+      where.rescueClass = {
+        ...where.rescueClass,
+        rescue_date: {}
+      };
+
+      if (minRescueDate) {
+        where.rescueClass.rescue_date.$gte = new Date(String(minRescueDate));
+      }
+
+      if (maxRescueDate) {
+        where.rescueClass.rescue_date.$lte = new Date(String(maxRescueDate));
+      }
+    }
+
+    // Ordenamiento
+
+    if (sort === 'name_asc') orderBy.name = 'ASC'
+    if (sort === 'name_desc') orderBy.name = 'DESC'
+    if (sort === 'rescue_date') orderBy.rescueClass = { rescue_date: 'ASC' }
+    if (sort === 'breed') orderBy.breed = { name: 'ASC' }
+
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+
+    const [animals, total] = await em.findAndCount(Animal, where, {
       populate: [
         'rescueClass',
         'breed',
@@ -27,9 +62,19 @@ async function findAll(req: Request, res: Response) {
         'rescueClass.address',
         'rescueClass.shelters',
       ],
+      orderBy,
+      limit: limitNumber,
+      offset: (pageNumber - 1) * limitNumber
     });
 
-    return res.status(200).json({ message: 'found animals', data: animals });
+    return res.status(200).json({ 
+      message: 'found animals',
+      total,
+      page: pageNumber,
+      totalPages: Math.ceil(total / limitNumber),
+      limit: limitNumber,
+      data: animals 
+    });
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }
@@ -163,6 +208,17 @@ async function findByShelter(req: Request, res: Response) {
   }
 }
 
+function calculateAge(birthDate: Date) {
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
 
+  const m = today.getMonth() - birthDate.getMonth();
+
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  return age;
+}
 
 export { findAll, findOne, add, update, remove, findByShelter };

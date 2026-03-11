@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Animal } from '../../models/animal/animal.model.js';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Breed } from '../../models/breed/breed.model.js';
 import { Rescue } from '../../models/rescue/rescue.model.js';
+import { AnimalFilters } from '../../models/animal/animal-filters.js';
 
 @Injectable({
   providedIn: 'root'
@@ -25,10 +26,24 @@ export class AnimalService {
     this.animals.push(animal);
   }
 
-    getAnimals(){
-    return this.http.get<{message: string, data: Animal[]}>(this.API_URL)
-  
+  getAnimals(filters?: AnimalFilters){
+    let params = new HttpParams();
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          params = params.set(key, value.toString());
+        }
+      });
     }
+    return this.http.get<{
+      message: string,
+      total: number,
+      page: number,
+      totalPages: number,
+      limit: number,
+      data: Animal[]
+    }>(this.API_URL, { params })
+  }
 
   getAnimalsByShelter(shelterId: number) {
     return this.http.get<{ message: string; data: Animal[] }>(`${this.API_URL}/shelter/${shelterId}`);
