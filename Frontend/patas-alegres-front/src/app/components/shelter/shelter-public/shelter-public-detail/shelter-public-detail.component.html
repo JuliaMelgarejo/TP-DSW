@@ -59,6 +59,7 @@
             <div class="pa-section">
               <div class="fw-bold mb-3">Ubicación en el mapa</div>
 
+            <div *ngIf="hasGoogleMapsLoaded(); else mapLoadingTpl">
               <google-map
                 width="100%"
                 height="320px"
@@ -70,6 +71,11 @@
                   [options]="markerOptions"
                 ></map-marker>
               </google-map>
+            </div>
+
+            <ng-template #mapLoadingTpl>
+              <div class="pa-muted">Cargando mapa...</div>
+            </ng-template>
             </div>
           </div>
         </div>

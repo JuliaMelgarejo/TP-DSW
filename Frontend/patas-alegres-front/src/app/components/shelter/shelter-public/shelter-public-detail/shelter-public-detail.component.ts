@@ -126,4 +126,9 @@ export class ShelterPublicDetailComponent {
     if (!url) return 'assets/nophoto.png';
     return url.startsWith('http') ? url : this.BACKEND_BASE + url;
   }
+
+
+  hasGoogleMapsLoaded(): boolean {
+  return typeof window !== 'undefined' && !!(window as any).google?.maps;
+}
 }
