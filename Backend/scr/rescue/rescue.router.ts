@@ -1,11 +1,13 @@
 import { Router } from "express";
-import { sanitizeRescueInput, findAll, findOne, add, update, remove } from "./rescue.controler.js";
+import {  findAll, findOne, add, update, remove, sanitizeRescueInput } from "./rescue.controler.js";
+import { validateToken } from "../validate-token/validate-token.routes.js";
+import { authorizeRoles } from "../middlewares/authorize-role.js";
 
 export const rescueRouter = Router();
 
-rescueRouter.get('/', findAll)
-rescueRouter.get('/:id', findOne)
-rescueRouter.post('/', sanitizeRescueInput, add)
-rescueRouter.put('/:id', sanitizeRescueInput, update)
-rescueRouter.patch('/:id', sanitizeRescueInput, update)
-rescueRouter.delete('/:id', sanitizeRescueInput, remove)
+rescueRouter.get('/', validateToken ,sanitizeRescueInput,findAll)
+rescueRouter.get('/:id', validateToken ,sanitizeRescueInput, findOne)
+rescueRouter.post('/', validateToken, authorizeRoles('SHELTER', 'ADMIN'), sanitizeRescueInput,add)
+rescueRouter.patch('/:id', validateToken, authorizeRoles('SHELTER', 'ADMIN'), sanitizeRescueInput, update)
+rescueRouter.delete('/:id', validateToken, authorizeRoles('SHELTER', 'ADMIN'), sanitizeRescueInput, remove)
+rescueRouter.put('/:id', validateToken, authorizeRoles('SHELTER', 'ADMIN'), sanitizeRescueInput, update)

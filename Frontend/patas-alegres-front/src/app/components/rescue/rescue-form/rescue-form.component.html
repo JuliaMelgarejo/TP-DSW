@@ -1,0 +1,52 @@
+<div class="pa-card pa-section pa-panel">
+
+  <div class="mb-3">
+    <div class="pa-h3 mb-0">Registro Rescate-Animales</div>
+    <div class="pa-muted pa-small">Completá los datos del rescate</div>
+  </div>
+
+  <form [formGroup]="rescueForm" class="d-grid pa-gap-md">
+
+    <!-- FECHA -->
+    <div>
+      <div class="fw-bold mb-1">Fecha de rescate</div>
+      <input class="pa-input w-100" type="date" formControlName="rescue_date" />
+
+      <div class="text-danger small"
+           *ngIf="rescueForm.get('rescue_date')?.touched && rescueForm.get('rescue_date')?.invalid">
+        Requerido
+      </div>
+    </div>
+
+    <!-- DIRECCIÓN -->
+    <div class="mb-3 d-flex flex-column rounded">
+      <div class="fw-bold mb-1">Dirección</div>
+        <app-address-picker
+          [form]="addressForm">
+        </app-address-picker>
+    </div>
+
+    <!-- DESCRIPCIÓN -->
+    <div>
+      <div class="fw-bold mb-1">Descripción</div>
+      <textarea
+        class="pa-input w-100"
+        rows="2"
+        formControlName="description"
+        placeholder="Descripción del rescate (opcional)">
+      </textarea>
+    </div>    
+
+    <!-- COMENTARIOS -->
+    <div>
+      <div class="fw-bold mb-1">Comentarios</div>
+      <textarea
+        class="pa-input w-100"
+        rows="2"
+        formControlName="comments"
+        placeholder="Comentarios internos (opcional)">
+      </textarea>
+    </div>
+
+  </form>
+</div>

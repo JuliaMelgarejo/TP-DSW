@@ -1,18 +1,133 @@
 import { Request, Response, NextFunction } from 'express';
-import { ShelterRepository } from './shelter.repository.js';
+import { orm } from '../zshare/db/orm.js';
 import { Shelter } from './shelter.entity.js';
 
-const shelterRepository = new ShelterRepository();
-function sanitizeShelterInput(req: Request, res: Response, next:NextFunction)
-{
+const em = orm.em
+
+async function findAll( req: Request, res: Response ){
+  try{
+    const shelter = await em.find(Shelter, {}, {populate:['rescues', 'vet', 'address']});
+    res.status(200).json({message: 'all shelters: ', data: shelter });
+  } catch (error: any){
+    res.status(500).json({message: error.message});
+  }
+}
+
+async function findOne( req: Request, res: Response ){
+  try {
+    const id = Number.parseInt(req.params.id)
+    const shelter = await em.findOneOrFail(Shelter, { id }, {populate:['rescues', 'vet', 'address']})
+    res
+      .status(200)
+      .json({ message: 'found shelter', data: shelter })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+async function add(req: Request, res: Response) {
+  try {
+    const shelter = em.create(Shelter, req.body.sanitizedShelter)
+    await em.flush()
+    res.status(201).json({ message: 'Shelter created', data: shelter })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+async function update(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id)
+    const user = (req as any).user;
+    // Validacion de ownership
+    if(user.role === 'SHELTER' && user.shelterId !== id){
+      return res.status(403).json({
+        message: 'No puede modificar otro refugio'
+      })
+    }
+
+    const shelter = await em.findOneOrFail(Shelter, id, { populate: ['address'] })
+
+    const data = req.body.sanitizedShelter
+
+    em.assign(shelter, {
+      name: data.name,
+      phoneNumber: data.phoneNumber,
+      tuitionVet: data.tuitionVet,
+      max_capacity: data.max_capacity,
+    })
+
+    if (data.address && shelter.address) {
+      em.assign(shelter.address, data.address)
+    }
+
+    await em.flush()
+    res.status(200).json({ message: 'shelter updated' })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+async function remove(req: Request, res: Response) {
+  try {
+    const id = Number.parseInt(req.params.id)
+    const user = (req as any).user;
+    // Validacion de ownership
+    if(user.role === 'SHELTER' && user.shelterId !== id){
+      return res.status(403).json({
+        message: 'No puede eliminar otro refugio'
+      })
+    }
+    const shelter = em.getReference(Shelter, id)
+    await em.removeAndFlush(shelter)
+    res.status(200).send({ message: 'character class deleted' })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+async function findByBoundary(req: Request, res: Response) {
+  try {
+    const { nort, south, east, west } = req.query;
+    console.log('Received query parameters:', req.query);
+    console.log('Received boundaries:', { nort, south, east, west });
+
+    const shelters = await em.find(Shelter, {
+      address: {
+        latitude: { $gte: Number(south), $lte: Number(nort) },
+        longitude: { $gte: Number(west), $lte: Number(east) }
+      }
+    }, { populate: ['address'] });
+
+    console.log('shelters: ', shelters)
+
+    res.status(200).json({ message: 'Shelters found', data: shelters });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message }); 
+  }
+}
+
+function sanitizeShelterInput(req: Request, res: Response, next:NextFunction){
   req.body.sanitizedShelter = {
     name: req.body.name,
-    address: req.body.address,
+    tuitionVet: req.body.tuitionVet,
+    phoneNumber: req.body.phoneNumber,
     max_capacity: req.body.max_capacity,
-    id: req.body.id
+    rescues: req.body.rescues,
+    address: req.body.address ? {
+      latitude: req.body.address.latitude,
+      longitude: req.body.address.longitude,
+      formattedAddress: req.body.address.formattedAddress,
+      placeId: req.body.address.placeId,
+      street: req.body.address.street,
+      streetNumber: req.body.address.streetNumber,
+      city: req.body.address.city,
+      postalCode: req.body.address.postalCode,
+      province: req.body.address.province,
+      country: req.body.address.country,
+    } : undefined
   }
-
-  Object.keys(req.body.sanitizedShelter).forEach((key) => {
+    Object.keys(req.body.sanitizedShelter).forEach((key) => {
     if (req.body.sanitizedShelter[key] === undefined) {
       delete req.body.sanitizedShelter[key]
     }
@@ -21,43 +136,4 @@ function sanitizeShelterInput(req: Request, res: Response, next:NextFunction)
   next()
 }
 
-function findAll( req: Request, res: Response ){
-  res.json({data: shelterRepository.findAll()});
-}
-
-function findOne( req: Request, res: Response ){
-  const id = req.params.id;
-  const shelter = shelterRepository.findOne({id});
-  if(!shelter){
-    return res.status(404).send({message:'Incorrect ID, no shelter with that ID ', id })
-  }
-  res.json(shelter)
-}
-
-function add( req: Request, res: Response ){
-  const input = req.body.sanitizedShelter
-
-  const sheltersInput = new Shelter (input.name, input.address, input.max_capacity, input.id)
-  const shelter = shelterRepository.add(sheltersInput)
-  return res.status(201).send({message: 'new shelter create', data: shelter })
-}
-
-function update(req: Request, res: Response){
-  req.body.sanitizedShelter.id = req.params.id
-  const shelter = shelterRepository.update(req.body.sanitizedShelter)
-  if (!shelter) {
-    return res.status(404).send({message:'shelter not found'})
-  }
-  return res.status(200).send({message: 'correct shelter update', data:  shelter})
-}
-
-function remove( req: Request, res: Response ){
-  const id = req.params.id;
-  const shelter = shelterRepository.delete({id})
-  if(!shelter){
-    return res.status(404).send({message:'Incorrect remove, no shelter with that ID ', id })
-  }
-  return res.status(200).send({message: 'shelter deleted', data:  shelter})
-}
-
-export { findAll, findOne, add, update, remove, sanitizeShelterInput }
+export { findAll, findOne, add, update, remove, sanitizeShelterInput, findByBoundary }

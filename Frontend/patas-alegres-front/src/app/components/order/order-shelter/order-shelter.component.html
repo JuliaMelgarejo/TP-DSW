@@ -1,0 +1,73 @@
+<div class="pa-page">
+  <div class="container px-3" style="max-width: 1100px;">
+
+    <h2 class="pa-title mb-3">
+      {{ isShelter() ? 'Pedidos (tu refugio)' : 'Mis pedidos' }}
+    </h2>
+
+    <div *ngIf="loading" class="pa-muted">Cargando...</div>
+
+    <div *ngIf="!loading && orders.length === 0" class="pa-muted">
+      No hay pedidos por ahora.
+    </div>
+
+    <div *ngIf="!loading && orders.length > 0" class="row g-3">
+
+      <div class="col-12 col-md-6" *ngFor="let o of orders">
+        <a
+          class="pa-card pa-card-hover d-block text-decoration-none"
+          style="color: inherit; overflow: hidden;"
+          [routerLink]="['/orders', o.id]"
+        >
+          <div class="pa-section">
+
+            <div class="d-flex justify-content-between align-items-start gap-3">
+              <div>
+                <div class="fw-bold">Pedido #{{ o.id }}</div>
+                <div class="pa-muted" style="font-size: 13px;">
+                  {{ o.fecha | date:'dd/MM/yyyy HH:mm' }}
+                </div>
+
+                <div class="pa-muted mt-1" style="font-size: 13px;" *ngIf="isShelter()">
+                  Cliente: <span class="fw-semibold">{{ o.customer?.name || '—' }}</span>
+                </div>
+
+                <div class="pa-muted mt-1" style="font-size: 13px;" *ngIf="isUser()">
+                  Estado actual:
+                  <span class="fw-semibold">{{ o.currentState }}</span>
+                </div>
+
+                <div class="pa-muted" style="font-size: 13px;">
+                  Items: <span class="fw-semibold">{{ getItemsCount(o) }}</span>
+                </div>
+
+                <div
+                  class="pa-muted"
+                  style="font-size: 13px;"
+                  *ngIf="o.firstProductName"
+                >
+                  Primer producto:
+                  <span class="fw-semibold">{{ o.firstProductName }}</span>
+                </div>
+              </div>
+
+              <div class="text-end">
+                <div class="fw-bold" style="font-size: 18px;">$ {{ o.total }}</div>
+                <span class="badge" [ngClass]="getStatusBadgeClass(o.currentState)">
+                  {{ o.currentState }}
+                </span>
+              </div>
+            </div>
+
+            <div class="mt-3 fw-bold" style="color: var(--pa-primary-dark);">
+              Ver detalle →
+            </div>
+
+          </div>
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+</div>

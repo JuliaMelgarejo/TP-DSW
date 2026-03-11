@@ -172,3 +172,25 @@ En la sección de [FAQ](FAQ.md) podrán encontrar respuestas a las consultas má
 1) Tirar comando para instalar dependencias: pnpm install
 
 2) El proyecto se inicia con el comando: pnpm start:dev
+
+3) docker run --name patas_alegre -v {URL}:/var/lib/mysql -e MYSQL_ROOT_HOST='%' -e MYSQL_ALLOW_EMPTY_PASSWORD="yes" -e MYSQL_PASSWORD="dsw" -e MYSQL_USER="dsw" -e MYSQL_DATABASE=‘patas_alegres’ -p 3307:3306 -d percona/percona-server
+
+4) CREATE DATABASE IF NOT EXISTS patas_alegres;
+
+## 8. Ejecutar seeds
+
+1) Creamos un seed{entidad}.ts en /scr/scripts
+
+2) Agregamos en package.json dentro de `"scripts": {...` una linea como la de categorias, indicando nombre y que se ejecute con node y la carpeta exacta de la seed.
+
+3) Ejecutamos dentro de la carpeta 'Backend' el comando pnpm run seed:{entidad}
+
+Ejemplo agarrando como ejemplo la primer seed que importa categorias:
+* Backend\scr\scripts\seedCategories.ts
+* 
+  "scripts": {
+    "seed:categories": "node dist/scr/scripts/seedCategories.js"
+  },
+* pnpm run seed:categories
+
+4) Ver la magia suceder.

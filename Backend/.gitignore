@@ -37,6 +37,7 @@ logs
 
 # Coverage directory used by tools like istanbul
 coverage/
+uploads/
 
 # Optional npm cache directory
 .npm

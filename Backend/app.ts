@@ -1,286 +1,71 @@
+import 'reflect-metadata'
 import express, { NextFunction, Request, Response } from 'express';
-import { vet } from './scr/vet/vet.entity.js';
-import { zone } from './scr/zone/zone.entity.js';
-import { specie } from './scr/specie/specie.entity.js';
-import { BuyRepository } from './scr/buy/buy.repository.js';
+import cors from 'cors';
+import {orm, syncSchema} from './scr/zshare/db/orm.js';
+import { RequestContext } from '@mikro-orm/core';
 
-import { buyRouter } from './scr/buy/buy.router.js';
-import { personRouter } from './scr/person/person.router.js';
-import { rescueRouter } from './scr/rescue/rescue.router.js';
-import { shelterRouter } from './scr/shelter/shelter.router.js';
 import { animalRouter } from './scr/animal/animal.router.js';
-import { productRouter } from './scr/products/product.router.js';
+import { breedRouter } from './scr/breed/breed.router.js';
+import { personRouter } from './scr/person/person.router.js';
+import { shelterRouter } from './scr/shelter/shelter.router.js';
+import { zoneRouter } from './scr/zone/zone.router.js';
+import { rescueRouter } from './scr/rescue/rescue.router.js';
+import { vetRouter } from './scr/vet/vet.router.js';
+import { adoptionRouter } from './scr/adoption/adoption.router.js';
+import { userRouter } from './scr/user/user.routes.js';
+import path from 'path';
+import { photoRouter } from './scr/photo/photo.router.js';
+import { productRouter } from './scr/product/product.router.js';
+import { categoryRouter } from './scr/productCategory/productoCategory.router.js';
+import { adoptionStateRouter } from './scr/adoptionState/adoptionState.router.js';
+import { adoptionStatusRouter } from './scr/adoptionStatus/adoptionStatus.router.js';
+import { orderRouter } from './scr/order/order.route.js';
+import { orderStateRouter } from './scr/orderState/orderStates.router.js';
+import { orderStatusRouter } from './scr/orderStatus/orderStatus.router.js';
+import { addressRouter } from './scr/address/address.router.js';
 
 const app = express();
 app.use(express.json());
-const buyrepository = new BuyRepository();
 
-//buy
-app.use('/api/buy', buyRouter)
-//person 
-app.use('/api/person', personRouter)
-//product
-app.use('/api/product', productRouter)
-//rescue
-app.use('/api/rescue', rescueRouter)
-//shelter
-app.use('/api/shelter', shelterRouter)
-//animal
+app.use(cors({
+  origin: 'http://localhost:4200',  // Permitir solicitudes desde el frontend de Angular
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization']  // Cabeceras permitidas
+}));
+
+//luego de los middlewares base
+app.use((req, res, next ) => {
+  RequestContext.create(orm.em, next)
+})
+
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
+
+//antes de las rutas y middlewares
+
+app.use('/api/breed', breedRouter)
 app.use('/api/animal', animalRouter)
-
-
-//vet--> /api/vet/
-const vets = [
-  new vet(
-    'vet 1',
-    'calle falsa 123',
-    '1'
-  )
-]
-
-function sanitizevetInput(req: Request, res: Response, next:NextFunction){
-  
-  req.body.sanitizedvet = {
-    nombre: req.body.nombre,
-    direccion: req.body.direccion
-  }
-
-  Object.keys(req.body.sanitizedvet).forEach((key) => {
-    if (req.body.sanitizedvet[key] === undefined) {
-      delete req.body.sanitizedvet[key]
-    }
-  })
-
-  next()
-}
-
-app.get('/api/vet',(req,res )=>{
-  res.json(vets);
-})
-
-app.get('/api/vet/:id',(req,res )=>{
-  const vet = vets.find((vet) => vet.id === req.params.id);
-  if(!vet){
-    return res.status(404).send({message:'ID incorrecto, no existe ningun vet con ese ID' })
-  }
-  res.json(vet)
-})
-
-
-app.post('/api/vet', sanitizevetInput, (req,res )=>{
-  const {nombre, direccion, id} = req.body
-
-  const vets2 = new vet (nombre, direccion, id ); 
-
-  vets.push(vets2)
-  return res.status(201).send({message: 'vet agregado correctamente', data: vet })
-})
-
-
-app.put ('/api/vet/:id', sanitizevetInput, (req,res )=>{
-  const vetIdx = vets.findIndex((vet) => vet.id === req.params.id);
-  if (vetIdx === -1) {
-    return res.status(404).send({message:'ID incorrecto, no existe ningun vet con ese ID' })
-  }
-
-  vets[vetIdx]= {...vets[vetIdx], ...req.body.sanitizedvet };
-
-  return res.status(200).send({message: 'vet modificado correctamente', data:  vets[vetIdx] })
-})
-
-
-app.patch ('/api/vet/:id', sanitizevetInput, (req,res )=>{
-  const vetIdx = vets.findIndex((vet) => vet.id === req.params.id);
-  if (vetIdx === -1) {
-    return res.status(404).send({message:'ID incorrecto, no existe ningun vet con ese ID' })
-  }
-
-  vets[vetIdx]= {...vets[vetIdx], ...req.body.sanitizedvet };
-
-  return res.status(200).send({message: 'vet modificado correctamente', data: vets[vetIdx] })
-})
-
-
-app.delete('/api/vet/:id',(req,res )=>{
-  const vetIdx = vets.findIndex((vet) => vet.id === req.params.id);
-  if(vetIdx === -1){
-    return res.status(404).send({message:'ID incorrecto, no existe ningun vet con ese ID' })
-  }
-  vets.splice(vetIdx, 1);
-  return res.status(200).send({message: 'vet eliminado correctamente'})
-})
-
-
-//specie--> /api/specie/
-const species = [
-  new specie(
-    'Gato',
-    '01'
-  ),
-];
-
-function sanitizespecieInput(req: Request, res: Response, next:NextFunction){
-  
-  req.body.sanitizedspecie = {
-    nombre: req.body.nombre,
-  }
-
-  Object.keys(req.body.sanitizedspecie).forEach((key) => {
-    if (req.body.sanitizedspecie[key] === undefined) {
-      delete req.body.sanitizedspecie[key]
-    }
-  })
-
-  next()
-}
-
-
-app.get('/api/specie',(req,res )=>{
-  res.json(species);
-})
-
-
-app.get('/api/specie/:id',(req,res )=>{
-  const specie = species.find((specie) => specie.id === req.params.id);
-  if(!specie){
-    return res.status(404).send({message:'ID incorrecto, no existe ninguna specie con ese ID' })
-  }
-  res.json(specie)
-})
-
-
-app.post('/api/specie', sanitizespecieInput, (req,res )=>{
-  const {nombre, id } = req.body
-
-  const species2 = new specie (nombre, id); 
-
-  species.push(species2)
-  return res.status(201).send({message: 'specie agregada correctamente', data: specie })
-})
-
-
-app.put ('/api/specie/:id', sanitizespecieInput, (req,res )=>{
-  const specieIdx = species.findIndex((specie) => specie.id === req.params.id);
-  if (specieIdx === -1) {
-    return res.status(404).send({message:'ID incorrecto, no existe ninguna specie con ese ID' })
-  }
-
-  species[specieIdx]= {...species[specieIdx], ...req.body.sanitizedspecie };
-
-  return res.status(200).send({message: 'specie modificada correctamente', data:  species[specieIdx] })
-})
-
-
-app.patch ('/api/specie/:id', sanitizespecieInput, (req,res )=>{
-  const specieIdx = species.findIndex((specie) => specie.id === req.params.id);
-  if (specieIdx === -1) {
-    return res.status(404).send({message:'ID incorrecto, no existe ninguna specie con ese ID' })
-  }
-
-  species[specieIdx]= {...species[specieIdx], ...req.body.sanitizedspecie };
-
-  return res.status(200).send({message: 'specie modificada correctamente', data: species[specieIdx] })
-})
-
-
-app.delete('/api/specie/:id',(req,res )=>{
-  const specieIdx = species.findIndex((specie) => specie.id === req.params.id);
-  if(specieIdx === -1){
-    return res.status(404).send({message:'ID incorrecto, no existe ninguna specie con ese ID' })
-  }
-  species.splice(specieIdx, 1);
-  return res.status(200).send({message: 'specie eliminada correctamente'})
-})
-
-
-// zone--> /api/zone/
-const zones = [
-  new zone(
-    'Norte',
-    '1'
-  ),
-];
-
-function sanitizezoneInput(req: Request, res: Response, next:NextFunction){
-  
-  req.body.sanitizedzone = {
-    nombre: req.body.nombre
-  }
-
-  Object.keys(req.body.sanitizedzone).forEach((key) => {
-    if (req.body.sanitizedzone[key] === undefined) {
-      delete req.body.sanitizedzone[key]
-    }
-  })
-
-  next()
-}
-
-app.get('/api/zone',(req,res )=>{
-  res.json(zones);
-})
-
-
-app.get('/api/zone/:id',(req,res )=>{
-  const zone = zones.find((zone) => zone.id === req.params.id);
-  if(!zone){
-    return res.status(404).send({message:'ID incorrecto, no existe ningun zone con ese ID' })
-  }
-  res.json(zone)
-})
-
-
-app.post('/api/zone', sanitizezoneInput, (req,res )=>{
-  const {nombre, id} = req.body
-
-  const zones2 = new zone (nombre, id ); 
-
-  zones.push(zones2)
-  return res.status(201).send({message: 'zone agregado correctamente', data: zone })
-})
-
-
-app.put ('/api/zone/:id', sanitizezoneInput, (req,res )=>{
-  const zoneIdx = zones.findIndex((zone) => zone.id === req.params.id);
-  if (zoneIdx === -1) {
-    return res.status(404).send({message:'ID incorrecto, no existe ningun zone con ese ID' })
-  }
-
-  zones[zoneIdx]= {...zones[zoneIdx], ...req.body.sanitizedzone };
-
-  return res.status(200).send({message: 'zone modificado correctamente', data:  zones[zoneIdx] })
-})
-
-
-app.patch ('/api/zone/:id', sanitizezoneInput, (req,res )=>{
-  const zoneIdx = zones.findIndex((zone) => zone.id === req.params.id);
-  if (zoneIdx === -1) {
-    return res.status(404).send({message:'ID incorrecto, no existe ningun zone con ese ID' })
-  }
-
-  zones[zoneIdx]= {...zones[zoneIdx], ...req.body.sanitizedzone };
-
-  return res.status(200).send({message: 'zone modificado correctamente', data: zones[zoneIdx] })
-})
-
-
-app.delete('/api/zone/:id',(req,res )=>{
-  const zoneIdx = zones.findIndex((zone) => zone.id === req.params.id);
-  if(zoneIdx === -1){
-    return res.status(404).send({message:'ID incorrecto, no existe ningun zone con ese ID' })
-  }
-  zones.splice(zoneIdx, 1);
-  return res.status(200).send({message: 'zone eliminado correctamente'})
-})
-
-
-
-//rescue --> /api/rescue/
-
+app.use('/api/person', personRouter)
+app.use('/api/shelter', shelterRouter)
+app.use('/api/zone', zoneRouter)
+app.use('/api/rescue', rescueRouter)
+app.use('/api/vet', vetRouter)
+app.use('/api/adoption', adoptionRouter)
+app.use('/api/user', userRouter)
+app.use('/api/login', userRouter)
+app.use('/api/photo', photoRouter);
+app.use('/api/product', productRouter)
+app.use('/api/category', categoryRouter)
+app.use("/api/adoptionState", adoptionStateRouter);
+app.use('/api/adoptionStatus', adoptionStatusRouter);
+app.use('/api/order', orderRouter);
+app.use('/api/orderStatus', orderStatusRouter);
+app.use('/api/orderState', orderStateRouter)
+
+app.use('/api/address', addressRouter);
+
+await syncSchema() //never in production*/
 
 app.listen(3000, ()=>{
 console.log('server running on http://localhost:3000/');
 })
-
-//put--> se utiliza para modificar el objeto entero
-// patch--> se utiliza para modificar parcialmente el objeto, osea algunos atributos "/*".

@@ -1,11 +1,23 @@
 import { Router } from "express";
-import { sanitizepersonInput, findAll, findOne, add, update, remove } from "./person.controler.js";
+import {
+  findAll,
+  findOne,
+  add,
+  update,
+  remove,
+  findOneByDoc,
+  sanitizePersonInput,
+  getDocumentTypes
+} from "./person.controler.js";
+import { validateToken } from "../validate-token/validate-token.routes.js";
+import { authorizeRoles } from "../middlewares/authorize-role.js";
 
 export const personRouter = Router();
 
-personRouter.get('/', findAll)
-personRouter.get('/:id', findOne)
-personRouter.post('/', sanitizepersonInput, add)
-personRouter.put('/:id', sanitizepersonInput, update)
-personRouter.patch('/:id', sanitizepersonInput, update)
-personRouter.delete('/:id', sanitizepersonInput, remove)
+personRouter.get('/:doc_type/:doc_nro', validateToken, sanitizePersonInput, findOneByDoc)
+personRouter.get('/document-types', getDocumentTypes);
+personRouter.get('/:id', validateToken, findOne)
+personRouter.get('/', authorizeRoles('ADMIN'), validateToken, findAll)
+personRouter.put('/:id',validateToken, sanitizePersonInput, update)
+personRouter.post('/', sanitizePersonInput, add)
+personRouter.delete('/:id', validateToken,sanitizePersonInput, remove)

@@ -1,65 +1,139 @@
 import { Request, Response, NextFunction } from 'express';
-import { PersonRepository } from './person.repository.js';
+import { orm } from '../zshare/db/orm.js';
 import { Person } from './person.entity.js';
+import { UserRole } from '../common/enums/user-role.enum.js';
+import { DocumentType } from '../common/enums/document-type.enum.js';
+import { DocumentTypeLabels } from '../common/mappings/document-type.labels.js';
 
-const personrepository = new PersonRepository();
+const em = orm.em
 
-function sanitizepersonInput(req: Request, res: Response, next:NextFunction){
-  
-  req.body.sanitizedperson = {
-    nombre: req.body.nombre,
-    apellido: req.body.apellido,
-    tipoDoc: req.body.tipoDoc,
-    nroDoc: req.body.nroDoc,
-    contacto: req.body.contacto,
-    fechaNacimiento: req.body.fechaNacimiento,
-    domicilio: req.body.domicilio,
-    nroCuit: req.body.nroCuit
-  }}
-
-function findAll(req: Request,res: Response ){
-  res.json({data: personrepository.findAll()});
-}
-
-
-function findOne(req: Request,res: Response ){
-  const id = req.params.id;
-  const person = personrepository.findOne({id});
-  if(!person){
-    return res.status(404).send({message:'ID non-existent' })
-  }
-  res.json(person)
-}
-
-
-function add (req: Request,res: Response){
-  const input = req.body.sanitizedperson
-
-  const peopleInput = new Person (input.nombre,input.apellido,input.tipoDoc,input.nroDoc,input.contacto,input.fechaNacimiento,input.domicilio, input.nroCuil, input.id)
-  const buy = personrepository.add(peopleInput)
-  return res.status(201).send({message: 'new buy create', data: Person })
-}
-
-
-function update (req: Request,res: Response ){
-  req.body.sanitizedperson.id = req.params.id
-  const person = personrepository.update(req.body.sanitizedbuy) 
-  if (!person) {
-    return res.status(404).send({message:'person not found' })
-  }
-  return res.status(200).send({message: 'buy changed suscessfully', data:  Person })
-
-}
-
-function remove(req: Request,res: Response ){
-  const id = req.params.id;
-  const person = personrepository.delete({id})
-  if(!person){
-    return res.status(404).send({message:'incorrect ID' })
-  }
-  else{
-  return res.status(200).send({message: 'person deleted suscessfully' })
+async function findAll( req: Request, res: Response ){
+  try{
+    const person = await em.find(Person, {});
+    res.status(200).json({message: 'all people: ', data: person});
+  } catch (error: any){
+    res.status(500).json({message: error.message});
   }
 }
 
-export {  sanitizepersonInput, findOne, add, update, remove, findAll }
+async function findOne( req: Request, res: Response ){
+  try{
+    const id = Number.parseInt(req.params.id);
+    const person = await em.findOneOrFail(Person, { id: id }, { populate: ['address'] });
+    res.status(200).json({message: 'person data: ', data: person});
+  } catch (error: any){
+    res.status(500).json({message: error.message});
+  }
+}
+
+async function findOneByDoc( req: Request, res: Response ){
+  try {
+    const { doc_type, doc_nro } = req.params;
+
+    if (!Object.values(DocumentType).includes(doc_type as DocumentType)) {
+      return res.status(400).json({ message: 'Invalid document type' });
+    }
+
+    const id = Number.parseInt(req.params.id);
+    const person = await em.findOneOrFail(Person, { doc_type: doc_type, doc_nro: doc_nro });
+    res.status(200).json({message: 'person data: ', data: person});
+  } catch (error: any){
+    res.status(500).json({message: error.message});
+  }
+}
+
+async function add( req: Request, res: Response ){
+  try{
+    const input = req.body.sanitizedPerson;
+    const person = em.create(Person, input);
+    await em.flush();
+    res.status(201).json({ message: 'person created', data: person });
+  }catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+async function update( req: Request, res: Response ){
+  try{
+    const id = Number.parseInt(req.params.id);
+    const user = (req as any).user;
+    // Validacion de ownership
+    if(user.personId !== id){
+      return res.status(403).json({
+        message: 'No puede modificar otro usuario'
+      })
+    }
+    const input = req.body.sanitizedPerson;
+    const person = em.getReference(Person, id);
+    em.assign(person, input);
+    await em.flush();
+    res.status(200).json({ message: 'person updated', data: person });
+  }catch (error: any) {
+    console.log('Error updating person: ', error);
+    res.status(500).json({ message: error.message })
+  }
+}
+
+async function remove( req: Request, res: Response ){
+  try{
+    const id = Number.parseInt(req.params.id);
+    const user = (req as any).user;
+    // Validacion de ownership
+    if(user.personId !== id){
+      return res.status(403).json({
+        message: 'No puede eliminar otro usuario'
+      })
+    }
+    const person = em.getReference(Person, id);
+    em.removeAndFlush(person);
+    res.status(200).json({ message: 'person deleted', data: person });
+  }catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+function sanitizePersonInput(req: Request, res: Response, next: NextFunction) {
+  req.body.sanitizedPerson = {
+    name: req.body.name,
+    surname: req.body.surname,
+    doc_nro: req.body.doc_nro,
+    doc_type: req.body.doc_type,
+    email: req.body.email,
+    phoneNumber: req.body.phoneNumber,
+    birthdate: req.body.birthdate,
+    nroCuit: req.body.nroCuit,
+    address: {
+      latitude: req.body.address.latitude,
+      longitude: req.body.address.longitude,
+      formattedAddress: req.body.address.formattedAddress,
+      placeId: req.body.address.placeId,
+      street: req.body.address.street,
+      streetNumber: req.body.address.streetNumber,
+      city: req.body.address.city,
+      postalCode: req.body.address.postalCode,
+      province: req.body.address.province,
+      country: req.body.address.country,
+    }
+  };
+
+  if (req.body.sanitizedPerson) {
+    Object.keys(req.body.sanitizedPerson).forEach((key) => {
+      if (req.body.sanitizedPerson[key] === undefined) {
+        delete req.body.sanitizedPerson[key];
+      }
+    });
+  }
+
+  next();
+}
+
+function getDocumentTypes (req: Request, res: Response) {
+  const result = Object.values(DocumentType).map(type => ({
+    value: type,
+    label: DocumentTypeLabels[type]
+  }));
+
+  res.json(result);
+};
+
+export { findAll, findOne, add, update, remove, findOneByDoc, sanitizePersonInput, getDocumentTypes }

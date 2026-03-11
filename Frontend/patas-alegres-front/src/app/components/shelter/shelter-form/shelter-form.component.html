@@ -1,0 +1,65 @@
+<h1> Creacion de un refugio </h1>
+<form [formGroup]="ShelterForm" (submit)="postShelter()" class="form-container">
+  <div class = "row">
+    <div class="col-12 col-lg-6">
+      <!-- NAME -->
+      <div class="mb-4 text-center">
+        <label class="form-label fw-semibold">Nombre de tu refugio</label>
+        <input
+          type="text"
+          class="form-control form-control-lg"
+          formControlName="name"
+          placeholder="Ingresar aqui el nombre del refugio"
+        />
+        <p class="error" *ngIf="ShelterForm.get('name')?.invalid && ShelterForm.get('name')?.touched">El nombre del refugio es obligatorio</p>
+      </div>
+
+      <!-- Contacto -->
+      <div class="mb-4 text-center">
+        <label class="form-label fw-semibold">Numero de contacto</label>
+        <input
+          type="text"
+          class="form-control form-control-lg"
+          formControlName="phoneNumber"
+          placeholder="Ingresar aqui el numero de contacto"
+        />
+      </div>
+
+      <!-- Veterinaria -->
+      <div class="mb-4 text-center">
+        <label class="form-label fw-semibold">Matricula de veterinaria</label>
+        <input
+          type="text"
+          class="form-control form-control-lg"
+          formControlName="tuitionVet"
+          placeholder="Ingresar aqui la matricula de veterinaria"
+        />
+        <p class="error" *ngIf="ShelterForm.get('tuitionVet')?.invalid && ShelterForm.get('tuitionVet')?.touched">La matricula de veterinaria es obligatoria</p>
+      </div>
+
+      <!-- Capacidad maxima -->
+      <div class="mb-4 text-center">
+        <label class="form-label fw-semibold">Capacidad maxima</label>
+        <input
+          type="number"
+          class="form-control form-control-lg"
+          formControlName="max_capacity"
+          placeholder="Ingresar aqui la capacidad maxima del refugio"
+        />
+        <p class="error" *ngIf="ShelterForm.get('max_capacity')?.invalid && ShelterForm.get('max_capacity')?.touched">La capacidad maxima es obligatoria</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+      <div class="form-fieldset mb-3 d-flex flex-column rounded">
+        <app-address-picker
+          [form]="addressForm">
+        </app-address-picker>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-submit">
+    <button type="submit" [disabled]="ShelterForm.invalid">Añadir refugio</button>
+  </div>
+</form>

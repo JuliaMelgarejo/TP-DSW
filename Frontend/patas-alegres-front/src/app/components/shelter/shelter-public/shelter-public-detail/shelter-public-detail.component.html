@@ -1,0 +1,152 @@
+<div class="pa-page">
+  <div class="container px-3" style="max-width: 1200px;">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <a class="btn btn-outline-secondary" routerLink="/shelter">
+        Volver
+      </a>
+    </div>
+
+    <div *ngIf="loading" class="pa-muted">Cargando refugio...</div>
+
+    <div *ngIf="!loading && selectedShelter">
+
+      <div class="text-center mb-4">
+        <h2 class="pa-title mb-2">{{ selectedShelter.name }}</h2>
+      </div>
+
+      <div class="row g-4 align-items-start mb-4">
+
+        <div class="col-12 col-lg-4">
+          <div class="pa-card h-100">
+            <div class="pa-section">
+
+              <div class="mb-3">
+                <div class="pa-muted">Ubicación:</div>
+                <div class="fw-semibold">
+                  {{ selectedShelter.address?.city || 'Sin datos' }}
+                  <span *ngIf="selectedShelter.address?.province">, {{ selectedShelter.address?.province }}</span>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <div class="pa-muted">Dirección:</div>
+                <div class="fw-semibold">
+                  {{ getAddressText() }}
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <div class="pa-muted">Cantidad de animales:</div>
+                <div class="fw-semibold">
+                  {{ getAnimalsCount() }}
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <div class="pa-muted">Contacto:</div>
+                <div class="fw-semibold">
+                  {{ selectedShelter.phoneNumber || 'Sin teléfono' }}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-8">
+          <div class="pa-card h-100">
+            <div class="pa-section">
+              <div class="fw-bold mb-3">Ubicación en el mapa</div>
+
+            <div *ngIf="hasGoogleMapsLoaded(); else mapLoadingTpl">
+              <google-map
+                width="100%"
+                height="320px"
+                [center]="center"
+                [zoom]="zoom"
+              >
+                <map-marker
+                  [position]="markerPosition"
+                  [options]="markerOptions"
+                ></map-marker>
+              </google-map>
+            </div>
+
+            <ng-template #mapLoadingTpl>
+              <div class="pa-muted">Cargando mapa...</div>
+            </ng-template>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="mt-4">
+        <h3 class="text-center fw-bold mb-3">
+          Animales en el refugio esperando tu adopción
+        </h3>
+
+        <div *ngIf="loadingAnimals" class="pa-muted">Cargando animales...</div>
+
+        <div *ngIf="!loadingAnimals && animals.length === 0" class="pa-muted text-center">
+          Este refugio no tiene animales para mostrar.
+        </div>
+
+        <div *ngIf="!loadingAnimals && animals.length > 0" class="row g-3">
+
+          <!-- Animales -->
+          <div class="col-12 col-md-6 col-lg-3" *ngFor="let animal of animals | slice:0:3">
+            <a
+              class="pa-card pa-card-hover d-block text-decoration-none h-100"
+              [routerLink]="['/animal', animal.id]"
+              style="color: inherit; overflow: hidden;"
+            >
+              <img
+                [src]="getPhotoUrl(animal)"
+                [alt]="animal?.name || 'Animal'"
+                class="w-100 d-block"
+                style="height: 180px; object-fit: cover;"
+              />
+
+              <div class="pa-section">
+                <div class="fw-bold mb-2">
+                  Nombre: {{ animal?.name || '—' }}
+                </div>
+
+                <div class="pa-muted pa-small">Raza:</div>
+                <div class="mb-2">
+                  {{ animal?.breed?.name || '—' }}
+                </div>
+
+                <div class="pa-muted pa-small">Fecha de rescate:</div>
+                <div>
+                  {{ animal?.rescueClass?.rescue_date ? (animal.rescueClass.rescue_date | date:'dd/MM/yyyy') : '—' }}
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- Ver más animales -->
+          <div class="col-12 col-md-6 col-lg-3">
+            <a
+              class="pa-card pa-card-hover d-flex align-items-center justify-content-center text-decoration-none h-100"
+              [routerLink]="['/animal']"
+              [queryParams]="{ shelterId: selectedShelter.id }"
+              style="min-height: 100%; color: inherit;"
+            >
+              <div class="fw-bold text-center">Ver más animales</div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div *ngIf="!loading && !selectedShelter" class="pa-muted">
+      Refugio no encontrado.
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,83 @@
+<div class="pa-page">
+  <div class="container py-4">
+
+    <div class="row justify-content-center g-0">
+      <div class="col-12 col-lg-10 col-xl-9">
+
+        <div class="pa-card overflow-hidden">
+          <div class="row g-0">
+
+            <!-- IZQUIERDA: Imagen (desktop) / arriba (mobile) -->
+            <div class="col-12 col-lg-6">
+              <div class="h-100 w-100 d-flex align-items-center justify-content-center p-4"
+                   style="background: rgba(255,255,255,.55);">
+                <img
+                  src="assets/login.jpeg"
+                  alt="Login"
+                  class="img-fluid"
+                  style="max-height: 420px; width: 100%; object-fit: contain;"
+                />
+              </div>
+            </div>
+
+            <!-- DERECHA: Form -->
+            <div class="col-12 col-lg-6">
+              <div class="p-4 p-lg-5">
+
+                <h2 class="pa-title mb-3">Login</h2>
+                <p class="pa-subtitle mb-4">Ingresá con tu usuario y contraseña</p>
+
+                <div class="form-floating mb-3">
+                  <input
+                    type="text"
+                    [(ngModel)]="username"
+                    autocomplete="username"
+                    class="form-control pa-input"
+                    placeholder="Ingrese usuario"
+                  />
+                  <label>Usuario</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                  <input
+                    type="password"
+                    [(ngModel)]="password"
+                    autocomplete="current-password"
+                    class="form-control pa-input"
+                    placeholder="Ingrese contraseña"
+                  />
+                  <label>Contraseña</label>
+                </div>
+
+                <div class="d-grid gap-2 mt-3">
+                  <!-- Si querés seguir con bootstrap btn-primary, dejalo.
+                       Si querés tu estética, usá pa-btn-primary -->
+                  <button type="button" class="btn btn-primary btn-lg pa-btn pa-btn-primary" (click)="login()">
+                    Aceptar
+                  </button>
+                </div>
+
+                <p class="mt-3">No tienes cuenta?</p>
+                <div class="d-grid gap-2 mt-2">
+                  <button routerLink="/signIn/user"
+                          class="btn btn-outline-primary">
+                    Registrarme
+                  </button>
+
+                  <button routerLink="/signIn/shelter/account"
+                          class="btn btn-outline-success">
+                    Soy un refugio
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

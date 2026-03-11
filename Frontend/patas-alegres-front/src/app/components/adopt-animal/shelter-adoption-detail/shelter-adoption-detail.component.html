@@ -1,0 +1,218 @@
+<div class="pa-page">
+  <div class="container-fluid px-3 px-lg-4">
+    <div class="pa-panel">
+
+      <!-- HEADER -->
+      <div class="d-flex align-items-start align-items-md-center justify-content-between mb-3 flex-wrap gap-2">
+        <div>
+          <div class="pa-h2">Detalle de solicitud</div>
+          <div class="pa-muted pa-small">Gestión de adopciones del refugio</div>
+        </div>
+
+        <a class="pa-btn pa-btn-outline" routerLink="/shelter-adoptions">Volver</a>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" class="pa-card pa-section">
+        <div class="pa-muted">Cargando...</div>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="!loading && errMsg" class="pa-card pa-section">
+        <div class="pa-alert pa-alert-danger">{{ errMsg }}</div>
+      </div>
+
+      <!-- CONTENT -->
+      <div *ngIf="!loading && item" class="row g-3">
+
+        <!-- LEFT COLUMN -->
+        <div class="col-12 col-lg-7 d-flex flex-column gap-3">
+
+          <!-- Animal / Estado actual -->
+          <div class="pa-card pa-section">
+            <div class="row g-3 align-items-start">
+              <!-- Foto -->
+              <div class="col-12 col-sm-auto">
+                <img
+                  [src]="getMainPhoto()"
+                  [alt]="item?.animal?.name || 'Animal'"
+                  class="d-block"
+                  style="width: 120px; height: 120px; border-radius: 16px; object-fit: cover; border: 1px solid var(--pa-border);"
+                />
+              </div>
+
+              <!-- Info -->
+              <div class="col">
+                <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                  <div>
+                    <div class="pa-h3 mb-1">{{ item?.animal?.name }}</div>
+
+                    <div class="pa-small">
+                      <span class="pa-muted">Fecha del pedido:</span>
+                      <span class="fw-bold ms-1">{{ item?.adoption_date | date:'dd/MM/yyyy' }}</span>
+                    </div>
+                  </div>
+
+                  <!-- badge estado actual -->
+                  <span class="pa-badge" [ngClass]="stateBadgeClass(getCurrentState())">
+                    {{ getCurrentState() }}
+                  </span>
+                </div>
+
+                <div class="mt-3">
+                  <div class="pa-small pa-muted">Comentario del solicitante</div>
+                  <div class="mt-1">
+                    {{ item?.comments || '—' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Solicitante -->
+          <div class="pa-card pa-section">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+              <div class="fw-bold">Solicitante</div>
+              <span class="pa-muted pa-small">Datos de la persona</span>
+            </div>
+
+            <div class="row g-2">
+              <div class="col-12 col-md-6">
+                <div class="pa-small pa-muted">Nombre</div>
+                <div class="fw-semibold">{{ item?.person?.name ?? '—' }}</div>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <div class="pa-small pa-muted">Email</div>
+                <div class="fw-semibold text-break">{{ item?.person?.email ?? '—' }}</div>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <div class="pa-small pa-muted">Teléfono</div>
+                <div class="fw-semibold">{{ item?.person?.phone ?? '—' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CANCELLED BANNER (si está cancelada) -->
+          <div *ngIf="isCancelled()" class="pa-card-soft pa-section">
+            <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+              <div>
+                <div class="fw-bold" style="color: var(--pa-danger)">Solicitud cancelada</div>
+                <div class="pa-muted pa-small mt-1">
+                  No se puede modificar el estado porque el usuario canceló la solicitud.
+                </div>
+              </div>
+
+              <span class="pa-badge" [ngClass]="stateBadgeClass('CANCELADO')">CANCELADO</span>
+            </div>
+          </div>
+
+          <!-- Cambiar estado (solo si NO está cancelada) -->
+          <div *ngIf="!isCancelled()" class="pa-card pa-section">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+              <div class="fw-bold">Cambiar estado</div>
+
+              <!-- preview badge del nuevo estado -->
+              <span *ngIf="stateType" class="pa-badge" [ngClass]="stateBadgeClass(stateType)">
+                {{ stateType }}
+              </span>
+            </div>
+
+            <div *ngIf="statesLoading" class="pa-muted pa-small">Cargando estados...</div>
+
+            <div *ngIf="statesErr" class="pa-alert pa-alert-danger">{{ statesErr }}</div>
+
+            <div *ngIf="!statesLoading && !statesErr" class="row g-3">
+              <div class="col-12">
+                <label class="pa-small pa-muted d-block mb-1">Nuevo estado</label>
+                <select class="pa-input w-100" [(ngModel)]="stateType">
+                  <option *ngFor="let s of states" [value]="s.type">
+                    {{ s.type }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-12">
+                <label class="pa-small pa-muted d-block mb-1">Motivo (opcional)</label>
+                <textarea
+                  class="pa-input w-100"
+                  rows="3"
+                  [(ngModel)]="reason"
+                  placeholder="Ej: documentación aprobada, visita realizada..."></textarea>
+              </div>
+
+              <div class="col-12" *ngIf="okMsg">
+                <div class="pa-alert pa-alert-success">{{ okMsg }}</div>
+              </div>
+
+              <div class="col-12" *ngIf="!canSave() && !saving">
+                <div class="pa-muted pa-small">
+                  Seleccioná un estado distinto al actual para guardar.
+                </div>
+              </div>
+
+              <!-- acciones -->
+              <div class="col-12">
+                <div class="d-flex flex-column flex-sm-row justify-content-end gap-2">
+                  <button
+                    class="pa-btn pa-btn-outline"
+                    type="button"
+                    (click)="loadDetail(item.id)"
+                    [disabled]="saving">
+                    Recargar
+                  </button>
+
+                  <button
+                    class="pa-btn pa-btn-primary"
+                    type="button"
+                    (click)="saveStatus()"
+                    [disabled]="saving || !canSave()">
+                    {{ saving ? 'Guardando...' : 'Guardar estado' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-12 col-lg-5 d-flex flex-column gap-3">
+
+          <!-- Historial -->
+          <div class="pa-card pa-section">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+              <div class="fw-bold">Historial de estados</div>
+              <span class="pa-muted pa-small">Más reciente primero</span>
+            </div>
+
+            <div *ngIf="getStatuses().length === 0" class="pa-muted">
+              Sin historial.
+            </div>
+
+            <div *ngFor="let s of getStatuses()" class="pa-card-soft pa-p-md mb-2">
+              <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                <span class="pa-badge" [ngClass]="stateBadgeClass(s?.adoptionState?.type)">
+                  {{ s?.adoptionState?.type ?? '—' }}
+                </span>
+
+                <div class="pa-small pa-muted">
+                  {{ s?.statusChangeDate | date:'dd/MM/yyyy HH:mm' }}
+                </div>
+              </div>
+
+              <div class="pa-small mt-2" *ngIf="s?.reason">
+                {{ s.reason }}
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <!-- /CONTENT -->
+
+    </div>
+  </div>
+</div>
