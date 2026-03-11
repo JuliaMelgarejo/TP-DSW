@@ -29,6 +29,11 @@ export class AnimalService {
     return this.http.get<{message: string, data: Animal[]}>(this.API_URL)
   
     }
+
+  getAnimalsByShelter(shelterId: number) {
+    return this.http.get<{ message: string; data: Animal[] }>(`${this.API_URL}/shelter/${shelterId}`);
+  }
+
     getBreed(id: number) {
     return this.http.get<{ mesage: string, data: Breed }>(`${this.apiUrl}/breed/${id}`);
   }
