@@ -1,6 +1,10 @@
 ###obtener todos los animales 
 GET http://localhost:3000/api/animal
 
+###obtener todos los animales aplicando filtros
+GET http://localhost:3000/api/animal?page=1&limit=12&shelterId=15
+
+
 ###crear un nuevo animal
 #  @name createAnimal
 POST http://localhost:3000/api/animal

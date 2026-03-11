@@ -1,9 +1,16 @@
 import { Component } from '@angular/core';
 import { AnimalService } from '../../services/animal/animal.service.js';
 import { CommonModule } from '@angular/common';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { AnimalFilterPipe } from '../../pipes/animal-filter.pipe.js';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Animal } from '../../models/animal/animal.model.js';
+import { Shelter } from '../../models/shelter/shelter.model.js';
+import { AnimalFilters } from '../../models/animal/animal-filters.js';
+import { AuthService } from '../../services/auth/auth.service.js';
+import { ShelterService } from '../../services/shelter/shelter.service.js';
+import { BreedService } from '../../services/breed/breed.service.js';
+import { Breed } from '../../models/breed/breed.model.js';
 
 @Component({
   selector: 'app-animal',
@@ -13,80 +20,48 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './animal.component.css'
 })
 export class AnimalComponent {
-  breeds: string = '';
   rescue: string = '';
   index: any;
   loading = true;
   shelterIdFilter: number | null = null;
+  animals: Animal[] = [];
+  totalAnimals: number = 0;
+  totalPages: number = 1;
+  filters: AnimalFilters = {
+    page: 1,
+    limit: 12
+  };
+  shelters: Shelter[] = [];
+  breeds: Breed[] = [];
+  isShelter: boolean;
 
-  BACKEND_BASE = 'http://localhost:3000';
+  BACKEND_BASE = 'http://localhost:3000'; // esto podria pasarse a un metodo en animals o incluso en photo
 
   constructor(
     public animalService: AnimalService,
-    private route: ActivatedRoute
-  ) {}
-
-  ngOnInit(): void {
-    this.route.queryParamMap.subscribe(params => {
-      const shelterId = Number(params.get('shelterId'));
-
-      if (shelterId && !Number.isNaN(shelterId)) {
-        this.shelterIdFilter = shelterId;
-        this.getAnimalsByShelter(shelterId);
-      } else {
-        this.shelterIdFilter = null;
-        this.getAnimals();
-      }
-    });
+    private route: ActivatedRoute,
+    private auth: AuthService,
+    private shelterService: ShelterService,
+    private breedService: BreedService,
+    public router: Router,
+  ) {
+    this.isShelter = this.auth.isShelter();
   }
 
-  getAnimals() {
-    this.loading = true;
-
-    this.animalService.getAnimals().subscribe({
-      next: (response) => {
-        this.animalService.animals = response.data;
-        this.loading = false;
-        console.log(this.animalService.animals);
-      },
-      error: (error) => {
-        console.log(error);
-        this.loading = false;
-      }
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.filters = {
+        page: Number(params['page']) || 1,
+        limit: Number(params['limit']) || 12,
+        shelterId: params['shelterId'] ? Number(params['shelterId']) : undefined,
+        breedId: params['breedId'] ? Number(params['breedId']) : undefined,
+        minRescueDate: params['minRescueDate'] ? Number(params['minRescueDate']) : undefined,
+        maxRescueDate: params['maxRescueDate'] ? Number(params['maxRescueDate']) : undefined,
+        sort: params['sort'] ?? undefined,
+      };
+      this.loadAnimals();
     });
-  }
-
-  getAnimalsByShelter(shelterId: number) {
-    this.loading = true;
-
-    this.animalService.getAnimalsByShelter(shelterId).subscribe({
-      next: (response) => {
-        this.animalService.animals = response.data;
-        this.loading = false;
-        console.log(this.animalService.animals);
-      },
-      error: (error) => {
-        console.log(error);
-        this.loading = false;
-      }
-    });
-  }
-
-  deleteAnimal(id: number) {
-    this.animalService.deleteAnimal(id).subscribe({
-      next: (response) => {
-        console.log(response);
-
-        if (this.shelterIdFilter) {
-          this.getAnimalsByShelter(this.shelterIdFilter);
-        } else {
-          this.getAnimals();
-        }
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
+    this.loadFilters();
   }
 
   getPhotoUrl(animal: any): string {
@@ -96,18 +71,116 @@ export class AnimalComponent {
   }
 
   getTitle(): string {
-    return this.shelterIdFilter
+    return this.isShelter
       ? 'Animales de este refugio'
       : 'Lista de animales esperando TU rescate';
   }
 
   getSubtitle(): string {
-    return this.shelterIdFilter
+    return this.isShelter
       ? 'Listado filtrado por refugio'
       : 'lista de animales';
   }
 
   getBackLink(): string {
-    return this.shelterIdFilter ? `/shelters/${this.shelterIdFilter}` : '/home';
+    return this.isShelter ? `/shelters/${this.shelterIdFilter}` : '/home';
+  }
+  
+
+  loadAnimals() {
+    this.loading = true;
+    const query: AnimalFilters = { ...this.filters };
+    if (this.isShelter) {
+      query.shelterId = this.auth.getShelterIdToken();
+    }
+    this.animalService.getAnimals(query).subscribe(res => {
+      this.animals = res.data;
+      this.totalAnimals = res.total;
+      this.totalPages = res.totalPages;
+      this.loading = false;
+    });
+    if (this.filters.page! > this.totalPages && this.totalPages > 0) {
+      this.goToPage(this.totalPages);
+    }
+  }
+
+  loadFilters(){ // paginar
+    this.breedService.getBreeds().subscribe(res => {
+      this.breeds = res.data;
+    });
+    if (!this.auth.isShelter()){
+      this.shelterService.getShelters().subscribe(res => {
+        this.shelters = res.data;
+      });
+    }
+  }
+
+  goToPage(page: number) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { page },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  applyFilters() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        ...this.filters,
+        page: 1
+      },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  get page(): number {
+    return this.filters.page ?? 1;
+  }
+
+  removeFilter(type: string) {
+    if (type === 'shelter') {
+      this.filters.shelterId = undefined;
+    }
+    if (type === 'breed') {
+      this.filters.breedId = undefined;
+    }
+    if (type === 'sort') {
+      this.filters.sort = undefined;
+    }
+
+    this.applyFilters()
+  }
+
+  getShelterName(id?: number) {
+    return this.shelters.find(s => s.id === id)?.name;
+  }
+
+  getBreedName(id?: number) {
+    return this.breeds.find(c => c.id === id)?.name;
+  }
+
+  clearFilters() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        page: 1,
+        limit: 12,
+        shelterId: null,
+        breedId: null,
+        sort: null,
+        minPrice: null,
+        maxPrice: null
+      }
+    });
+    this.loadAnimals();
+  }
+
+  get pages(): number[] {
+    const max = 5
+    const start = Math.max(this.page - 2, 1)
+    const end = Math.min(start + max - 1, this.totalPages)
+
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i)
   }
 }

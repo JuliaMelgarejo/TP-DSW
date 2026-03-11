@@ -11,7 +11,8 @@
     "seed:categories": "node dist/scr/scripts/seedCategories.js",
     "seed:adoptionState": "node dist/scr/scripts/seedAdoptionState.js",
     "seed:orderState": "node dist/scr/scripts/seedOrderState.js",
-    "seed:products": "node dist/scr/scripts/seedProducts.js"
+    "seed:products": "node dist/scr/scripts/seedProducts.js",
+    "seed:animals": "node dist/scr/scripts/seedAnimals.js"
   },
   "keywords": [],
   "author": "",
