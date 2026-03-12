@@ -25,4 +25,8 @@ export class UserService {
    login(user: User):Observable<string> {
     return this.http.post<string>(this.API_URL2, user)
    }
+
+   checkUsername(username: string) {
+    return this.http.get<{ exists: boolean; msg?: string }>(`${this.API_URL}/check-username/${username}`);
+   }
 }
