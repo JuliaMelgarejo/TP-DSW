@@ -1,148 +1,275 @@
-<div class="container-fluid bg-light min-vh-100 d-flex justify-content-center  align-items-start py-5">
+<div class="container-fluid bg-light min-vh-100 d-flex justify-content-center align-items-start py-5">
   <div class="col-12 col-lg-10 col-xl-8">
 
-    <!-- Header -->
     <div class="text-center mb-5">
       <div class="fs-1">😊</div>
       <h1 class="fw-bold">Patas alegres</h1>
       <h4 class="fw-semibold">Registremos tu usuario</h4>
     </div>
 
+    <div *ngIf="submitError" class="alert alert-danger">
+      {{ submitError }}
+    </div>
+
     <form [formGroup]="UserForm" (ngSubmit)="SignIn()">
-      <div class = "row">
+      <div class="row">
         <div class="col-12 col-lg-6">
-          <!-- USERNAME -->
+
           <div class="mb-4 text-center">
             <label class="form-label fw-semibold">Usuario</label>
             <input
               type="text"
               class="form-control form-control-lg"
               formControlName="username"
-              placeholder="Ingresar aqui el usuario"
+              placeholder="Ingresar aquí el usuario"
+              [class.is-invalid]="
+                (UserForm.get('username')?.touched && UserForm.get('username')?.invalid) ||
+                !!usernameExistsError ||
+                !!backendErrors['username']
+              "
             />
-            <p class="error" *ngIf="UserForm.get('username')?.invalid && UserForm.get('username')?.touched">El tipo de documento es obligatorio</p>
+
+            <div class="invalid-feedback" *ngIf="UserForm.get('username')?.touched && UserForm.get('username')?.hasError('required')">
+              El usuario es obligatorio
+            </div>
+
+            <div class="invalid-feedback" *ngIf="UserForm.get('username')?.touched && UserForm.get('username')?.hasError('minlength')">
+              El usuario debe tener al menos 3 caracteres
+            </div>
+
+            <div class="invalid-feedback" *ngIf="usernameExistsError">
+              {{ usernameExistsError }}
+            </div>
+
+            <div class="invalid-feedback" *ngIf="backendErrors['username']">
+              {{ backendErrors['username'] }}
+            </div>
+
+            <div class="form-text" *ngIf="checkingUsername">
+              Validando usuario...
+            </div>
           </div>
 
-          <!-- PASSWORD -->
           <div class="mb-4 text-center">
             <label class="form-label fw-semibold">Contraseña</label>
             <input
               type="password"
               class="form-control form-control-lg"
               formControlName="password"
-              placeholder="Ingresar aqui la contraseña"
+              placeholder="Ingresar aquí la contraseña"
+              [class.is-invalid]="UserForm.get('password')?.invalid && UserForm.get('password')?.touched"
             />
-            <p class="error" *ngIf="UserForm.get('password')?.invalid && UserForm.get('password')?.touched">El tipo de documento es obligatorio</p>
+
+            <div class="invalid-feedback" *ngIf="UserForm.get('password')?.touched && UserForm.get('password')?.hasError('required')">
+              La contraseña es obligatoria
+            </div>
+
+            <div class="invalid-feedback" *ngIf="UserForm.get('password')?.touched && UserForm.get('password')?.hasError('pattern')">
+              Debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo
+            </div>
+
+            <div class="invalid-feedback" *ngIf="backendErrors['password']">
+              {{ backendErrors['password'] }}
+            </div>
           </div>
 
-          <!-- PERSON GROUP -->
           <div formGroupName="person">
-
-            <!-- NAME -->
             <div class="mb-4 text-center">
               <label class="form-label fw-semibold">Nombre</label>
               <input
                 type="text"
                 class="form-control form-control-lg"
                 formControlName="name"
-                placeholder="Ingresar aqui el nombre"
+                placeholder="Ingresar aquí el nombre"
+                [class.is-invalid]="
+                  (UserForm.get('person.name')?.invalid && UserForm.get('person.name')?.touched) ||
+                  !!backendErrors['person.name']
+                "
               />
-              <p class="error" *ngIf="UserForm.get('name')?.invalid && UserForm.get('name')?.touched">El tipo de documento es obligatorio</p>
+
+              <div class="invalid-feedback" *ngIf="UserForm.get('person.name')?.touched && UserForm.get('person.name')?.hasError('required')">
+                El nombre es obligatorio
+              </div>
+
+              <div class="invalid-feedback" *ngIf="backendErrors['person.name']">
+                {{ backendErrors['person.name'] }}
+              </div>
             </div>
 
-            <!-- SURNAME -->
             <div class="mb-4 text-center">
               <label class="form-label fw-semibold">Apellido</label>
               <input
                 type="text"
                 class="form-control form-control-lg"
                 formControlName="surname"
-                placeholder="Ingresar aqui el apellido"
+                placeholder="Ingresar aquí el apellido"
+                [class.is-invalid]="
+                  (UserForm.get('person.surname')?.invalid && UserForm.get('person.surname')?.touched) ||
+                  !!backendErrors['person.surname']
+                "
               />
-              <p class="error" *ngIf="UserForm.get('surname')?.invalid && UserForm.get('surname')?.touched">El tipo de documento es obligatorio</p>
+
+              <div class="invalid-feedback" *ngIf="UserForm.get('person.surname')?.touched && UserForm.get('person.surname')?.hasError('required')">
+                El apellido es obligatorio
+              </div>
+
+              <div class="invalid-feedback" *ngIf="backendErrors['person.surname']">
+                {{ backendErrors['person.surname'] }}
+              </div>
             </div>
 
-            <!-- DOC TYPE -->
             <div class="form-fieldset mb-3 d-flex flex-column rounded text-center">
-              <label class="form-label fw-semibold" for="doc_type">Tipo de documento:</label>
-              <select id="person-doc_type" formControlName="doc_type" class="form-select form-select-lg">
-                <option [ngValue]="null" disabled selected>Seleccione un tipo de documento</option>
+              <label class="form-label fw-semibold" for="doc_type">Tipo de documento</label>
+              <select
+                id="person-doc_type"
+                formControlName="doc_type"
+                class="form-select form-select-lg"
+                [class.is-invalid]="
+                  (UserForm.get('person.doc_type')?.invalid && UserForm.get('person.doc_type')?.touched) ||
+                  !!backendErrors['person.doc_type']
+                "
+              >
+                <option [ngValue]="null" disabled>Seleccione un tipo de documento</option>
                 <option *ngFor="let doc of documentTypes" [ngValue]="doc.value">{{ doc.label }}</option>
               </select>
-              <p class="error" *ngIf="UserForm.get('doc_type')?.invalid && UserForm.get('doc_type')?.touched">El tipo de documento es obligatorio</p>
+
+              <div class="invalid-feedback" *ngIf="UserForm.get('person.doc_type')?.touched && UserForm.get('person.doc_type')?.hasError('required')">
+                El tipo de documento es obligatorio
+              </div>
+
+              <div class="invalid-feedback" *ngIf="backendErrors['person.doc_type']">
+                {{ backendErrors['person.doc_type'] }}
+              </div>
             </div>
-            
-            <!-- DOC NUMBER -->
+
             <div class="mb-4 text-center">
-              <label class="form-label fw-semibold">Numero de documento</label>
+              <label class="form-label fw-semibold">Número de documento</label>
               <input
                 type="text"
                 class="form-control form-control-lg"
                 formControlName="doc_nro"
-                placeholder="Ingresar aqui el numero"
+                placeholder="Ingresar aquí el número"
+                [class.is-invalid]="
+                  (UserForm.get('person.doc_nro')?.invalid && UserForm.get('person.doc_nro')?.touched) ||
+                  !!backendErrors['person.doc_nro']
+                "
               />
-              <p class="error" *ngIf="UserForm.get('doc_nro')?.invalid && UserForm.get('doc_nro')?.touched">El tipo de documento es obligatorio</p>
+
+              <div class="invalid-feedback" *ngIf="UserForm.get('person.doc_nro')?.touched && UserForm.get('person.doc_nro')?.hasError('required')">
+                El número de documento es obligatorio
+              </div>
+
+              <div class="invalid-feedback" *ngIf="UserForm.get('person.doc_nro')?.touched && UserForm.get('person.doc_nro')?.hasError('pattern')">
+                El número de documento solo debe contener números
+              </div>
+
+              <div class="invalid-feedback" *ngIf="backendErrors['person.doc_nro']">
+                {{ backendErrors['person.doc_nro'] }}
+              </div>
             </div>
-            
-            <!-- BIRTHDATE -->
+
             <div class="mb-4 text-center">
               <label class="form-label fw-semibold">Fecha de nacimiento</label>
               <input
                 type="date"
                 class="form-control form-control-lg"
                 formControlName="birthdate"
+                [class.is-invalid]="
+                  (UserForm.get('person.birthdate')?.invalid && UserForm.get('person.birthdate')?.touched) ||
+                  !!backendErrors['person.birthdate']
+                "
               />
-              <p class="error" *ngIf="UserForm.get('birthdate')?.invalid && UserForm.get('birthdate')?.touched">El tipo de documento es obligatorio</p>
+
+              <div class="invalid-feedback" *ngIf="UserForm.get('person.birthdate')?.touched && UserForm.get('person.birthdate')?.hasError('required')">
+                La fecha de nacimiento es obligatoria
+              </div>
+
+              <div class="invalid-feedback" *ngIf="UserForm.get('person.birthdate')?.touched && UserForm.get('person.birthdate')?.hasError('futureDate')">
+                La fecha de nacimiento no puede ser futura
+              </div>
+
+              <div class="invalid-feedback" *ngIf="backendErrors['person.birthdate']">
+                {{ backendErrors['person.birthdate'] }}
+              </div>
             </div>
           </div>
         </div>
 
         <div class="col-12 col-lg-6" formGroupName="person">
-
-          <!-- CUIT -->
           <div class="mb-4 text-center">
-            <label class="form-label fw-semibold">Numero de cuit</label>
+            <label class="form-label fw-semibold">Número de CUIT</label>
             <input
               type="text"
               class="form-control form-control-lg"
               formControlName="nroCuit"
-              placeholder="Ingresar aqui el numero de cuit"
+              placeholder="Ingresar aquí el número de CUIT"
+              [class.is-invalid]="UserForm.get('person.nroCuit')?.invalid && UserForm.get('person.nroCuit')?.touched"
             />
+
+            <div class="invalid-feedback" *ngIf="UserForm.get('person.nroCuit')?.touched && UserForm.get('person.nroCuit')?.hasError('pattern')">
+              El CUIT debe tener exactamente 11 números
+            </div>
           </div>
-          
-          <!-- PHONENUMBER -->
+
           <div class="mb-4 text-center">
-            <label class="form-label fw-semibold">Numero de telefono</label>
+            <label class="form-label fw-semibold">Número de teléfono</label>
             <input
               type="text"
               class="form-control form-control-lg"
               formControlName="phoneNumber"
-              placeholder="Ingresar aqui el numero de telefono"
+              placeholder="Ingresar aquí el número de teléfono"
+              [class.is-invalid]="UserForm.get('person.phoneNumber')?.invalid && UserForm.get('person.phoneNumber')?.touched"
             />
-            <p class="error" *ngIf="UserForm.get('phoneNumber')?.invalid && UserForm.get('phoneNumber')?.touched">El tipo de documento es obligatorio</p>
+
+            <div class="invalid-feedback" *ngIf="UserForm.get('person.phoneNumber')?.touched && UserForm.get('person.phoneNumber')?.hasError('pattern')">
+              El teléfono debe tener entre 6 y 15 números
+            </div>
           </div>
 
-          <!-- EMAIL -->
           <div class="mb-4 text-center">
             <label class="form-label fw-semibold">Email</label>
             <input
-              type="text"
+              type="email"
               class="form-control form-control-lg"
               formControlName="email"
-              placeholder="Ingresar aqui el email"
+              placeholder="Ingresar aquí el email"
+              [class.is-invalid]="
+                (UserForm.get('person.email')?.invalid && UserForm.get('person.email')?.touched) ||
+                !!backendErrors['person.email']
+              "
             />
+
+            <div class="invalid-feedback" *ngIf="UserForm.get('person.email')?.touched && UserForm.get('person.email')?.hasError('email')">
+              El email no es válido
+            </div>
+
+            <div class="invalid-feedback" *ngIf="backendErrors['person.email']">
+              {{ backendErrors['person.email'] }}
+            </div>
           </div>
 
           <div class="form-fieldset mb-3 d-flex flex-column rounded text-center">
             <label class="form-label fw-semibold">Dirección</label>
-            <app-address-picker
-              [form]="addressForm">
-            </app-address-picker>
+            <app-address-picker [form]="addressForm"></app-address-picker>
+
+            <div class="text-danger small mt-1" *ngIf="backendErrors['person.address']">{{ backendErrors['person.address'] }}</div>
+            <div class="text-danger small mt-1" *ngIf="backendErrors['person.address.formattedAddress']">{{ backendErrors['person.address.formattedAddress'] }}</div>
+            <div class="text-danger small mt-1" *ngIf="backendErrors['person.address.city']">{{ backendErrors['person.address.city'] }}</div>
+            <div class="text-danger small mt-1" *ngIf="backendErrors['person.address.province']">{{ backendErrors['person.address.province'] }}</div>
+            <div class="text-danger small mt-1" *ngIf="backendErrors['person.address.country']">{{ backendErrors['person.address.country'] }}</div>
           </div>
         </div>
       </div>
-      <!-- SUBMIT -->
-     <div class="d-flex justify-content-center mt-5">
+
+      <div class="d-flex justify-content-center gap-2 mt-5">
+          <button
+            type="button"
+            class="btn btn-secondary btn-lg px-5 py-3"
+            routerLink="/login"
+          >
+            Volver
+          </button>
+          
         <button
           type="submit"
           class="btn btn-secondary btn-lg px-5 py-3"
