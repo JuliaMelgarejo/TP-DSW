@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { OrderService } from '../../../services/order/order-srvice.service';
-import { environment } from '../../../../environments/environment.js';
+import { AppConfig } from '../../../core/config/app.config.js';
 
 @Component({
   selector: 'app-order-shelter-detail',
@@ -19,7 +19,7 @@ export class OrderShelterDetailComponent {
   states: { id: number; type: string; description?: string }[] = [];
   loadingStates = true;
 
-  BACKEND_BASE = environment.url;
+  BACKEND_BASE = AppConfig.apiBase;
   role = '';
 
   constructor(

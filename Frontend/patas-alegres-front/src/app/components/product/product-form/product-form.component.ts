@@ -8,8 +8,8 @@ import { CategoryService } from '../../../services/Category/category.service.js'
 import { Category } from '../../../models/category/category.js';
 import { CommonModule } from '@angular/common';
 import { PhotoService } from '../../../services/photo/photo.service.js';
-import { environment } from '../../../../environments/environment.js';
 import { Product } from '../../../models/product/product.js';
+import { AppConfig } from '../../../core/config/app.config.js';
 
 @Component({
   selector: 'app-product-form',
@@ -82,7 +82,7 @@ export class ProductFormComponent {
           category: this.selectedProduct.category.id,
         });
         if (this.selectedProduct.photos && this.selectedProduct.photos.length > 0) {
-          this.selectedProductPreview = environment.url + this.selectedProduct.photos[0].url;
+          this.selectedProductPreview = AppConfig.apiBase + this.selectedProduct.photos[0].url;
         }
       },
       error: (error) => {
@@ -218,7 +218,7 @@ export class ProductFormComponent {
   getPhotoUrl(p: any): string {
     const url = p?.url;
     if (!url) return 'assets/nophoto.png';
-    return url.startsWith('http') ? url : environment.url + url;
+    return url.startsWith('http') ? url : AppConfig.apiBase + url;
   }
 
   getMainPhotoUrl(){
@@ -230,7 +230,7 @@ export class ProductFormComponent {
 
     if (!url) return null;
 
-    return url.startsWith('http') ? url : environment.url + url;
+    return url.startsWith('http') ? url : AppConfig.apiBase + url;
   }
 
   goToSlide(index: number) {

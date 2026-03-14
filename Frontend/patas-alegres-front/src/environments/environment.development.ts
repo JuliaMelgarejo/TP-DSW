@@ -7,7 +7,7 @@ export const environment = {
   },
 
   googleMaps: {
-    apiKey: '',
-    mapId: ''
+    apiKey: 'AIzaSyAR0Xp_LdRErkcArLXz31IV_eYjhoszD3k',
+    mapId: '7ac99889f13ef58f327f82cd'
   }
 };

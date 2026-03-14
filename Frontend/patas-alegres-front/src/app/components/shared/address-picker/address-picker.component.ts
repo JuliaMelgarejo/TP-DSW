@@ -10,7 +10,7 @@ import {
 
 import { FormGroup } from '@angular/forms';
 import { GoogleMap, MapAdvancedMarker } from '@angular/google-maps';
-import { environment } from '../../../../environments/environments.local.js';
+import { AppConfig } from '../../../core/config/app.config.js';
 
 @Component({
   selector: 'app-address-picker',
@@ -32,7 +32,7 @@ export class AddressPickerComponent implements OnInit, AfterViewInit {
   markerPosition?: google.maps.LatLngLiteral;
 
   mapOptions: google.maps.MapOptions = {
-    mapId: environment.googleMapsMapId,
+    mapId: AppConfig.googleMapsMapId,
     disableDefaultUI: true,
     zoomControl: true,
   };

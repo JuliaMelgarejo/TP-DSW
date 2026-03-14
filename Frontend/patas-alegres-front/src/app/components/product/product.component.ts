@@ -5,13 +5,13 @@ import { Product } from '../../models/product/product.js';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { environment } from '../../../environments/environment.js';
 import { CartService } from '../../services/Cart/cart-service.service.js';
 import { ProductFilters } from '../../models/product/product-filters.js';
 import { Shelter } from '../../models/shelter/shelter.model.js';
 import { Category } from '../../models/category/category.js';
 import { CategoryService } from '../../services/Category/category.service.js';
 import { ShelterService } from '../../services/shelter/shelter.service.js';
+import { AppConfig } from '../../core/config/app.config.js';
 
 @Component({
   selector: 'app-product',
@@ -68,7 +68,7 @@ export class ProductComponent {
 
     if (!url) return 'assets/nophoto.png';
 
-    return url.startsWith('http') ? url : environment.url + url;
+    return url.startsWith('http') ? url : AppConfig.apiBase + url;
   }
 
   loadProducts() {
