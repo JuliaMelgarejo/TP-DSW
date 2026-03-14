@@ -37,6 +37,8 @@ export class HomeComponent {
     disableDefaultUI: true,
     zoomControl: true,
   }
+  isUserInsideMap?: boolean;
+  private loadTimeout?: any;
 
   constructor(
     public auth: AuthService,
@@ -44,17 +46,7 @@ export class HomeComponent {
     public shelterService: ShelterService,
   ) {}
   ngOnInit() {
-    let personId = this.auth.getUserIdToken();
-    if (personId) {
-      this.personService.getPerson(personId).subscribe((person) => {
-        if (person.data.address) {
-          this.center = {
-            lat: Number(person.data.address.latitude),
-            lng: Number(person.data.address.longitude),
-          };
-        }
-      });
-    }
+    this.getLocation()
   }
 
   loadShelters() {
@@ -66,13 +58,14 @@ export class HomeComponent {
     const sw = bounds.getSouthWest();
 
     const viewport = {
-      nort: ne.lat(),
+      north: ne.lat(),
       east: ne.lng(),
       south: sw.lat(),
       west: sw.lng()
     };
 
-    this.shelterService.findByBoundary(viewport.nort, viewport.south, viewport.east, viewport.west).subscribe((res) => {
+    this.shelterService.findByBoundary(viewport.north, viewport.south, viewport.east, viewport.west, this.center.lat, this.center.lng).subscribe((res) => {
+      this.isUserInsideMap = res.isUserInsideMap;
       this.shelters = res.data.map((shelter) => ({
         ...shelter,
         address: {
@@ -121,4 +114,43 @@ export class HomeComponent {
       ctaLink: ['/shelter'], // ajustá si tu ruta es otra
     },
   ];
+
+  getLocation() {
+    if (this.auth.isUser()) {
+      if (!navigator.geolocation) {
+        this.loadUserAddress();
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.setMapCenter(position.coords.latitude, position.coords.longitude);
+        },
+        () => {
+          this.loadUserAddress();
+        }
+      );
+    }
+  }
+
+  setMapCenter(lat: number, lng: number) {
+    this.center = { lat, lng };
+  }
+
+  loadUserAddress() {
+    const personId = this.auth.getUserIdToken();
+    if (!personId) return;
+    this.personService.getPerson(personId).subscribe(person => {
+      const addr = person.data.address;
+      if (!addr) return;
+      this.setMapCenter(Number(addr.latitude), Number(addr.longitude));
+    });
+  }
+
+  loadSheltersDebounced() {
+    clearTimeout(this.loadTimeout);
+    this.loadTimeout = setTimeout(() => {
+      this.loadShelters();
+    }, 400);
+  }
 }
