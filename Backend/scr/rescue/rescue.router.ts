@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {  findAll, findOne, add, update, remove, sanitizeRescueInput } from "./rescue.controler.js";
 import { validateToken } from "../validate-token/validate-token.routes.js";
-import { authorizeRoles } from "../middlewares/authorize-role.js";
+import { authorizeRoles } from "../common/middlewares/authorize-role.js";
 
 export const rescueRouter = Router();
 

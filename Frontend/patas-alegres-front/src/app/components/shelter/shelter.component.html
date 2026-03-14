@@ -1,13 +1,85 @@
 <div class="pa-page">
   <div class="container px-3" style="max-width: 1100px;">
-
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-      <h2 class="pa-title mb-0">Lista de refugios disponibles</h2>
-
-      <button class="btn btn-outline-secondary btn-sm" type="button">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h1 class="pa-title mb-4">Lista de refugios disponibles</h1>
+      <button
+        class="btn btn-outline-primary"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#filtersPanel"
+        aria-controls="filtersPanel"
+      >
         Filtros
       </button>
     </div>
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="filtersPanel" aria-labelledby="filtersPanelLabel" data-bs-backdrop="static">
+      <!-- header -->
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="filtersPanelLabel">
+          Filtros y ordenamiento
+        </h5>
+        <button class="btn btn-sm btn-outline-secondary ms-auto me-2" (click)="clearFilters()">
+          Limpiar filtros
+        </button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="offcanvas">
+        </button>
+      </div>
+      
+      <div *ngIf="activeFilters.length">
+        <h6 class="mb-2">Filtros activos</h6>
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          <div *ngFor="let filter of activeFilters" class="badge d-flex align-items-center gap-2 px-3 py-2" [ngClass]="'bg-' + filter.color">
+            <span *ngIf="filter.label">
+              {{ filter.label }}: {{ filter.value }}
+            </span>
+            <span *ngIf="!filter.label">
+              {{ filter.value }}
+            </span>
+            <button type="button" class="btn-close btn-close-white btn-sm" (click)="removeFilter(filter.key)">
+            </button>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="offcanvas-body">
+        <!-- PAIS -->
+        <div>
+          <h5 class="mb-3">Pais</h5>
+          <select class="form-select" [(ngModel)]="filters.country" (change)="onCountryChange()">
+            <option value="undefined" disabled>Filtre por país</option>
+            <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+          </select>
+        </div>
+        <hr>
+        <!-- Provincia -->
+        <div>
+          <h5 class="mb-3">Provincia</h5>
+          <select class="form-select" [(ngModel)]="filters.province" (change)="onProvinceChange()" [disabled]="!filters.country">
+            <option disabled value="undefined">{{ filters.country ? 'Filtre por provincia' : 'Primero seleccione país' }}</option>
+            <option *ngFor="let province of provinces" [value]="province">{{ province }}</option>
+          </select>
+        </div>
+        <hr>
+        <!-- Ciudad -->
+        <div>
+          <h5 class="mb-3">Ciudad</h5>
+          <select class="form-select" [(ngModel)]="filters.city" (change)="onCityChange()" [disabled]="!filters.province">
+            <option disabled value="undefined">{{ filters.province ? 'Filtre por ciudad' : 'Primero seleccione provincia' }}</option>
+            <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+          </select>
+        </div>
+      </div>
+      <!-- footer -->
+      <div class="p-3 border-top">
+        <p>{{ totalShelters }} refugios encontrados</p>
+        <button class="btn btn-primary w-100" (click)="applyFilters()" data-bs-dismiss="offcanvas">
+          Aplicar filtros
+        </button>
+      </div>
+    </div>
+
 
     <div *ngIf="loading" class="pa-muted">Cargando refugios...</div>
 
@@ -20,7 +92,7 @@
         <div
           class="pa-card pa-card-hover h-100"
           style="cursor: pointer;"
-          (click)="goToShelterDetail(shelter.id)"
+          (click)="goToShelterDetail(shelter.id!)"
         >
           <div class="pa-section">
             <div class="fw-bold mb-2">{{ shelter.name }}</div>
@@ -29,7 +101,7 @@
               <strong>Ubicación:</strong>
             </div>
             <div class="pa-muted mb-2" style="font-size: 13px;">
-              {{ shelter.address?.city || shelter.address?.province || 'Sin datos' }}
+              {{ shelter.address.city || shelter.address.province || 'Sin datos' }}
             </div>
 
             <div class="pa-muted" style="font-size: 13px;">

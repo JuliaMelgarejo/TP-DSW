@@ -6,10 +6,47 @@ const em = orm.em
 
 async function findAll( req: Request, res: Response ){
   try{
-    const shelter = await em.find(Shelter, {}, {populate:['rescues', 'vet', 'address']});
-    res.status(200).json({message: 'all shelters: ', data: shelter });
+    const { sort, country, province, city, page = 1, limit = 10 } = req.query
+
+    const where: any = {}
+    const orderBy: any = {}
+
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+    
+    if (country || province ||city){
+      where.address = {}
+    }
+
+    if (country) {
+      where.address.country = country
+    }
+
+    if (province) {
+      where.address.province = province
+    }
+
+    if (city) {
+      where.address.city = city
+    }
+
+    const [shelters, total] = await em.findAndCount(Shelter, where, {
+      populate: ['rescues', 'address'],
+      orderBy,
+      limit: limitNumber,
+      offset: (pageNumber - 1) * limitNumber
+    })
+
+    res.status(200).json({
+      message: 'Found shelters',
+      total,
+      page: pageNumber,
+      totalPages: Math.ceil(total / limitNumber),
+      limit: limitNumber,
+      data: shelters 
+    });
   } catch (error: any){
-    res.status(500).json({message: error.message});
+    return res.status(500).json({message: error.message});
   }
 }
 
@@ -88,22 +125,63 @@ async function remove(req: Request, res: Response) {
 
 async function findByBoundary(req: Request, res: Response) {
   try {
-    const { nort, south, east, west } = req.query;
-    console.log('Received query parameters:', req.query);
-    console.log('Received boundaries:', { nort, south, east, west });
+    const { nort, south, east, west, userLat, userLng } = req.query;
 
-    const shelters = await em.find(Shelter, {
-      address: {
-        latitude: { $gte: Number(south), $lte: Number(nort) },
-        longitude: { $gte: Number(west), $lte: Number(east) }
-      }
-    }, { populate: ['address'] });
+    const isUserInsideMap = Number(userLat) >= Number(south) && Number(userLat) <= Number(nort) && Number(userLng) >= Number(west) && Number(userLng) <= Number(east);
 
-    console.log('shelters: ', shelters)
+    let filteredShelters: Shelter[] | any[];
 
-    res.status(200).json({ message: 'Shelters found', data: shelters });
+    if (isUserInsideMap){
+      const shelters = await em.getConnection().execute(`
+        SELECT 
+          s.*,
+          a.id as address_id,
+          a.latitude,
+          a.longitude,
+          ROUND(ST_Distance_Sphere(point(a.longitude, a.latitude), point(?, ?)) / 1000, 2) AS distance
+        FROM shelter s
+        JOIN address a ON s.address_id = a.id
+        WHERE 
+          a.latitude BETWEEN ? AND ?
+          AND a.longitude BETWEEN ? AND ?
+        HAVING distance < ?
+        ORDER BY distance ASC
+      `, [
+        Number(userLng),
+        Number(userLat),
+        Number(south),
+        Number(nort),
+        Number(west),
+        Number(east),
+        10
+      ]);
+
+      filteredShelters = shelters.map((s: any) => ({
+        ...s,
+        distance: Number(s.distance),
+        address: {
+          id: s.address_id,
+          latitude: Number(s.latitude),
+          longitude: Number(s.longitude)
+        }
+      }));
+    } else {
+      filteredShelters = await em.find(Shelter, {
+        address: {
+          latitude: { $gte: Number(south), $lte: Number(nort) },
+          longitude: { $gte: Number(west), $lte: Number(east) }
+        }
+      }, { populate: ['address'] });
+    }
+
+    res.status(200).json({
+      message: 'Shelters found',
+      isUserInsideMap,
+      data: filteredShelters
+    });
+
   } catch (error: any) {
-    res.status(500).json({ message: error.message }); 
+    res.status(500).json({ message: error.message });
   }
 }
 

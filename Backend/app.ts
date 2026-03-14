@@ -23,6 +23,7 @@ import { orderRouter } from './scr/order/order.route.js';
 import { orderStateRouter } from './scr/orderState/orderStates.router.js';
 import { orderStatusRouter } from './scr/orderStatus/orderStatus.router.js';
 import { addressRouter } from './scr/address/address.router.js';
+import { locationRouter } from './scr/location/location.router.js';
 
 const app = express();
 app.use(express.json());
@@ -63,6 +64,7 @@ app.use('/api/orderStatus', orderStatusRouter);
 app.use('/api/orderState', orderStateRouter)
 
 app.use('/api/address', addressRouter);
+app.use('/api/location', locationRouter);
 
 await syncSchema() //never in production*/
 

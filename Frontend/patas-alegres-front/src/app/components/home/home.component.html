@@ -22,8 +22,8 @@
                   <h6 class="card-title mb-1">
                     {{ shelter.name }}
                   </h6>
-                  <span class="badge bg-primary">
-                    1.2 km
+                  <span class="badge bg-primary" *ngIf="this.isUserInsideMap && shelter.distance">
+                    A {{ shelter.distance < 1 ? (shelter.distance * 1000 | number:'1.0-0') + ' m' : shelter.distance + ' km' }}
                   </span>
                 </div>
                 <p class="card-text small mb-1">
@@ -53,7 +53,8 @@
           [center]="center"
           [zoom]="zoom"
           [options]="mapOptions"
-          (idle)="loadShelters()">
+          (idle)="loadShelters()"
+          (boundsChanged)="loadSheltersDebounced()">
 
           @for (shelter of shelters; track shelter.id) {
             <map-advanced-marker
