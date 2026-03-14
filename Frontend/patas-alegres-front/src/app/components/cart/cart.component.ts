@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ProductService } from '../../services/product/product.service.js';
-import { environment } from '../../../environments/environment.js';
 import { CartService } from '../../services/Cart/cart-service.service.js';
 import { OrderService } from '../../services/order/order-srvice.service.js';
+import { AppConfig } from '../../core/config/app.config.js';
 
 type CartRow = {
   product: any;
@@ -65,7 +65,7 @@ export class CartComponent {
   photoUrl(p: any): string {
     const url = p?.photos?.length ? p.photos[0].url : null;
     if (!url) return 'assets/nophoto.png';
-    return url.startsWith('http') ? url : environment.url + url;
+    return url.startsWith('http') ? url : AppConfig.apiBase + url;
   }
 
   price(p: any): number {

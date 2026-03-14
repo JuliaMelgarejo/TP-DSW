@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { ProductService } from '../../../services/product/product.service.js';
-import { environment } from '../../../../environments/environment.js';
 import { CartService } from '../../../services/Cart/cart-service.service.js';
 import { OrderService } from '../../../services/order/order-srvice.service.js';
 import { FormsModule } from '@angular/forms';
+import { AppConfig } from '../../../core/config/app.config.js';
 
 @Component({
   selector: 'app-product-detail',
@@ -70,7 +70,7 @@ export class ProductDetailComponent {
   getPhotoUrl(): string {
     const url = this.product?.photos?.length ? this.product.photos[0].url : null;
     if (!url) return 'assets/nophoto.png';
-    return url.startsWith('http') ? url : environment.url + url;
+    return url.startsWith('http') ? url : AppConfig.apiBase + url;
   }
 
   getPrice(): number {

@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment.js';
 import { Category } from '../../models/category/category.js';
 import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '../../core/config/app.config.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoryService {
-  readonly API_URL= `${environment.apiUrl}/category`;
+  readonly API_URL= `${AppConfig.apiUrl}/category`;
   categories: Category[] = [];
 
   constructor(private http: HttpClient) {

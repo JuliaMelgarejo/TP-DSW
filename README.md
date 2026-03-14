@@ -169,13 +169,10 @@ En la sección de [FAQ](FAQ.md) podrán encontrar respuestas a las consultas má
 
 ## 7. Proyecto
 
-1) Tirar comando para instalar dependencias: pnpm install
+1) Tirar comando para instalar dependencias: `pnpm install`
 
-2) El proyecto se inicia con el comando: pnpm start:dev
-
-3) docker run --name patas_alegre -v {URL}:/var/lib/mysql -e MYSQL_ROOT_HOST='%' -e MYSQL_ALLOW_EMPTY_PASSWORD="yes" -e MYSQL_PASSWORD="dsw" -e MYSQL_USER="dsw" -e MYSQL_DATABASE=‘patas_alegres’ -p 3307:3306 -d percona/percona-server
-
-4) CREATE DATABASE IF NOT EXISTS patas_alegres;
+2) El proyecto se inicia en modo development con el comando: `pnpm start:dev`
+ o en produccion con `pnpm start:prod`
 
 ## 8. Ejecutar seeds
 
@@ -194,3 +191,9 @@ Ejemplo agarrando como ejemplo la primer seed que importa categorias:
 * pnpm run seed:categories
 
 4) Ver la magia suceder.
+
+## Ejecutar frontend produccion
+
+1) `ng build`
+
+2) `ng serve --configuration production`

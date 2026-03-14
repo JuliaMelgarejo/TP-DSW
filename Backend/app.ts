@@ -1,3 +1,4 @@
+import './scr/config/env.js';
 import 'reflect-metadata'
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
@@ -29,7 +30,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: 'http://localhost:4200',  // Permitir solicitudes desde el frontend de Angular
+  origin: process.env.FRONTEND_URL,  // Permitir solicitudes desde el frontend de Angular
   methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Métodos permitidos
   allowedHeaders: ['Content-Type', 'Authorization']  // Cabeceras permitidas
 }));
@@ -66,8 +67,11 @@ app.use('/api/orderState', orderStateRouter)
 app.use('/api/address', addressRouter);
 app.use('/api/location', locationRouter);
 
-await syncSchema() //never in production*/
+if (process.env.NODE_ENV !== 'production'){
+  await syncSchema() //never in production*/
+}
 
-app.listen(3000, ()=>{
-console.log('server running on http://localhost:3000/');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, ()=>{
+console.log('server running on http://localhost:' + PORT);
 })
