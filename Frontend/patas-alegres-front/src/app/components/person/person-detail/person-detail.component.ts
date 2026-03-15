@@ -7,6 +7,7 @@ import { PersonService } from '../../../services/person/person.service.js';
 import { AuthService } from '../../../services/auth/auth.service.js';
 import { ErrorService } from '../../../services/errors/error.service.js';
 import { AddressPickerComponent } from "../../shared/address-picker/address-picker.component";
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-person-detail',
@@ -27,6 +28,7 @@ export class PersonDetailComponent {
     public errorService: ErrorService,
     public personService: PersonService,
     public auth: AuthService,
+    private toast: ToastNotificationService
   ) {
     this.PersonForm = this.fb.group({
       name: ['', Validators.required],
@@ -92,8 +94,8 @@ export class PersonDetailComponent {
         });
         this.addressForm.updateValueAndValidity({ emitEvent: true });
       },
-      error: (error) => {
-        alert('Ups, ocurrio un error: ' + error.message);
+      error: (e) => {
+        this.toast.show(e.error.message, 'danger')
       }
     });
   }
@@ -105,11 +107,11 @@ export class PersonDetailComponent {
     }
     this.personService.updatePerson(updatedPerson).subscribe({
       next: (res) => {
-        alert('Persona actualizada con éxito');
+        this.toast.show(res.message, 'success')
         this.router.navigate(['/profile', res.data.id]);
       },
-      error: (error) => {
-        alert('Ups, ocurrio un error: ' + error.message);
+      error: (e) => {
+        this.toast.show(e.error.msg, 'danger')
         this.router.navigate(['/profile', this.selectedPerson.id]);
       }
     })

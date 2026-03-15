@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { OrderService } from '../../../services/order/order-srvice.service';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-order-shelter',
@@ -14,7 +15,7 @@ export class OrderShelterComponent {
   orders: any[] = [];
   role = '';
 
-  constructor(private orderService: OrderService) {}
+  constructor(private orderService: OrderService, private toast: ToastNotificationService) {}
 
   ngOnInit() {
     this.loadRole();
@@ -46,7 +47,8 @@ export class OrderShelterComponent {
       },
       error: (err) => {
         this.loading = false;
-        alert(err?.error?.message || 'No se pudieron cargar los pedidos');
+        let msg = err?.error?.message || 'No se pudieron cargar los pedidos';
+        this.toast.show(msg, 'danger')
       },
     });
   }

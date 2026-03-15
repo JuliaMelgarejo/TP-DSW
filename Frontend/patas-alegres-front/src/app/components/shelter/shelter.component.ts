@@ -6,6 +6,7 @@ import { Shelter } from '../../models/shelter/shelter.model.js';
 import { LocationService } from '../../services/location/location.service.js';
 import { ShelterFilters } from '../../models/shelter/shelter-filters.js';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-shelter',
@@ -32,7 +33,8 @@ export class ShelterComponent {
     private router: Router,
     public shelterService: ShelterService,
     private locationService: LocationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toast: ToastNotificationService,
   ) {}
 
   ngOnInit(): void {
@@ -66,8 +68,8 @@ export class ShelterComponent {
           this.goToPage(this.totalPages);
         }
       },
-      error: (error) => {
-        console.log(error);
+      error: (e) => {
+        this.toast.show(e.error.msg, 'error')
         this.loading = false;
       }
     });

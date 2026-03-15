@@ -6,6 +6,7 @@ import { SignInStateService } from '../../../services/sign-in-state/sign-in-stat
 import { UserService } from '../../../services/user/user.service.js';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AddressPickerComponent } from "../../shared/address-picker/address-picker.component";
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-sign-in-shelter-details',
@@ -23,6 +24,7 @@ export class SignInShelterDetailsComponent implements OnInit {
     private state: SignInStateService,
     private userService: UserService,
     private router: Router,
+    private toast: ToastNotificationService,
   ) {
     this.ShelterForm = this.fb.group({
       name: ['', Validators.required],
@@ -92,8 +94,8 @@ export class SignInShelterDetailsComponent implements OnInit {
     };
 
     this.userService.signIn(payload).subscribe({
-      next: () => {
-        alert('Usuario y refugio creados exitosamente');
+      next: (res) => {
+        this.toast.show(res.message, 'success')
         this.state.clear();
         this.router.navigate(['/login']);
       },

@@ -57,9 +57,9 @@ export class AnimalService {
     return this.http.get<{ mesage: string, data: Rescue }>(`${this.apiUrl}/rescue/${id}`);
   }
   
-    getAnimal(id: number) {
-      return this.http.get<Animal>(this.API_URL + '/' + id)
-    }
+  getAnimal(id: number) {
+    return this.http.get<{data: Animal}>(this.API_URL + '/' + id)
+  }
 
     postAnimal(animal: Animal) {
       return this.http.post<{message: string, data: Animal}>(this.API_URL, animal)

@@ -6,6 +6,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { AnimalService } from '../../../services/animal/animal.service.js';
 import { PhotoService } from '../../../services/photo/photo.service';
 import { Animal } from '../../../models/animal/animal.model.js';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-animal-details',
@@ -35,7 +36,8 @@ export class AnimalDetailsComponent {
   constructor(
     private route: ActivatedRoute,
     public animalService: AnimalService,
-    private photoService: PhotoService
+    private photoService: PhotoService,
+    private toast: ToastNotificationService
   ){
     this.name = new FormControl('', [Validators.required]);
     this.birth_date = new FormControl('');
@@ -57,8 +59,8 @@ export class AnimalDetailsComponent {
 
   getAnimal(id: number) {
     this.animalService.getAnimal(id).subscribe({
-      next: (value: Animal) => {
-        const animal = (value as any)?.data ?? value;
+      next: (res) => {
+        const animal = res.data;
         this.selectedAnimal = animal;
 
         this.animalForm.patchValue({
@@ -67,10 +69,8 @@ export class AnimalDetailsComponent {
           breed: animal.breed?.name,
           rescueClass: animal.rescueClass?.rescue_date
         });
-
-        console.log('Animal cargado:', animal);
       },
-      error: (error) => console.log(error)
+      error: (e) => this.toast.show(e.error.msg, 'danger')
     });
   }
 
@@ -85,7 +85,7 @@ export class AnimalDetailsComponent {
     // OJO: tu service arma la URL con animal.id, así que pasamos id afuera
     this.animalService.updateAnimal({ ...(payload as any), id: this.selectedAnimal.id }).subscribe({
       next: () => this.getAnimal(this.selectedAnimal.id),
-      error: (error) => console.log(error),
+      error: (e) => this.toast.show(e.error.msg, 'danger'),
     });
   }
 
@@ -145,7 +145,7 @@ export class AnimalDetailsComponent {
       this.previewUrl = null;
       this.selectedFile = null;
   },
-    error: (err) => console.log(err),
+    error: (e) => this.toast.show(e.error.msg, 'danger'),
   });
 }
 

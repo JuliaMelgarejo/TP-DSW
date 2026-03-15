@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { GoogleMap, MapMarker } from '@angular/google-maps';
 import { ShelterService } from '../../../../services/shelter/shelter.service';
 import { AnimalService } from '../../../../services/animal/animal.service';
+import { ToastNotificationService } from '../../../../services/toast-notification/toast-notification.service.js';
 
 
 @Component({
@@ -36,7 +37,8 @@ export class ShelterPublicDetailComponent {
   constructor(
     private route: ActivatedRoute,
     private shelterService: ShelterService,
-    private animalService: AnimalService
+    private animalService: AnimalService,
+    private toast: ToastNotificationService
   ) {}
 
   ngOnInit(): void {
@@ -66,8 +68,8 @@ export class ShelterPublicDetailComponent {
 
         this.loading = false;
       },
-      error: (err) => {
-        console.log(err);
+      error: (e) => {
+        this.toast.show(e.error.msg, 'danger')
         this.loading = false;
       }
     });
@@ -81,8 +83,8 @@ export class ShelterPublicDetailComponent {
         this.animals = res.data || [];
         this.loadingAnimals = false;
       },
-      error: (err) => {
-        console.log(err);
+      error: (e) => {
+        this.toast.show(e.error.msg, 'danger')
         this.animals = [];
         this.loadingAnimals = false;
       }
