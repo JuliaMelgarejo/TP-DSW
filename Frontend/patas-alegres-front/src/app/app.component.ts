@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./components/shared/header/header/header.component";
 import { CommonModule } from '@angular/common';
+import { ToastNotificationComponent } from "./components/shared/toast-notification/toast-notification.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, CommonModule],
+  imports: [RouterOutlet, HeaderComponent, CommonModule, ToastNotificationComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

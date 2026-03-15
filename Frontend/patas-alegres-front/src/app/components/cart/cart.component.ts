@@ -6,6 +6,7 @@ import { ProductService } from '../../services/product/product.service.js';
 import { CartService } from '../../services/Cart/cart-service.service.js';
 import { OrderService } from '../../services/order/order-srvice.service.js';
 import { AppConfig } from '../../core/config/app.config.js';
+import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service.js';
 
 type CartRow = {
   product: any;
@@ -28,6 +29,7 @@ export class CartComponent {
     private productService: ProductService,
     private router: Router,
     private orderService: OrderService,
+    private toast: ToastNotificationService
   ) {}
 
   ngOnInit() {
@@ -123,7 +125,7 @@ export class CartComponent {
     const items = this.cart.getItems();
 
     if (!items || items.length === 0) {
-      alert('Tu carrito está vacío');
+      this.toast.show('Tu carrito está vacío', 'info')
       return;
     }
 
@@ -136,7 +138,7 @@ export class CartComponent {
         // si el backend devuelve la order creada:
         const orderId = res?.data?.id;
 
-        alert('Compra realizada ✅');
+        this.toast.show('Compra realizada', 'success')
 
         // redirigí donde quieras:
         // si tenés detalle de orden:
@@ -147,7 +149,7 @@ export class CartComponent {
       },
       error: (err) => {
         const msg = err?.error?.message || 'Error al finalizar la compra';
-        alert(msg);
+        this.toast.show(msg, 'danger')
       }
     });
   }

@@ -6,6 +6,7 @@ import { CartService } from '../../../services/Cart/cart-service.service.js';
 import { OrderService } from '../../../services/order/order-srvice.service.js';
 import { FormsModule } from '@angular/forms';
 import { AppConfig } from '../../../core/config/app.config.js';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-product-detail',
@@ -36,7 +37,8 @@ export class ProductDetailComponent {
     private productService: ProductService,
     private cart: CartService,
     private orderService: OrderService,
-    private router: Router
+    private router: Router,
+    private toast: ToastNotificationService
   ) {}
 
   ngOnInit() {
@@ -123,7 +125,7 @@ export class ProductDetailComponent {
     if (qty <= 0) return;
 
     if (Number(this.product?.stock ?? 0) < qty) {
-      alert('Stock insuficiente para la cantidad seleccionada');
+      this.toast.show('Stock insuficiente para la cantidad seleccionada', 'info')
       return;
     }
 
@@ -140,7 +142,7 @@ export class ProductDetailComponent {
       error: (err) => {
         this.isPlacingOrder = false;
         const msg = err?.error?.message || 'No se pudo crear el pedido';
-        alert(msg);
+        this.toast.show(msg, 'danger')
       }
     });
   }

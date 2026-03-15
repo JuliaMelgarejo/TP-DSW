@@ -9,6 +9,7 @@ import { ErrorService } from '../../../services/errors/error.service.js';
 import { PersonService } from '../../../services/person/person.service.js';
 import { SignInStateService } from '../../../services/sign-in-state/sign-in-state.service.js';
 import { AddressPickerComponent } from "../../shared/address-picker/address-picker.component";
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
 
 
 @Component({
@@ -33,7 +34,8 @@ export class SignInShelterAccountComponent implements OnInit, OnDestroy {
     public userService: UserService,
     public errorService: ErrorService,
     public personService: PersonService,
-    public router: Router
+    public router: Router,
+    private toast: ToastNotificationService
   ) {
     this.UserForm = this.fb.group({
       username: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -71,8 +73,8 @@ export class SignInShelterAccountComponent implements OnInit, OnDestroy {
       next: (types) => {
         this.documentTypes = types;
       },
-      error: (error) => {
-        console.log(error);
+      error: (e) => {
+        this.toast.show(e.error.msg, 'danger')
       }
     });
 
@@ -107,8 +109,8 @@ export class SignInShelterAccountComponent implements OnInit, OnDestroy {
           this.checkingUsername = true;
 
           return this.userService.checkUsername(username).pipe(
-            catchError((error) => {
-              console.log('ERROR CHECK USERNAME:', error);
+            catchError((e) => {
+              this.toast.show(e.error.msg, 'danger')
               return of(null);
             }),
             finalize(() => {

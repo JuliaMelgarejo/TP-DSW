@@ -4,6 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute } from '@angular/router';
 import { RescueService } from '../../../services/rescue/rescue.service.js';
 import { CommonModule } from '@angular/common';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-rescue-detail',
@@ -21,7 +22,7 @@ export class RescueDetailComponent {
   animals: FormControl;
   shelters: FormControl;
 
-  constructor(private route: ActivatedRoute, public rescueService: RescueService){
+  constructor(private route: ActivatedRoute, public rescueService: RescueService, private toast: ToastNotificationService){
     this.rescue_date = new FormControl('', [Validators.required]);
     this.description = new FormControl('');
     this.comments = new FormControl('');
@@ -54,8 +55,8 @@ export class RescueDetailComponent {
           shelters: this.shelters
         });
       },
-      error: (error) => {
-        console.log(error);
+      error: (e) => {
+        this.toast.show(e.error.msg, 'danger')
       }
     })    
   }
@@ -67,11 +68,11 @@ export class RescueDetailComponent {
     }
     this.rescueService.updateRescue(updatedRescue).subscribe({
       next: (response) => {
-        console.log('Rescate actualizada:', response);
+        this.toast.show(response.message, 'success')
       },
 
-      error: (error) => {
-        console.log('Error actualizando Rescate:', error);
+      error: (e) => {
+        this.toast.show(e.error.msg, 'danger')
       }
     })
   }

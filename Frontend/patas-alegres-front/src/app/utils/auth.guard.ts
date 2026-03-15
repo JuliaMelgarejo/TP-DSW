@@ -1,13 +1,16 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService, AppRole } from '../services/auth/auth.service';
+import { ToastNotificationService } from '../services/toast-notification/toast-notification.service.js';
 
 export const authGuard: CanActivateFn = (route, _state) => {
   const router = inject(Router);
   const auth = inject(AuthService);
+  const toast = inject(ToastNotificationService);
 
   // 1) logueado
   if (!auth.isLogged()) {
+    toast.show('Debe iniciar sesion para continuar', 'info')
     router.navigate(['/login'], {
       queryParams: { returnUrl: _state.url }
     });
@@ -27,7 +30,7 @@ export const authGuard: CanActivateFn = (route, _state) => {
   }
 
   if (!allowedRoles.includes(role)) {
-    alert('No tiene permisos para acceder a esta sección');
+    toast.show('No tiene permisos para acceder a esta sección', 'info')
     router.navigate(['/']); // o /animal o donde quieras
     return false;
   }

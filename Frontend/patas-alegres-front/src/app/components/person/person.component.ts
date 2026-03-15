@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { PersonService } from '../../services/person/person.service.js';
+import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-person',
@@ -11,7 +12,7 @@ import { PersonService } from '../../services/person/person.service.js';
   styleUrl: './person.component.css'
 })
 export class PersonComponent {
-  constructor( private router: Router, public personService: PersonService) {}
+  constructor( private router: Router, public personService: PersonService, private toast: ToastNotificationService) {}
 
   ngOnInit(): void{
     this.getPeople();
@@ -22,8 +23,8 @@ export class PersonComponent {
     next: (response) =>{
       this.personService.people = response.data;
     },
-    error: (error) => {
-      console.log(error);
+    error: (e) => {
+      this.toast.show(e.error.msg, 'danger')
     }
     })
   }
@@ -31,11 +32,10 @@ export class PersonComponent {
   deletePerson(id: number){
     this.personService.deletePerson(id).subscribe({
     next: (response) =>{
-      console.log(response);
       this.getPeople();
     },
-    error: (error) => {
-      console.log(error);
+    error: (e) => {
+      this.toast.show(e.error.msg, 'danger')
     }
     })
   }
