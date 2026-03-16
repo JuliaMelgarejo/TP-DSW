@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdoptionService } from '../../services/adoption/adoption.service.js';
 import { Adoption } from '../../models/adoption/adoption.model.js';
+import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-adopt-animal',
@@ -24,7 +25,7 @@ export class AdoptAnimalComponent {
   foundPerson: Person | null = null;
   comments: string = '';
 
-  constructor(private route: ActivatedRoute, public animalService: AnimalService, public personService: PersonService, private adoptionService: AdoptionService) {}
+  constructor(private route: ActivatedRoute, public animalService: AnimalService, public personService: PersonService, private adoptionService: AdoptionService, private toast: ToastNotificationService) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.params['id'];
@@ -34,10 +35,10 @@ export class AdoptAnimalComponent {
 
   getAnimal(id: number) {
     this.animalService.getAnimal(id).subscribe({
-      next: (value: Animal) => {
-        this.selectedAnimal = (value as any)?.data ?? value;
+      next: (res) => {
+        this.selectedAnimal = res.data;
       },
-      error: (error) => console.log(error)
+      error: (e) => this.toast.show(e.error.msg, 'warning')
     });
   }
 
@@ -46,8 +47,8 @@ export class AdoptAnimalComponent {
       next:(response) => {
         this.people = response.data;
       },
-      error:(error) => {
-        console.log(error);
+      error:(e) => {
+        this.toast.show(e.error.msg, 'warning')
       }
     })
   }
@@ -57,8 +58,8 @@ export class AdoptAnimalComponent {
       next:(response) => {
         this.foundPerson = response.data;
       },
-      error:(error) => {
-        console.log(error);
+      error:(e) => {
+        this.toast.show(e.error.msg, 'warning')
         this.foundPerson = null;
       }
     })
@@ -74,12 +75,11 @@ export class AdoptAnimalComponent {
       );
 
       this.adoptionService.postAdoption(newAdoption).subscribe({
-        next: (response) => {
-          alert('Adopción confirmada con éxito');
+        next: (res) => {
+          this.toast.show(res.message, 'success')
         },
-        error: (error) => {
-          console.error('Error al confirmar la adopción:', error);
-          alert('Hubo un problema al registrar la adopción.');
+        error: (e) => {
+          this.toast.show(e.error.msg, 'warning')
         },
       });
     }

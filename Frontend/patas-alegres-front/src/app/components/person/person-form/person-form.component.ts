@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { PersonService } from '../../../services/person/person.service.js';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-person-form',
@@ -23,7 +24,7 @@ export class PersonFormComponent {
   address: FormControl;
   nroCuit: FormControl;
 
-  constructor(private route: ActivatedRoute, public personService: PersonService){
+  constructor(private route: ActivatedRoute, public personService: PersonService, private toast: ToastNotificationService){
     this.name = new FormControl('', [Validators.required]);
     this.surname = new FormControl('', [Validators.required]);
     this.doc_type = new FormControl('', [Validators.required]);
@@ -57,11 +58,11 @@ export class PersonFormComponent {
     }
 
     this.personService.postPerson(this.personForm.value).subscribe({
-      next: (data) => {
-        console.log(data);
+      next: (res) => {
+        this.toast.show(res.message, 'success')
       },
-      error: (error) => {
-        console.log(error);
+      error: (e) => {
+        this.toast.show(e.error.msg, 'danger')
       }
     })
   }

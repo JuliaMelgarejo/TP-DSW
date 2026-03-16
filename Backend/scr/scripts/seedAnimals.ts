@@ -1,3 +1,4 @@
+import '../../scr/config/env.js';
 import "reflect-metadata";
 import { orm } from "../zshare/db/orm.js";
 import { Shelter } from "../shelter/shelter.entity.js";

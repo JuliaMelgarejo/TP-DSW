@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AnimalService } from '../../../../services/animal/animal.service';
 import { Animal } from '../../../../models/animal/animal.model';
 import { AdoptModalComponent } from '../../../adopt-animal/adopt-modal/adopt-modal.component';
+import { ToastNotificationService } from '../../../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-animal-public',
@@ -20,7 +21,7 @@ export class AnimalPublicComponent {
   // ✅ chips/panel
   activeInfo: 'description' | 'breed' | 'rescue' = 'breed';
 
-  constructor(private route: ActivatedRoute, public animalService: AnimalService) {}
+  constructor(private route: ActivatedRoute, public animalService: AnimalService, private toast: ToastNotificationService) {}
 
   
   ngOnInit(): void {
@@ -34,10 +35,10 @@ export class AnimalPublicComponent {
 
   getAnimal(id: number) {
     this.animalService.getAnimal(id).subscribe({
-      next: (value: Animal) => {
-        this.selectedAnimal = (value as any)?.data ?? value;
+      next: (res) => {
+        this.selectedAnimal = res.data;
       },
-      error: (err) => console.log(err),
+      error: (e) => this.toast.show(e.error.msg, 'danger'),
     });
   }
 

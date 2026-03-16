@@ -11,6 +11,7 @@ import { ViewChild } from '@angular/core';
 import { AnimalLite, Rescue } from '../../models/rescue/rescue.model';
 import { AuthService } from '../../services/auth/auth.service';
 import { PhotoService } from '../../services/photo/photo.service';
+import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service.js';
 type Option = { id: number; name: string };
 
 @Component({
@@ -45,7 +46,8 @@ export class RescueComponent {
     private shelterService: ShelterService,
     private breedService: BreedService,
     private authService: AuthService,
-    private photoService: PhotoService 
+    private photoService: PhotoService,
+    private toast: ToastNotificationService
   ) {}
 
   @ViewChild(RescueFormComponent) rescueFormComp!: RescueFormComponent;
@@ -64,14 +66,14 @@ export class RescueComponent {
   loadShelters(): void {
     this.shelterService.getShelters().subscribe({
       next: (resp: any) => (this.shelters = resp?.data ?? resp ?? []),
-      error: (err: any) => console.log(err),
+      error: (e) => this.toast.show(e.error.msg, 'danger'),
     });
   }
 
   loadBreeds(): void {
     this.breedService.getBreeds().subscribe({
       next: (resp: any) => (this.breeds = resp?.data ?? resp ?? []),
-      error: (err: any) => console.log(err),
+      error: (e) => this.toast.show(e.error.msg, 'danger'),
     });
   }
 
@@ -79,11 +81,11 @@ export class RescueComponent {
   createRescue(formData: any) {
     const shelterId = this.authService.getShelterIdToken();
     if (!shelterId) {
-      alert('No se encontró el shelterId en el token.');
+      this.toast.show('No se encontró el refugio asociado.', 'info')
       return;
     }
     if (this.animals.length === 0) {
-      alert('Tenés que agregar al menos un animal.');
+      this.toast.show('Tenés que agregar al menos un animal.', 'info')
       return;
     }
 
@@ -104,7 +106,7 @@ export class RescueComponent {
   this.rescueService.postRescue(payload).subscribe({
     next: (resp: any) => {
 
-      console.log('Rescue creado:', resp);
+      this.toast.show('Rescate creado correctamente: ' + resp, 'success')
 
       // 🔥 1) Obtener animales creados desde el backend
       const createdAnimals = resp?.data?.animals ?? [];
@@ -117,21 +119,20 @@ export class RescueComponent {
           this.photoService
             .uploadAnimalPhoto(created.id, local.photoFile)
             .subscribe({
-              next: () => console.log('Foto subida para animal', created.id),
-              error: (e) => console.log('Error subiendo foto', e),
+              next: () => this.toast.show('Foto subida para el animal ' + created.id , 'success'),
+              error: (e) => this.toast.show(e.error.msg, 'danger')
             });
         }
       });
 
-      alert('✅ Rescate creado correctamente');
+      this.toast.show('Rescate creado correctamente', 'success')
 
       // 🔥 3) Limpiar estado
       this.animals = [];
     },
 
-    error: (err) => {
-      console.log('Error creando rescate:', err);
-      alert(err?.error?.message ?? 'Error creando rescate');
+    error: (e) => {
+      this.toast.show(e.error.msg, 'danger')
     }
   });
   }
