@@ -1,7 +1,7 @@
 <header class="pa-header">
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-      <a routerLink="/home" class="pa-brand">
+      <a routerLink="/home" class="pa-brand" (click)="closeMenu()">
         <span class="pa-brand-text">Patas alegres</span>
       </a>
       <button 
@@ -52,10 +52,10 @@
             <a routerLink="/product" class="pa-nav-link" (click)="closeMenu()">Productos</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/order-shelter" class="pa-nav-link " (click)="closeMenu()">Pedidos</a>
+            <a routerLink="/order-shelter" class="pa-nav-link" (click)="closeMenu()">Pedidos</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/shelter-adoptions" class="pa-nav-link">Solicitudes</a>
+            <a routerLink="/shelter-adoptions" class="pa-nav-link" (click)="closeMenu()">Solicitudes</a>
           </li>
         </ul>
         <button type="button" class="pa-btn-link pa-logout" (click)="logOut(); closeMenu()">
