@@ -1,3 +1,4 @@
+import '../../scr/config/env.js';
 import "reflect-metadata";
 import { AdoptionState } from "../adoptionState/adoptionState.entity.js";
 import { orm } from "../zshare/db/orm.js";
