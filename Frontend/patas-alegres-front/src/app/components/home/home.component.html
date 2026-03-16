@@ -15,34 +15,34 @@
         </div>
 
         <div class="shelter-item mb-2" *ngFor="let shelter of shelters">
-          <a [routerLink]="['/shelter', shelter.id]" class="text-decoration-none text-dark">
-            <div class="card shadow-sm border-0">
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                  <h6 class="card-title mb-1">
-                    {{ shelter.name }}
-                  </h6>
-                  <span class="badge bg-primary" *ngIf="this.isUserInsideMap && shelter.distance">
-                    A {{ shelter.distance < 1 ? (shelter.distance * 1000 | number:'1.0-0') + ' m' : shelter.distance + ' km' }}
-                  </span>
-                </div>
-                <p class="card-text small mb-1">
-                  {{ shelter.address.street }} {{ shelter.address.streetNumber }}
-                </p>
-                <p class="card-text small text-muted mb-2">
-                  {{ shelter.address.city }} - {{ shelter.address.postalCode }}
-                </p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <span class="small text-muted">
-                    📞 {{ shelter.phoneNumber }}
-                  </span>
+          <div class="card shadow-sm border-0">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <h6 class="card-title mb-1">
+                  {{ shelter.name }}
+                </h6>
+                <span class="badge bg-primary" *ngIf="this.isUserInsideMap && shelter.distance">
+                  A {{ shelter.distance < 1 ? (shelter.distance * 1000 | number:'1.0-0') + ' m' : shelter.distance + ' km' }}
+                </span>
+              </div>
+              <p class="card-text small mb-1">
+                {{ shelter.address.street }} {{ shelter.address.streetNumber }}
+              </p>
+              <p class="card-text small text-muted mb-2">
+                {{ shelter.address.city }} - {{ shelter.address.postalCode }}
+              </p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="small text-muted">
+                  📞 {{ shelter.phoneNumber || 'sin datos'}}
+                </span>
+                <a [routerLink]="['/shelters', shelter.id]">
                   <span class="btn btn-sm btn-outline-primary">
                     Ver refugio
                   </span>
-                </div>
+                </a>
               </div>
             </div>
-          </a>
+          </div>
         </div>
       </div>
 
