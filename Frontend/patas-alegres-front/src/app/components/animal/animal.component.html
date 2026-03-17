@@ -1,53 +1,88 @@
-<div class="bg-light min-vh-100 py-4">
+<div class="bg-light min-vh-100 py-3 py-md-4">
   <div class="container px-3">
-    
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h1 class="fw-bold h2 mb-0">{{ getTitle() }}</h1>
-      <button
-        class="btn btn-primary d-flex align-items-center gap-2"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#filtersPanel"
-      >
-        <i class="bi bi-filter"></i> Filtros
-      </button>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+  <!-- Título -->
+  <div>
+    <h2 class="fw-bold h2 mb-0 d-md-none">
+      Lista de animales esperando tu rescate
+    </h2>
+
+    <h1 class="fw-bold h2 mb-0 d-none d-md-block">
+      {{ getTitle() }}
+    </h1>
+  </div>
+
+  <!-- Botón filtros (UNO SOLO) -->
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+  <button
+    class="btn btn-primary "
+    data-bs-toggle="offcanvas"
+    data-bs-target="#filtersPanel"
+  >
+    <span>Filtros</span>
+  </button>
+</div>
+</div>
 
     <div class="offcanvas offcanvas-end" tabindex="-1" id="filtersPanel" data-bs-backdrop="static">
       <div class="offcanvas-header border-bottom">
-        <h5 class="offcanvas-title fw-bold">Filtros y orden</h5>
+        <h5 class="offcanvas-title fw-bold mb-0">Filtros y orden</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
       </div>
-      
+
       <div class="offcanvas-body">
         <div *ngIf="filters.shelterId || filters.breedId || filters.sort" class="mb-4">
-          <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="d-flex justify-content-between align-items-center gap-2 mb-2 flex-wrap">
             <h6 class="small fw-bold text-uppercase text-muted mb-0">Activos</h6>
-            <button class="btn btn-sm btn-link text-decoration-none p-0" (click)="clearFilters()">Limpiar todo</button>
+            <button class="btn btn-sm btn-link text-decoration-none p-0" (click)="clearFilters()">
+              Limpiar todo
+            </button>
           </div>
+
           <div class="d-flex flex-wrap gap-2">
-            <span *ngIf="filters.shelterId" class="badge text-bg-primary d-flex align-items-center gap-2 px-2 py-1">
+            <span *ngIf="filters.shelterId" class="badge text-bg-primary d-flex align-items-center gap-2 px-2 py-2">
               Refugio: {{ getShelterName(filters.shelterId) }}
               <i class="bi bi-x-circle-fill cursor-pointer" (click)="removeFilter('shelter')"></i>
             </span>
-            <span *ngIf="filters.breedId" class="badge text-bg-success d-flex align-items-center gap-2 px-2 py-1">
+
+            <span *ngIf="filters.breedId" class="badge text-bg-success d-flex align-items-center gap-2 px-2 py-2">
               Raza: {{ getBreedName(filters.breedId) }}
               <i class="bi bi-x-circle-fill cursor-pointer" (click)="removeFilter('breed')"></i>
+            </span>
+
+            <span *ngIf="filters.sort" class="badge text-bg-dark d-flex align-items-center gap-2 px-2 py-2">
+              {{
+                filters.sort === 'name_asc' ? 'Nombre A → Z' :
+                filters.sort === 'name_desc' ? 'Nombre Z → A' :
+                filters.sort === 'rescue_date' ? 'Fecha de rescate' :
+                'Raza'
+              }}
             </span>
           </div>
         </div>
 
-        <label class="form-label fw-bold">Ordenar por</label>
-        <select class="form-select mb-4" [(ngModel)]="filters.sort" (change)="applyFilters()">
-          <option value="name_asc">Nombre (A → Z)</option>
-          <option value="name_desc">Nombre (Z → A)</option>
-          <option value="rescue_date">Fecha de rescate</option>
-          <option value="breed">Raza</option>
-        </select>
+        <div class="mb-4">
+          <label class="form-label fw-bold">Ordenar por</label>
+          <select class="form-select" [(ngModel)]="filters.sort" (change)="applyFilters()">
+            <option value="name_asc">Nombre (A → Z)</option>
+            <option value="name_desc">Nombre (Z → A)</option>
+            <option value="rescue_date">Fecha de rescate</option>
+            <option value="breed">Raza</option>
+          </select>
+        </div>
 
         <div *ngIf="!isShelter" class="mb-4">
           <label class="form-label fw-bold">Refugio</label>
           <div class="form-check" *ngFor="let shelter of shelters">
-            <input class="form-check-input" type="radio" name="shelterFilter" [value]="shelter.id" [(ngModel)]="filters.shelterId" (change)="applyFilters()">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="shelterFilter"
+              [value]="shelter.id"
+              [(ngModel)]="filters.shelterId"
+              (change)="applyFilters()"
+            >
             <label class="form-check-label">{{ shelter.name }}</label>
           </div>
         </div>
@@ -59,11 +94,16 @@
             <option *ngFor="let breed of breeds" [value]="breed.id">{{ breed.name }}</option>
           </select>
         </div>
+
       </div>
 
-      <div class="offcanvas-footer p-3 border-top bg-light">
+      <div class="p-3 border-top bg-light">
         <p class="small text-muted mb-2">{{ totalAnimals }} animales encontrados</p>
-        <button class="btn btn-primary w-100 fw-bold" data-bs-dismiss="offcanvas" (click)="applyFilters()">
+        <button
+          class="btn btn-primary w-100 fw-bold"
+          data-bs-dismiss="offcanvas"
+          (click)="applyFilters()"
+        >
           Ver resultados
         </button>
       </div>
@@ -71,50 +111,57 @@
 
     <div *ngIf="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status"></div>
-      <p class="text-muted mt-2">Cargando animales...</p>
+      <p class="text-muted mt-2 mb-0">Cargando animales...</p>
     </div>
 
-    <div class="row g-4">
-      <div class="col-12 col-md-6 col-lg-4" *ngFor="let animal of animals">
-        <a [routerLink]="['/animal', animal.id]" class="card h-100 text-decoration-none shadow-sm hover-shadow transition border-0 overflow-hidden">
+    <div class="row g-3 g-md-4" *ngIf="!loading">
+      <div class="col-12 col-sm-6 col-lg-4" *ngFor="let animal of animals">
+        <a
+          [routerLink]="['/animal', animal.id]"
+          class="card h-100 text-decoration-none shadow-sm border-0 overflow-hidden"
+        >
           <img
             [src]="getPhotoUrl(animal)"
             [alt]="animal?.name"
             class="card-img-top"
-            style="height: 240px; object-fit: cover;"
           />
+
           <div class="card-body">
             <h5 class="card-title fw-bold text-dark mb-1">{{ animal?.name }}</h5>
-            <p class="text-primary fw-semibold small mb-3">{{ animal?.breed?.name }}</p>
-            
-            <div class="mb-3">
-              <label class="text-muted x-small d-block text-uppercase fw-bold">Fecha rescate</label>
-              <span class="text-dark small">{{ animal?.rescueClass?.rescue_date | date:'dd/MM/yyyy' }}</span>
+            <p class="text-primary fw-semibold small mb-2">{{ animal?.breed?.name }}</p>
+
+            <div class="mb-2">
+              <div class="text-muted small text-uppercase fw-bold">Fecha rescate</div>
+              <div class="text-dark small">
+                {{ animal?.rescueClass?.rescue_date | date:'dd/MM/yyyy' }}
+              </div>
             </div>
 
-            <p class="card-text text-muted small text-truncate-2">
+            <p class="card-text text-muted small mb-2">
               {{ animal?.description || 'Sin descripción disponible' }}
             </p>
-          </div>
-          <div class="card-footer bg-white border-0 pt-0 pb-3">
-            <span class="text-primary fw-bold small">Ver información →</span>
+
+            <div class="text-primary fw-bold small">Ver información →</div>
           </div>
         </a>
       </div>
     </div>
 
-    <nav class="d-flex justify-content-center mt-5" aria-label="Navegación de páginas">
-      <ul class="pagination">
+    <nav class="d-flex justify-content-center mt-4 mt-md-5" aria-label="Navegación de páginas">
+      <ul class="pagination flex-wrap justify-content-center gap-1">
         <li class="page-item" [class.disabled]="page === 1">
           <button class="page-link" (click)="goToPage(page - 1)">Anterior</button>
         </li>
+
         <li class="page-item" *ngFor="let pag of pages" [class.active]="pag === page">
           <button class="page-link" (click)="goToPage(pag)">{{ pag }}</button>
         </li>
+
         <li class="page-item" [class.disabled]="page === totalPages">
           <button class="page-link" (click)="goToPage(page + 1)">Siguiente</button>
         </li>
       </ul>
     </nav>
+
   </div>
 </div>
