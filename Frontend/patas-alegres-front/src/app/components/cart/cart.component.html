@@ -1,103 +1,100 @@
-<div class="pa-page">
+<div class="bg-light min-vh-100 py-4">
   <div class="container px-3" style="max-width: 520px;">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h2 class="pa-title mb-0">Tu carrito</h2>
-      <a class="btn btn-outline-secondary btn-sm" routerLink="/product">Seguir comprando</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold h4 mb-0 text-dark">Tu carrito</h2>
+      <a class="btn btn-outline-primary btn-sm rounded-pill px-3" routerLink="/product">
+        <i class="bi bi-cart-plus me-1"></i> Seguir comprando
+      </a>
     </div>
 
-    <div *ngIf="loading" class="pa-muted">Cargando...</div>
-
-    <div *ngIf="!loading && rows.length === 0" class="pa-muted">
-      Tu carrito está vacío.
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
     </div>
 
-    <!-- ITEMS -->
+    <div *ngIf="!loading && rows.length === 0" class="card border-0 shadow-sm py-5 text-center">
+      <div class="card-body">
+        <p class="text-muted mb-0">Tu carrito está vacío.</p>
+      </div>
+    </div>
+
     <div *ngIf="!loading && rows.length > 0" class="d-flex flex-column gap-3">
 
-      <div class="pa-card" *ngFor="let row of rows" style="overflow:hidden;">
-        <div class="row g-0 align-items-stretch">
+      <div class="card border-0 shadow-sm overflow-hidden" *ngFor="let row of rows">
+        <div class="row g-0 align-items-center">
 
-          <!-- foto -->
           <div class="col-4">
             <img
               [src]="photoUrl(row.product)"
               [alt]="row.product?.name || 'Producto'"
-              class="w-100 h-100"
-              style="object-fit: cover; min-height: 110px;"
+              class="img-fluid w-100 h-100"
+              style="object-fit: cover; min-height: 120px;"
             />
           </div>
 
-          <!-- info -->
           <div class="col-8">
-            <div class="pa-section">
+            <div class="card-body p-3">
 
-              <div class="d-flex justify-content-between align-items-start gap-2">
-                <div class="fw-bold" style="line-height: 1.1;">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <div class="fw-bold text-dark small text-uppercase" style="line-height: 1.2;">
                   {{ row.product?.name || '—' }}
                 </div>
-
-                <button class="btn btn-link p-0 text-danger" (click)="remove(row)" aria-label="Eliminar">
-                  ✕
+                <button class="btn btn-link p-0 text-danger text-decoration-none fw-bold" (click)="remove(row)">
+                  &times;
                 </button>
               </div>
 
-              <!-- precio -->
-              <div class="mt-2">
-                <div *ngIf="row.product?.crossed_out_price && discountPercent(row.product) > 0" class="d-flex gap-2 align-items-center">
-                  <span class="old-price">{{ money(row.product.crossed_out_price) }}</span>
-                  <span class="discount-badge">{{ discountPercent(row.product) }}% OFF</span>
+              <div class="mb-2">
+                <div *ngIf="row.product?.crossed_out_price && discountPercent(row.product) > 0" class="d-flex gap-2 align-items-center mb-1">
+                  <span class="text-muted text-decoration-line-through small">{{ money(row.product.crossed_out_price) }}</span>
+                  <span class="badge text-bg-success border-0 small" style="font-size: 0.6rem;">{{ discountPercent(row.product) }}% OFF</span>
                 </div>
-
-                <div class="fw-bold" style="font-size: 20px;">
+                <div class="fw-bold h5 mb-0 text-primary">
                   {{ money(price(row.product)) }}
                 </div>
               </div>
 
-              <!-- qty -->
-              <div class="d-flex justify-content-between align-items-center mt-2">
-                <div class="qty-box">
-                  <button class="qty-btn" (click)="dec(row)">-</button>
-                  <div class="qty-num">{{ row.qty }}</div>
-                  <button class="qty-btn" (click)="inc(row)">+</button>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group btn-group-sm border rounded" role="group">
+                  <button type="button" class="btn btn-light border-end" (click)="dec(row)">-</button>
+                  <span class="btn btn-white disabled fw-bold text-dark" style="min-width: 40px;">{{ row.qty }}</span>
+                  <button type="button" class="btn btn-light border-start" (click)="inc(row)">+</button>
                 </div>
 
-                <div class="pa-muted">
+                <div class="text-muted small fw-semibold">
                   {{ money(lineSubtotal(row)) }}
                 </div>
               </div>
 
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- RESUMEN -->
-      <div class="pa-card">
-        <div class="pa-section">
-          <div class="fw-bold mb-2">Resumen de pedido</div>
+      <div class="card border-0 shadow-sm mt-2">
+        <div class="card-body p-4">
+          <h6 class="fw-bold mb-3 text-dark border-bottom pb-2">Resumen de pedido</h6>
 
-          <div class="d-flex justify-content-between">
-            <div class="pa-muted">Subtotal:</div>
-            <div class="fw-semibold">{{ money(subtotal()) }}</div>
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted">Subtotal:</span>
+            <span class="fw-semibold text-dark">{{ money(subtotal()) }}</span>
           </div>
 
-          <div class="d-flex justify-content-between mt-1">
-            <div class="pa-muted">Total sin impuestos:</div>
-            <div class="fw-semibold">{{ money(subtotal()) }}</div>
+          <div class="d-flex justify-content-between border-top pt-2 mt-2">
+            <span class="fw-bold text-dark">Total:</span>
+            <span class="fw-bold text-primary h5 mb-0">{{ money(subtotal()) }}</span>
           </div>
         </div>
       </div>
 
-      <!-- BOTONES -->
-      <button class="btn btn-success w-100" (click)="checkout()">
-        Finalizar compra
-      </button>
-
-      <button class="btn btn-primary w-100" (click)="cancel()">
-        Cancelar compra
-      </button>
+      <div class="d-grid gap-2 mt-2">
+        <button class="btn btn-success btn-lg fw-bold shadow-sm" (click)="checkout()">
+          Finalizar compra
+        </button>
+        <button class="btn btn-outline-danger border-0 btn-sm" (click)="cancel()">
+          Vaciar carrito
+        </button>
+      </div>
 
     </div>
 

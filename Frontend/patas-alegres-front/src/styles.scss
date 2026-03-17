@@ -1,0 +1,84 @@
+@import "styles/variables";
+
+/* Bootstrap */
+@import "bootstrap/scss/bootstrap";
+
+.wrapper{
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--pa-bg);
+}
+
+.body{
+  width: 100%;
+  max-width: 520px;
+}
+
+.logo{
+  height: 130px;
+  width: auto;
+  display: block;
+  margin: 0 auto 10px auto;
+}
+
+
+.pa-timeline {
+  position: relative;
+  padding-left: 24px;
+}
+
+.pa-timeline::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #e5e5e5;
+}
+
+.pa-timeline-item {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.pa-timeline-dot {
+  position: absolute;
+  left: -16px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  background: #0d6efd;
+  border-radius: 50%;
+}
+
+.pa-timeline-content {
+  background: #fafafa;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.carousel-inner{
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+@media (min-width: 992px) {
+  .carousel-inner img {
+    height: 500px;
+  }
+}
+
+.card-header .nav {
+  row-gap: 0.5rem;
+}
+
+.card-header .nav-link {
+  border-radius: 999px;
+}
