@@ -86,3 +86,26 @@
 height: 220px;
 object-fit: cover;
 }
+
+.home-banner-img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+}
+
+.map-container {
+  width: 100%;
+  height: 320px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+@media (min-width: 992px) {
+  .home-banner-img {
+    height: 420px;
+  }
+
+  .map-container {
+    height: 520px;
+  }
+}
