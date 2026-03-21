@@ -1,220 +1,167 @@
-<div class="pa-page">
-  <div class="container-fluid px-3">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h1 class="pa-title mb-4">{{ getTitle() }}</h1>
-      <button
-        class="btn btn-outline-primary"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#filtersPanel"
-        aria-controls="filtersPanel"
-      >
-        Filtros
-      </button>
-    </div>
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="filtersPanel" aria-labelledby="filtersPanelLabel" data-bs-backdrop="static">
-      <!-- header -->
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="filtersPanelLabel">
-          Filtros y ordenamiento
-        </h5>
-        <button class="btn btn-sm btn-outline-secondary ms-auto me-2" (click)="clearFilters()">
-          Limpiar filtros
-        </button>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="offcanvas">
-        </button>
-      </div>
-      
-      <div *ngIf="filters.shelterId || filters.breedId || filters.sort">
-        <h6 class="mb-2">Filtros activos</h6>
-        <div class="d-flex flex-wrap gap-2 mb-3">
-          <!-- Shelter -->
-          <div *ngIf="filters.shelterId" class="badge bg-primary d-flex align-items-center gap-2 px-3 py-2">
-            Refugio: {{ getShelterName(filters.shelterId) }}
-            <button type="button"
-              class="btn-close btn-close-white btn-sm"
-              (click)="removeFilter('shelter')"
-            ></button>
-          </div>
-          <!-- Categoria -->
-          <div *ngIf="filters.breedId" class="badge bg-success d-flex align-items-center gap-2 px-3 py-2">
-            Raza: {{ getBreedName(filters.breedId) }}
-            <button type="button"class="btn-close btn-close-white btn-sm" (click)="removeFilter('breed')" ></button>
-          </div>
+<div class="bg-light min-vh-100 py-3 py-md-4">
+  <div class="container px-3">
+<div class="d-flex justify-content-between align-items-center mb-3">
 
-          <!-- Orden -->
-          <div *ngIf="filters.sort" class="badge bg-dark d-flex align-items-center gap-2 px-3 py-2">
-            {{ 
-              filters.sort === 'name_asc' ? 'Nombre A → Z' :
-              filters.sort === 'name_desc' ? 'Nombre Z → A' :
-              filters.sort === 'rescue_date' ? 'Fecha de rescate' :
-              'Raza'
-            }}
-            <button type="button" class="btn-close btn-close-white btn-sm" (click)="removeFilter('sort')"></button>
-          </div>
-        </div>
+  <!-- Título -->
+  <div>
+    <h2 class="fw-bold h2 mb-0 d-md-none">
+      Lista de animales esperando tu rescate
+    </h2>
+
+    <h1 class="fw-bold h2 mb-0 d-none d-md-block">
+      {{ getTitle() }}
+    </h1>
+  </div>
+
+  <!-- Botón filtros (UNO SOLO) -->
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+  <button
+    class="btn btn-primary "
+    data-bs-toggle="offcanvas"
+    data-bs-target="#filtersPanel"
+  >
+    <span>Filtros</span>
+  </button>
+</div>
+</div>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="filtersPanel" data-bs-backdrop="static">
+      <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title fw-bold mb-0">Filtros y orden</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
       </div>
-      <hr>
+
       <div class="offcanvas-body">
-        <!-- ORDEN -->
-        <h5 class="mb-3">Ordenar por</h5>
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="sort"
-            value="name_desc"
-            [(ngModel)]="filters.sort" (change)="applyFilters()"
-          >
-          <label class="form-check-label">
-            Nombre (Z → A)
-          </label>
-        </div>
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="sort"
-            value="name_asc"
-            [(ngModel)]="filters.sort" (change)="applyFilters()"
-          >
-          <label class="form-check-label">
-            Nombre (A → Z)
-          </label>
-        </div>
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="sort"
-            value="rescue_date"
-            [(ngModel)]="filters.sort" (change)="applyFilters()"
-          >
-          <label class="form-check-label">
-            Fecha de rescate
-          </label>
-        </div>
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="sort"
-            value="breed"
-            [(ngModel)]="filters.sort" (change)="applyFilters()"
-          >
-          <label class="form-check-label">
-            Raza
-          </label>
-        </div>
-        <hr>
-        <!-- REFUGIO -->
-        <ng-container *ngIf="!isShelter">
-          <h5 class="mb-3">Refugio</h5>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="shelterFilter" [value]="" [(ngModel)]="filters.shelterId" (change)="applyFilters()">
-            <label class="form-check-label">
-              Todos
-            </label>
+        <div *ngIf="filters.shelterId || filters.breedId || filters.sort" class="mb-4">
+          <div class="d-flex justify-content-between align-items-center gap-2 mb-2 flex-wrap">
+            <h6 class="small fw-bold text-uppercase text-muted mb-0">Activos</h6>
+            <button class="btn btn-sm btn-link text-decoration-none p-0" (click)="clearFilters()">
+              Limpiar todo
+            </button>
           </div>
+
+          <div class="d-flex flex-wrap gap-2">
+            <span *ngIf="filters.shelterId" class="badge text-bg-primary d-flex align-items-center gap-2 px-2 py-2">
+              Refugio: {{ getShelterName(filters.shelterId) }}
+              <i class="bi bi-x-circle-fill cursor-pointer" (click)="removeFilter('shelter')"></i>
+            </span>
+
+            <span *ngIf="filters.breedId" class="badge text-bg-success d-flex align-items-center gap-2 px-2 py-2">
+              Raza: {{ getBreedName(filters.breedId) }}
+              <i class="bi bi-x-circle-fill cursor-pointer" (click)="removeFilter('breed')"></i>
+            </span>
+
+            <span *ngIf="filters.sort" class="badge text-bg-dark d-flex align-items-center gap-2 px-2 py-2">
+              {{
+                filters.sort === 'name_asc' ? 'Nombre A → Z' :
+                filters.sort === 'name_desc' ? 'Nombre Z → A' :
+                filters.sort === 'rescue_date' ? 'Fecha de rescate' :
+                'Raza'
+              }}
+            </span>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-bold">Ordenar por</label>
+          <select class="form-select" [(ngModel)]="filters.sort" (change)="applyFilters()">
+            <option value="name_asc">Nombre (A → Z)</option>
+            <option value="name_desc">Nombre (Z → A)</option>
+            <option value="rescue_date">Fecha de rescate</option>
+            <option value="breed">Raza</option>
+          </select>
+        </div>
+
+        <div *ngIf="!isShelter" class="mb-4">
+          <label class="form-label fw-bold">Refugio</label>
           <div class="form-check" *ngFor="let shelter of shelters">
-            <input class="form-check-input" type="radio" name="shelterFilter" [value]="shelter.id" [(ngModel)]="filters.shelterId" (change)="applyFilters()">
-            <label class="form-check-label">
-              {{ shelter.name }}
-            </label>
+            <input
+              class="form-check-input"
+              type="radio"
+              name="shelterFilter"
+              [value]="shelter.id"
+              [(ngModel)]="filters.shelterId"
+              (change)="applyFilters()"
+            >
+            <label class="form-check-label">{{ shelter.name }}</label>
           </div>
-          <hr>
-        </ng-container>
-        <!-- Raza -->
-        <h5 class="mb-3">Raza</h5>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="breedFilter" [value]="" [(ngModel)]="filters.breedId" (change)="applyFilters()">
-          <label class="form-check-label">
-            Todas
-          </label>
         </div>
-        <div class="form-check" *ngFor="let breed of breeds">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="breedFilter"
-            [value]="breed.id"
-            [(ngModel)]="filters.breedId" (change)="applyFilters()"
-          >
-          <label class="form-check-label">
-            {{ breed.name }}
-          </label>
+
+        <div class="mb-4">
+          <label class="form-label fw-bold">Raza</label>
+          <select class="form-select" [(ngModel)]="filters.breedId" (change)="applyFilters()">
+            <option [value]="">Todas las razas</option>
+            <option *ngFor="let breed of breeds" [value]="breed.id">{{ breed.name }}</option>
+          </select>
         </div>
+
       </div>
-      <!-- footer -->
-      <div class="p-3 border-top">
-        <p>{{ totalAnimals }} animales encontrados</p>
-        <button class="btn btn-primary w-100" (click)="applyFilters()" data-bs-dismiss="offcanvas">
-          Aplicar filtros
+
+      <div class="p-3 border-top bg-light">
+        <p class="small text-muted mb-2">{{ totalAnimals }} animales encontrados</p>
+        <button
+          class="btn btn-primary w-100 fw-bold"
+          data-bs-dismiss="offcanvas"
+          (click)="applyFilters()"
+        >
+          Ver resultados
         </button>
       </div>
     </div>
 
-    <div *ngIf="loading" class="pa-muted text-center mb-3">
-      Cargando...
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="text-muted mt-2 mb-0">Cargando animales...</p>
     </div>
 
-    <div class="row g-3">
-      <div class="col-12 col-md-6 col-lg-4" *ngFor="let animal of animals">
-
+    <div class="row g-3 g-md-4" *ngIf="!loading">
+      <div class="col-12 col-sm-6 col-lg-4" *ngFor="let animal of animals">
         <a
-          class="pa-card pa-card-hover d-block text-decoration-none"
           [routerLink]="['/animal', animal.id]"
-          style="color: inherit; overflow: hidden;"
+          class="card h-100 text-decoration-none shadow-sm border-0 overflow-hidden"
         >
-
           <img
             [src]="getPhotoUrl(animal)"
-            [alt]="animal?.name || 'Animal'"
-            class="w-100 d-block"
-            style="height: 220px; object-fit: cover;"
+            [alt]="animal?.name"
+            class="card-img-top"
           />
 
-          <div class="pa-section">
+          <div class="card-body">
+            <h5 class="card-title fw-bold text-dark mb-1">{{ animal?.name }}</h5>
+            <p class="text-primary fw-semibold small mb-2">{{ animal?.breed?.name }}</p>
 
-            <div class="fw-bold mb-2">
-              {{ animal?.name || '—' }}
-            </div>
-
-            <div class="pa-muted pa-small">Raza</div>
-            <div class="fw-semibold mb-2">
-              {{ animal?.breed?.name || '—' }}
-            </div>
-
-            <div class="pa-muted pa-small">Fecha rescate</div>
-            <div class="fw-semibold mb-2">
-              {{ animal?.rescueClass?.rescue_date ? (animal.rescueClass.rescue_date | date:'dd/MM/yyyy') : '—' }}
-            </div>
-
-            <div class="pa-muted pa-small">Descripción</div>
             <div class="mb-2">
-              {{ animal?.description || '—' }}
+              <div class="text-muted small text-uppercase fw-bold">Fecha rescate</div>
+              <div class="text-dark small">
+                {{ animal?.rescueClass?.rescue_date | date:'dd/MM/yyyy' }}
+              </div>
             </div>
 
-            <div class="mt-2 fw-bold" style="color: var(--pa-primary-dark);">
-              Ver información →
-            </div>
+            <p class="card-text text-muted small mb-2">
+              {{ animal?.description || 'Sin descripción disponible' }}
+            </p>
 
+            <div class="text-primary fw-bold small">Ver información →</div>
           </div>
         </a>
-
       </div>
     </div>
 
-    <div class="d-flex justify-content-center mt-4">
-      <button class="btn btn-secondary me-2" (click)="goToPage(page - 1)" [disabled]="page === 1">
-        Anterior
-      </button>
-      <button *ngFor="let pag of pages" class="btn btn-outline-secondary mx-1" [class.btn-primary]="pag===page" (click)="goToPage(pag)">{{ pag }}</button>
-      <button class="btn btn-secondary ms-2" (click)="goToPage(page + 1)" [disabled]="page === totalPages">
-        Siguiente
-      </button>
-    </div>
+    <nav class="d-flex justify-content-center mt-4 mt-md-5" aria-label="Navegación de páginas">
+      <ul class="pagination flex-wrap justify-content-center gap-1">
+        <li class="page-item" [class.disabled]="page === 1">
+          <button class="page-link" (click)="goToPage(page - 1)">Anterior</button>
+        </li>
+
+        <li class="page-item" *ngFor="let pag of pages" [class.active]="pag === page">
+          <button class="page-link" (click)="goToPage(pag)">{{ pag }}</button>
+        </li>
+
+        <li class="page-item" [class.disabled]="page === totalPages">
+          <button class="page-link" (click)="goToPage(page + 1)">Siguiente</button>
+        </li>
+      </ul>
+    </nav>
+
   </div>
 </div>

@@ -1,28 +1,72 @@
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white border-bottom-0 pt-4 px-4">
+    <h5 class="fw-bold mb-0 text-dark">Crear Nuevo Animal</h5>
+    <p class="text-muted small mb-0">Ingresá los datos del nuevo integrante</p>
+  </div>
 
+  <div class="card-body p-4">
+    <form [formGroup]="animalForm" (ngSubmit)="postAnimal()">
+      
+      <div class="mb-3">
+        <label class="form-label small fw-bold text-secondary text-uppercase">Nombre</label>
+        <input 
+          type="text" 
+          class="form-control form-control-lg fs-6" 
+          formControlName="name"
+          placeholder="Ej: Firulais"
+          [class.is-invalid]="animalForm.get('name')?.invalid && animalForm.get('name')?.touched"
+        >
+        <div class="invalid-feedback">El nombre es obligatorio para el registro.</div>
+      </div>
 
-<form [formGroup]="animalForm" (submit)="postAnimal()">
-  <fieldset>
-    <label for="name">Nombre: </label>
-    <input type="text" id="animal-name" formControlName="name">
-    @if (name.invalid && name.touched) {
-    <p class="error">El nombre es obligatorio</p>
-    }
-  </fieldset>
-  <fieldset>
-    <label for="birthDate">fecha de nacimento: </label>
-    <input type="text" id="animal-birthDate" formControlName="birth_date">
-  </fieldset>
-  <fieldset>
-    <label for="breed">Raza: </label>
-    <input type="text" id="animal-breed" formControlName="breed">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label small fw-bold text-secondary text-uppercase">Fecha de nacimiento</label>
+          <input 
+            type="date" 
+            class="form-control" 
+            formControlName="birth_date"
+          >
+        </div>
 
-  </fieldset>
-  <fieldset>
-    <label for="rescueClass">Rescate: </label>
-    <input type="text" id="animal-rescueClass" formControlName="rescueClass">
-  </fieldset>
+        <div class="col-md-6 mb-3">
+          <label class="form-label small fw-bold text-secondary text-uppercase">Raza</label>
+          <select 
+            class="form-select" 
+            formControlName="breedId" 
+            [class.is-invalid]="animalForm.get('breedId')?.invalid && animalForm.get('breedId')?.touched"
+          >
+            <option [ngValue]="null">Seleccionar...</option>
+            <option *ngFor="let b of breeds" [ngValue]="b.id">{{ b.name }}</option>
+          </select>
+          <div class="invalid-feedback">Campo requerido.</div>
+        </div>
+      </div>
 
-  <button [disabled]="animalForm.invalid">crear animal
-  </button>
-</form>
+      <div class="mb-4">
+        <label class="form-label small fw-bold text-secondary text-uppercase">Rescate asociado</label>
+        <select 
+          class="form-select" 
+          formControlName="rescueId" 
+          [class.is-invalid]="animalForm.get('rescueId')?.invalid && animalForm.get('rescueId')?.touched"
+        >
+          <option [ngValue]="null">Seleccionar el rescate correspondiente...</option>
+          <option *ngFor="let r of rescues" [ngValue]="r.id">
+            📅 {{ r.rescue_date | date:'dd/MM/yyyy' }} - ID: #{{ r.id }}
+          </option>
+        </select>
+        <div class="invalid-feedback">Debe estar asociado a un evento de rescate.</div>
+      </div>
 
+      <div class="d-grid pt-2">
+        <button 
+          type="submit" 
+          class="btn btn-primary btn-lg fs-6 fw-bold shadow-sm" 
+          [disabled]="animalForm.invalid"
+        >
+          Registrar Animal
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

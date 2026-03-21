@@ -23,9 +23,6 @@ importers:
       cors:
         specifier: ^2.8.5
         version: 2.8.5
-      cross-env:
-        specifier: ^10.1.0
-        version: 10.1.0
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
@@ -60,6 +57,9 @@ importers:
       '@types/node':
         specifier: 20.12.12
         version: 20.12.12
+      cross-env:
+        specifier: ^10.1.0
+        version: 10.1.0
       tsc-watch:
         specifier: 6.0.4
         version: 6.0.4(typescript@5.1.3)
@@ -943,7 +943,7 @@ snapshots:
     optionalDependencies:
       '@mikro-orm/mysql': 5.8.10(@mikro-orm/core@5.8.10)
 
-  '@mikro-orm/knex@5.8.10(@mikro-orm/core@5.8.10(@mikro-orm/mysql@5.8.10))(mysql2@3.6.2)':
+  '@mikro-orm/knex@5.8.10(@mikro-orm/core@5.8.10)(mysql2@3.6.2)':
     dependencies:
       '@mikro-orm/core': 5.8.10(@mikro-orm/mysql@5.8.10)
       fs-extra: 11.1.1
@@ -959,7 +959,7 @@ snapshots:
   '@mikro-orm/mysql@5.8.10(@mikro-orm/core@5.8.10)':
     dependencies:
       '@mikro-orm/core': 5.8.10(@mikro-orm/mysql@5.8.10)
-      '@mikro-orm/knex': 5.8.10(@mikro-orm/core@5.8.10(@mikro-orm/mysql@5.8.10))(mysql2@3.6.2)
+      '@mikro-orm/knex': 5.8.10(@mikro-orm/core@5.8.10)(mysql2@3.6.2)
       mysql2: 3.6.2
     transitivePeerDependencies:
       - better-sqlite3

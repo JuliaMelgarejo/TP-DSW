@@ -1,66 +1,76 @@
-<header class="pa-header">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-      <a routerLink="/home" class="pa-brand" (click)="closeMenu()">
-        <span class="pa-brand-text">Patas alegres</span>
+<header>
+  <nav class="navbar navbar-expand-lg bg-dark border-bottom">
+    <div class="container px-3 px-lg-4">
+      <a routerLink="/home" class="navbar-brand fw-bold">
+        Patas alegres
       </a>
-      <button 
-        class="navbar-toggler d-lg-none pa-icon-btn" 
-        type="button" 
-        data-bs-toggle="collapse" 
-        data-bs-target="#navbarContent"
+
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarContent"
         aria-controls="navbarContent"
         aria-expanded="false"
-        aria-label="Toggle navigation">
+        aria-label="Toggle navigation"
+      >
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarContent">
         <!-- Usuario base -->
-        <ul *ngIf="auth.isUser()" class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <ul *ngIf="auth.isUser()" class="navbar-nav  ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a routerLink="/profile" class="pa-nav-link" (click)="closeMenu()">Mi perfil</a>
+            <a routerLink="/profile" class="nav-link" (click)="closeMenu()">Mi perfil</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/shelter" class="pa-nav-link" (click)="closeMenu()">Refugios</a>
+            <a routerLink="/shelter" class="nav-link" (click)="closeMenu()">Refugios</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/animal" class="pa-nav-link" (click)="closeMenu()">Animales</a>
+            <a routerLink="/animal" class="nav-link" (click)="closeMenu()">Animales</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/my-adoptions" class="pa-nav-link" (click)="closeMenu()">Pedidos de adopción</a>
+            <a routerLink="/my-adoptions" class="nav-link" (click)="closeMenu()">Pedidos de adopción</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/orders" class="pa-nav-link  " (click)="closeMenu()">Compras</a>
+            <a routerLink="/orders" class="nav-link" (click)="closeMenu()">Compras</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/product" class="pa-nav-link " (click)="closeMenu()">Productos</a>
+            <a routerLink="/product" class="nav-link" (click)="closeMenu()">Productos</a>
           </li>
         </ul>
+
         <!-- Usuario refugio -->
         <ul *ngIf="auth.isShelter()" class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a routerLink="/my-shelter" class="pa-nav-link" (click)="closeMenu()">Mi refugio</a>
+            <a routerLink="/my-shelter" class="nav-link" (click)="closeMenu()">Mi refugio</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/rescue" class="pa-nav-link" (click)="closeMenu()">Nuevo rescate</a>
+            <a routerLink="/rescue" class="nav-link" (click)="closeMenu()">Nuevo rescate</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/animal" class="pa-nav-link" (click)="closeMenu()">Animales</a>
+            <a routerLink="/animal" class="nav-link" (click)="closeMenu()">Animales</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/product" class="pa-nav-link" (click)="closeMenu()">Productos</a>
+            <a routerLink="/product" class="nav-link" (click)="closeMenu()">Productos</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/order-shelter" class="pa-nav-link" (click)="closeMenu()">Pedidos</a>
+            <a routerLink="/order-shelter" class="nav-link" (click)="closeMenu()">Pedidos</a>
           </li>
           <li class="nav-item">
-            <a routerLink="/shelter-adoptions" class="pa-nav-link" (click)="closeMenu()">Solicitudes</a>
+            <a routerLink="/shelter-adoptions" class="nav-link" (click)="closeMenu()">Solicitudes</a>
           </li>
         </ul>
-        <button type="button" class="pa-btn-link pa-logout" (click)="logOut(); closeMenu()">
-          Cerrar sesión
-        </button>
+
+        <div class="d-lg-flex ms-lg-3">
+          <button
+            type="button"
+            class="btn btn-outline-danger btn-sm mt-2 mt-lg-0"
+            (click)="logOut(); closeMenu()"
+          >
+            Cerrar sesión
+          </button>
+        </div>
       </div>
     </div>
   </nav>

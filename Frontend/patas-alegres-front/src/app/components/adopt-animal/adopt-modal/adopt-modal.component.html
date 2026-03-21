@@ -1,49 +1,51 @@
-<div class="modal fade pa-modal" [id]="modalId" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered pa-modal-dialog">
-    <div class="modal-content pa-card pa-modal-content">
+<div class="modal fade" [id]="modalId" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
 
-      <div class="modal-header pa-modal-header">
+      <div class="modal-header">
         <div>
-          <div class="pa-h3 mb-0">Solicitud de adopción</div>
-          <div class="pa-muted pa-small">Dejá un comentario opcional para el refugio</div>
+          <h5 class="modal-title fw-bold">Solicitud de adopción</h5>
+          <small class="text-muted">Dejá un comentario opcional para el refugio</small>
         </div>
-
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
 
-      <div class="modal-body pa-section">
-        <label class="pa-small pa-muted mb-2 d-block">Comentario (opcional)</label>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label small fw-bold text-secondary">Comentario (opcional)</label>
+          <textarea
+            class="form-control"
+            rows="4"
+            [(ngModel)]="comments"
+            placeholder="Ej: tengo patio, horarios disponibles, experiencia con mascotas..."
+            style="border-radius: 4px;"></textarea>
+        </div>
 
-        <textarea
-          class="pa-input w-100"
-          rows="4"
-          [(ngModel)]="comments"
-          placeholder="Ej: tengo patio, horarios disponibles, experiencia con mascotas..."></textarea>
-
-        <!-- Feedback -->
-        <div *ngIf="errMsg" class="pa-alert pa-alert-danger mt-3">
+        <div *ngIf="errMsg" class="alert alert-danger mt-3 py-2 small" role="alert">
           {{ errMsg }}
         </div>
 
-        <div *ngIf="okMsg" class="pa-alert pa-alert-success mt-3">
+        <div *ngIf="okMsg" class="alert alert-success mt-3 py-2 small" role="alert">
           {{ okMsg }}
         </div>
       </div>
 
-      <div class="modal-footer pa-modal-footer">
+      <div class="modal-footer">
         <button
           type="button"
-          class="pa-btn pa-btn-outline"
+          class="btn btn-secondary"
           data-bs-dismiss="modal"
-          [disabled]="loading">
+          [disabled]="loading"
+          style="border-radius: 4px;">
           Cancelar
         </button>
 
         <button
           type="button"
-          class="pa-btn pa-btn-primary"
+          class="btn btn-primary"
           (click)="submit()"
-          [disabled]="loading">
+          [disabled]="loading"
+          style="border-radius: 4px;">
           {{ loading ? 'Enviando...' : 'Enviar solicitud' }}
         </button>
       </div>

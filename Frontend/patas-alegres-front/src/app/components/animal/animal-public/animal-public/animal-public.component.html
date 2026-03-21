@@ -1,57 +1,56 @@
-<div class="pa-page" *ngIf="selectedAnimal; else loadingTpl">
-  <div class="pa-container pa-panel">
+<div class="bg-light min-vh-100 py-3 py-lg-4" *ngIf="selectedAnimal; else loadingTpl">
+  <div class="container px-3 px-lg-4 py-2 py-lg-4">
 
     <!-- HEADER -->
-    <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
-      <div>
-        <div class="pa-h2 mb-1">{{ selectedAnimal.name }}</div>
-        <div class="pa-muted pa-small">
+    <div class="d-flex flex-column flex-lg-row align-items-start justify-content-between gap-3 mb-3 mb-lg-4">
+      <div class="w-100">
+        <h2 class="mb-1">{{ selectedAnimal.name }}</h2>
+        <h6 class="card-subtitle mb-0 text-body-secondary">
           {{ getBreedName() }}
-        </div>
+        </h6>
       </div>
 
       <!-- Botones desktop -->
-      <div class="d-none d-lg-flex gap-2">
-        <a class="pa-btn pa-btn-outline" routerLink="/animal">Volver</a>
-          <button type="button" class="pa-btn pa-btn-primary" (click)="openAdoptModal()">
-            Interesado en adoptar
-          </button>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end w-100">
+        <a class="btn btn-outline-secondary" routerLink="/animal">Volver</a>
+        <button type="button" class="btn btn-primary" (click)="openAdoptModal()">
+          Interesado en adoptar
+        </button>
       </div>
     </div>
 
-    <div class="row g-3 align-items-start">
+    <div class="row g-3 g-lg-4 align-items-start">
 
-      <!-- ======================
-           IZQUIERDA: SOLO CARRUSEL
-           ====================== -->
-      <div class="col-12 col-lg-5">
-        <div class="pa-card pa-panel" style="overflow:hidden;">
+      <!-- IZQUIERDA: CARRUSEL MÁS ANCHO -->
+      <div class="col-12 col-lg-7">
+        <div class="rounded-3 overflow-hidden bg-white shadow-sm">
 
           <div
             [id]="carouselId()"
-            class="carousel slide animal-carousel"
+            class="carousel slide carousel-dark animal-carousel"
             data-bs-ride="carousel">
 
             <div class="carousel-inner">
               <div
-                class="carousel-item"
                 *ngFor="let img of getPhotoUrls(); let i = index"
+                class="carousel-item"
+                data-bs-interval="10000"
                 [class.active]="i === 0">
                 <img
-                  class="d-block w-100"
                   [src]="img"
-                  [alt]="selectedAnimal.name + ' - foto ' + (i + 1)" />
+                  class="d-block w-100"
+                  [alt]="selectedAnimal.name + ' - foto ' + (i + 1)">
               </div>
             </div>
 
-            <!-- Flechas -->
             <button
               *ngIf="getPhotoUrls().length > 1"
               class="carousel-control-prev"
               type="button"
               [attr.data-bs-target]="'#' + carouselId()"
               data-bs-slide="prev">
-              <span class="carousel-control-prev-icon"></span>
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
             </button>
 
             <button
@@ -60,104 +59,106 @@
               type="button"
               [attr.data-bs-target]="'#' + carouselId()"
               data-bs-slide="next">
-              <span class="carousel-control-next-icon"></span>
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
             </button>
 
-            <!-- Indicadores -->
-            <div class="carousel-indicators" *ngIf="getPhotoUrls().length > 1">
-              <button
-                *ngFor="let _ of getPhotoUrls(); let i = index"
-                type="button"
-                [attr.data-bs-target]="'#' + carouselId()"
-                [attr.data-bs-slide-to]="i"
-                [class.active]="i === 0">
-              </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- DERECHA: INFO -->
+      <div class="col-12 col-lg-5">
+        <div class="card text-center shadow-sm border-0 h-100">
+
+          <!-- Header con pills -->
+          <div class="card-header bg-white border-0 pb-0">
+            <ul class="nav nav-pills card-header-pills justify-content-center flex-wrap gap-2">
+              <li class="nav-item">
+                <button
+                  type="button"
+                  class="nav-link"
+                  [class.active]="activeInfo === 'description'"
+                  (click)="showInfo('description')">
+                  Descripción
+                </button>
+              </li>
+
+              <li class="nav-item">
+                <button
+                  type="button"
+                  class="nav-link"
+                  [class.active]="activeInfo === 'breed'"
+                  (click)="showInfo('breed')">
+                  Raza
+                </button>
+              </li>
+
+              <li class="nav-item">
+                <button
+                  type="button"
+                  class="nav-link"
+                  [class.active]="activeInfo === 'rescue'"
+                  (click)="showInfo('rescue')">
+                  Rescate
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Body -->
+          <div class="card-body px-3 px-lg-4 py-4 text-start text-lg-center">
+
+            <!-- Descripción -->
+            <div *ngIf="activeInfo === 'description'">
+              <h5 class="card-title mb-3">Descripción</h5>
+              <p class="card-text mb-0">
+                {{ selectedAnimal.description || 'Sin descripción' }}
+              </p>
+            </div>
+
+            <!-- Raza -->
+            <div *ngIf="activeInfo === 'breed'">
+              <h5 class="card-title mb-3">{{ getBreedName() }}</h5>
+              <p class="card-text mb-0">
+                {{ getBreedDescription() }}
+              </p>
+            </div>
+
+            <!-- Rescate -->
+            <div *ngIf="activeInfo === 'rescue'">
+              <h5 class="card-title mb-3">Información del rescate</h5>
+
+              <p class="card-text mb-2">
+                <span class="text-muted">Fecha:</span>
+                <span class="fw-bold ms-1">{{ getRescueDateLabel() }}</span>
+              </p>
+
+              <p class="card-text mb-2">
+                <span class="text-muted">Lugar:</span>
+                <span class="fw-bold ms-1">{{ getRescueAddressLabel() }}</span>
+              </p>
+
+              <p *ngIf="getRescueDescription()" class="card-text mb-2">
+                {{ getRescueDescription() }}
+              </p>
+
+              <p *ngIf="getRescueComments()" class="card-text mb-0">
+                {{ getRescueComments() }}
+              </p>
             </div>
 
           </div>
-
         </div>
       </div>
 
-      <!-- ======================
-           DERECHA: INFO
-           ====================== -->
-      <div class="col-12 col-lg-7">
-
-        <!-- Chips -->
-        <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
-          <span class="pa-muted pa-small me-2">Info</span>
-
-          <button
-            type="button"
-            class="pa-chip"
-            [class.pa-chip-active]="activeInfo === 'description'"
-            (click)="showInfo('description')">
-            Descripción
-          </button>
-
-          <button
-            type="button"
-            class="pa-chip"
-            [class.pa-chip-active]="activeInfo === 'breed'"
-            (click)="showInfo('breed')">
-            Raza
-          </button>
-
-          <button
-            type="button"
-            class="pa-chip pa-chip-accent"
-            [class.pa-chip-active]="activeInfo === 'rescue'"
-            (click)="showInfo('rescue')">
-            Rescate
-          </button>
-        </div>
-
-        <!-- Panel Descripción -->
-        <div *ngIf="activeInfo === 'description'" class="pa-card-soft pa-section pa-panel mb-3">
-          <div class="pa-muted">
-            {{ selectedAnimal.description || 'Sin descripción' }}
-          </div>
-        </div>
-
-        <!-- Panel Raza -->
-        <div *ngIf="activeInfo === 'breed'" class="pa-card-soft pa-section pa-panel mb-3">
-          <div class="fw-bold mb-1">{{ getBreedName() }}</div>
-          <div class="pa-muted pa-small">{{ getBreedDescription() }}</div>
-        </div>
-
-        <!-- Panel Rescate -->
-        <div *ngIf="activeInfo === 'rescue'" class="pa-card-soft pa-section pa-panel mb-3">
-
-          <div class="mb-2">
-            <span class="pa-muted pa-small">Fecha:</span>
-            <span class="fw-bold ms-1">{{ getRescueDateLabel() }}</span>
-          </div>
-
-          <div class="mb-2">
-            <span class="pa-muted pa-small">Lugar:</span>
-            <span class="fw-bold ms-1">{{ getRescueAddressLabel() }}</span>
-          </div>
-
-          <div *ngIf="getRescueDescription()" class="pa-muted pa-small mt-2">
-            {{ getRescueDescription() }}
-          </div>
-
-          <div *ngIf="getRescueComments()" class="pa-muted pa-small mt-1">
-            {{ getRescueComments() }}
-          </div>
-
-        </div>
-
-      </div>
     </div>
 
-    <!-- ======================
-         BOTONES MOBILE
-         ====================== -->
-    <div class="d-lg-none d-flex gap-2 mt-3">
-      <a class="pa-btn pa-btn-outline flex-shrink-0" routerLink="/animal">Volver</a>
-      <button type="button" class="pa-btn pa-btn-primary w-100" (click)="openAdoptModal()">
+    <!-- BOTONES MOBILE -->
+    <div class="d-lg-none d-grid gap-2 mt-3">
+      <a class="btn btn-outline-secondary w-100" routerLink="/animal">Volver</a>
+      <button type="button" class="btn btn-primary w-100" (click)="openAdoptModal()">
         Interesado en adoptar
       </button>
     </div>
@@ -171,10 +172,12 @@
 </app-adopt-modal>
 
 <ng-template #loadingTpl>
-  <div class="pa-page">
-    <div class="pa-container">
-      <div class="pa-card pa-section pa-panel">
-        <div class="pa-muted">Cargando...</div>
+  <div class="bg-light min-vh-100 py-4">
+    <div class="container px-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="text-black">Cargando...</div>
+        </div>
       </div>
     </div>
   </div>

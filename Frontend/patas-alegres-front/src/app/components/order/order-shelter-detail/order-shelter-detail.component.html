@@ -1,4 +1,4 @@
-<div class="pa-page">
+<div class="bg-light min-vh-100 py-4">
   <div class="container px-3" style="max-width: 1100px;">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -7,17 +7,15 @@
       </a>
     </div>
 
-    <div *ngIf="loading" class="pa-muted">Cargando...</div>
+    <div *ngIf="loading" >Cargando...</div>
 
     <div *ngIf="!loading && order">
 
       <div class="d-flex justify-content-between align-items-start gap-3 mb-3 flex-wrap">
 
         <div>
-          <h2 class="pa-title mb-1">Pedido #{{ order.id }}</h2>
-          <div class="pa-muted">
+          <h2 class="mb-1">Pedido #{{ order.id }}</h2>
             Fecha: {{ order.fecha | date:'dd/MM/yyyy HH:mm' }}
-          </div>
         </div>
 
         <div class="text-end">
@@ -36,26 +34,25 @@
 
         <div class="col-12 col-lg-5">
 
-          <div class="pa-card">
-            <div class="pa-section">
-
-              <div class="fw-bold mb-2">
+            <div class="conteiner-lg p-3 bg-white rounded">
+              <h4>
+              <div class=" fw-bold mb-2">
                 {{ isShelter() ? 'Cliente' : 'Datos del pedido' }}
               </div>
-
+            </h4>
               <div class="mb-2">
-                <div class="pa-muted">Nombre</div>
-                <div class="fw-semibold">{{ order.customer?.name || '—' }}</div>
+                <div class="fw-bold">Nombre</div>
+                <div class="text-dark">{{ order.customer?.name || '—' }}</div>
               </div>
 
               <div class="mb-2">
-                <div class="pa-muted">Email</div>
-                <div class="fw-semibold">{{ order.customer?.email || '—' }}</div>
+                <div class="fw-bold">Email</div>
+                <div class="text-dark">{{ order.customer?.email || '—' }}</div>
               </div>
 
               <div class="mb-3">
-                <div class="pa-muted">Teléfono</div>
-                <div class="fw-semibold">{{ order.customer?.phone || '—' }}</div>
+                <div class="fw-bold">Teléfono</div>
+                <div class="text-dark">{{ order.customer?.phone || '—' }}</div>
               </div>
 
               <hr class="my-3"/>
@@ -65,7 +62,7 @@
                 <div>
                   <div class="fw-bold">Cambiar estado</div>
 
-                  <div class="pa-muted" style="font-size: 13px;">
+                  <div class="text-dark" style="font-size: 13px;">
                     Esto agrega un nuevo registro al historial.
                   </div>
                 </div>
@@ -110,13 +107,12 @@
               </div>
 
             </div>
-          </div>
 
         </div>
 
         <div class="col-12 col-lg-7">
 
-          <div class="pa-card">
+          <div class="conteiner-lg p-3 bg-white rounded">
             <div class="pa-section">
 
               <div class="fw-bold mb-2">
@@ -176,9 +172,9 @@
             </div>
           </div>
 
-          <div class="pa-card mt-3">
+          <div class="mt-3">
 
-            <div class="pa-section">
+            <div class="conteiner-lg p-3 bg-white rounded">
 
               <div class="fw-bold mb-3">
                 Historial de estados
@@ -186,7 +182,7 @@
 
               <div
                 *ngIf="!order.timeline || order.timeline.length === 0"
-                class="pa-muted"
+                class="text-dark"
               >
                 Sin historial.
               </div>
@@ -241,9 +237,7 @@
             </div>
 
           </div>
-
         </div>
-
       </div>
 
     </div>

@@ -1,191 +1,257 @@
-<div class="pa-page">
-  <div class="pa-container">
-    <div class="pa-card pa-section pa-panel">
-      <div class="mb-3">
-        <div class="pa-h3 mb-0">{{ isEditMode ? 'Editar producto' : 'Crear producto' }}</div>
-        <div class="pa-muted pa-small">Completá los datos del producto</div>
-      </div>
-      <form [formGroup]="ProductForm" (submit)="onSubmit()">
-        <div class="row g-3">
-          <div class="col-12 col-lg-6 left-column">
-            <div class="center-content">
-              <fieldset class="mb-3 d-flex flex-column rounded">
-                <label for="name" class="fw-bold mb-1">Nombre del producto</label>
-                <input type="text" id="product-name" formControlName="name" placeholder="Ingrese aquí el nombre del producto" class="limited-input">
-                @if (ProductForm.get('name')?.invalid && ProductForm.get('name')?.touched) {
-                <p class="error">El nombre del producto es obligatorio</p>
-                }
-              </fieldset>
-              <fieldset class="mb-3">
-                <label class="fw-bold mb-2">Fotos del producto</label>
-                <div style="max-width: 364px;">
-                  <div *ngIf="isEditMode && selectedProduct.photos?.length; else createMode">
-                    <div id="productCarousel" class="carousel slide mb-3" data-bs-ride="false">
-                      <div class="carousel-inner rounded border">
-                        <div
-                          *ngFor="let p of selectedProduct.photos; let i = index"
-                          class="carousel-item"
-                          [class.active]="i === 0"
-                        >
-                          <img
-                            [src]="getPhotoUrl(p)"
-                            class="d-block w-100"
-                            style="height:280px; object-fit:cover;"
-                            [alt]="selectedProduct.name + ' foto'"
-                          />
-                        </div>
-                      </div>
-                      <button
-                        class="carousel-control-prev"
-                        type="button"
-                        data-bs-target="#productCarousel"
-                        data-bs-slide="prev"
-                      >
-                        <span class="carousel-control-prev-icon"></span>
-                      </button>
-                      <button
-                        class="carousel-control-next"
-                        type="button"
-                        data-bs-target="#productCarousel"
-                        data-bs-slide="next"
-                      >
-                        <span class="carousel-control-next-icon"></span>
-                      </button>
-                    </div>
-                  </div>
-                  <ng-template #createMode>
-                    <img
-                      *ngIf="selectedProductPreview; else noPhoto"
-                      [src]="selectedProductPreview"
-                      class="img-fluid rounded border mb-3"
-                      style="height:280px; width:100%; object-fit:cover;"
-                    />
-                    <ng-template #noPhoto>
-                      <img
-                        src="assets/nophoto.png"
-                        class="img-fluid rounded border mb-3"
-                        style="height:280px; width:100%; object-fit:cover;"
-                      />
-                    </ng-template>
-                  </ng-template>
-                  <input
-                    type="file"
-                    class="form-control mb-2"
-                    accept="image/*"
-                    (change)="onProductPhotoChange($event)"
-                  />
-                  <button
-                    *ngIf="isEditMode"
-                    type="button"
-                    class="btn btn-primary w-100 mb-2"
-                    (click)="uploadPhoto()"
-                    [disabled]="uploading || !selectedProductFile"
-                  >
-                    {{ uploading ? 'Subiendo...' : 'Subir foto' }}
-                  </button>
-                  <div *ngIf="uploadError" class="text-danger small mb-2">
-                    {{ uploadError }}
-                  </div>
-                  <div *ngIf="isEditMode && selectedProduct.photos?.length" class="mt-3">
-                    <div class="fw-semibold mb-2">Galería</div>
-                    <div class="row g-2">
-                      <div class="col-4" *ngFor="let p of selectedProduct.photos; let i = index">
-                        <div class="position-relative">
-                          <img
-                            [src]="getPhotoUrl(p)"
-                            class="img-fluid rounded border cursor-pointer"
-                            style="height:90px; width:100%; object-fit:cover;"
-                            (click)="goToSlide(i)"
-                          />
-                          <button
-                            type="button"
-                            class="pa-icon-delete"
-                            (click)="deletePhoto(p.id)"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="text-muted small mt-2">
-                      Tip: la primera foto es la principal.
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
-            </div>
-          </div>
-          <div class="col-12 col-lg-6 mt-3 mt-lg-0 right-column">
-            <div class="price-stock-container">
-              <fieldset class ="form-row">
-                <label for="crossed_out_price">Precio tachado</label>
-                <div class="input-wrapper">
-                  <div class="input-group">
-                    <span class="input-group-text">$</span>
-                    <input
-                      type="number"
-                      class="form-control text-end"
-                      id="product-crossed_out_price"
-                      formControlName="crossed_out_price">
-                  </div>
-                </div>
-              </fieldset>
-              <fieldset class="form-row">
-                <label for="price">Precio real</label>
+<div class="bg-light min-vh-100 py-4">
+  <div class="container px-3 px-lg-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-3 p-lg-4">
 
-                <div class="input-wrapper">
-                  <div class="input-group">
-                    <span class="input-group-text">$</span>
-                    <input
-                      type="number"
-                      class="form-control text-end"
-                      id="product-price"
-                      formControlName="price">
-                  </div>
-
-                  @if (ProductForm.get('price')?.invalid && ProductForm.get('price')?.touched) {
-                    <p class="error">El precio actual es obligatorio</p>
-                  }
-                </div>
-              </fieldset>
-              <fieldset class="form-row">
-                <label for="stock">Stock disponible</label>
-                <div class="input-wrapper">
-                  <div class="input-group stock-group">
-                    <button type="button" class="btn stock-btn"
-                      (click)="decrementStock()">-</button>
-                    <input
-                      type="number"
-                      min="-1"
-                      class="form-control text-center stock-input"
-                      id="product-stock"
-                      formControlName="stock">
-                    <button type="button" class="btn stock-btn"
-                      (click)="incrementStock()">+</button>
-                  </div>
-                  @if (ProductForm.get('stock')?.invalid && ProductForm.get('stock')?.touched) {
-                    <p class="error">El stock disponible es obligatorio</p>
-                  }
-                </div>
-              </fieldset>
-            </div>
-            <fieldset class="mb-3">
-              <label for="category">Categoría del producto</label>
-              <select id="product-category" formControlName="category" class="w-100">
-                <option [ngValue]="null" disabled selected>Seleccione una categoría</option>
-                <option *ngFor="let category of categories" [ngValue]="category.id">{{ category.name }}</option>
-              </select>
-            </fieldset>
-            <fieldset class="mb-3">
-              <label for="description">Descripción del producto</label>
-              <textarea id="product-description" formControlName="description" class="w-100" placeholder="Ingrese aquí una descripción del producto"></textarea>
-            </fieldset>
-            <button [disabled]="ProductForm.invalid" class="btn btn-primary w-100">
-              {{ isEditMode ? 'Actualizar producto' : 'Crear producto' }}
-            </button>
-          </div>
+        <div class="mb-3">
+          <h3 class="mb-1">
+            {{ isEditMode ? 'Editar producto' : 'Crear producto' }}
+          </h3>
+          <div class="text-muted small">Completá los datos del producto</div>
         </div>
-      </form>
+
+        <form [formGroup]="ProductForm" (submit)="onSubmit()">
+          <div class="row g-3">
+
+            <!-- COLUMNA IZQUIERDA -->
+            <div class="col-12 col-lg-6">
+              <div class="d-flex flex-column align-items-center">
+
+                <fieldset class="mb-3 w-100">
+                  <label for="product-name" class="form-label fw-bold">Nombre del producto</label>
+                  <input
+                    type="text"
+                    id="product-name"
+                    formControlName="name"
+                    placeholder="Ingrese aquí el nombre del producto"
+                    class="form-control"
+                  >
+                  @if (ProductForm.get('name')?.invalid && ProductForm.get('name')?.touched) {
+                    <p class="text-danger small mt-1 mb-0">El nombre del producto es obligatorio</p>
+                  }
+                </fieldset>
+
+                <fieldset class="mb-3 w-100">
+                  <label class="form-label fw-bold mb-2">Fotos del producto</label>
+
+                  <div class="w-100" style="max-width: 364px;">
+                    <div *ngIf="isEditMode && selectedProduct.photos?.length; else createMode">
+                      <div id="productCarousel" class="carousel slide mb-3 carousel-dark" data-bs-ride="false">
+                        <div class="carousel-inner rounded border overflow-hidden">
+                          <div
+                            *ngFor="let p of selectedProduct.photos; let i = index"
+                            class="carousel-item"
+                            [class.active]="i === 0"
+                          >
+                            <img
+                              [src]="getPhotoUrl(p)"
+                              class="d-block w-100"
+                              style="height:280px; object-fit:cover;"
+                              [alt]="selectedProduct.name + ' foto'"
+                            />
+                          </div>
+                        </div>
+
+                        <button
+                          class="carousel-control-prev"
+                          type="button"
+                          data-bs-target="#productCarousel"
+                          data-bs-slide="prev"
+                        >
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        </button>
+
+                        <button
+                          class="carousel-control-next"
+                          type="button"
+                          data-bs-target="#productCarousel"
+                          data-bs-slide="next"
+                        >
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <ng-template #createMode>
+                      <img
+                        *ngIf="selectedProductPreview; else noPhoto"
+                        [src]="selectedProductPreview"
+                        class="img-fluid rounded border mb-3 w-100"
+                        style="height:280px; object-fit:cover;"
+                      />
+
+                      <ng-template #noPhoto>
+                        <img
+                          src="assets/nophoto.png"
+                          class="img-fluid rounded border mb-3 w-100"
+                          style="height:280px; object-fit:cover;"
+                        />
+                      </ng-template>
+                    </ng-template>
+
+                    <input
+                      type="file"
+                      class="form-control mb-2"
+                      accept="image/*"
+                      (change)="onProductPhotoChange($event)"
+                    />
+
+                    <button
+                      *ngIf="isEditMode"
+                      type="button"
+                      class="btn btn-primary w-100 mb-2"
+                      (click)="uploadPhoto()"
+                      [disabled]="uploading || !selectedProductFile"
+                    >
+                      {{ uploading ? 'Subiendo...' : 'Subir foto' }}
+                    </button>
+
+                    <div *ngIf="uploadError" class="text-danger small mb-2">
+                      {{ uploadError }}
+                    </div>
+
+                    <div *ngIf="isEditMode && selectedProduct.photos?.length" class="mt-3">
+                      <div class="fw-semibold mb-2">Galería</div>
+
+                      <div class="row g-2">
+                        <div class="col-4" *ngFor="let p of selectedProduct.photos; let i = index">
+                          <div class="position-relative">
+                            <img
+                              [src]="getPhotoUrl(p)"
+                              class="img-fluid rounded border w-100"
+                              style="height:90px; object-fit:cover; cursor:pointer;"
+                              (click)="goToSlide(i)"
+                            />
+                            <button
+                              type="button"
+                              class="position-absolute top-0 end-0 btn btn-sm btn-danger rounded-circle m-1 d-flex align-items-center justify-content-center"
+                              style="width: 28px; height: 28px; line-height: 1;"
+                              (click)="deletePhoto(p.id)"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="text-muted small mt-2">
+                        Tip: la primera foto es la principal.
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+
+              </div>
+            </div>
+
+            <!-- COLUMNA DERECHA -->
+            <div class="col-12 col-lg-6">
+
+              <div class="row g-3 mb-3">
+                <div class="col-12">
+                  <fieldset>
+                    <label for="product-crossed_out_price" class="form-label">Precio tachado</label>
+                    <div class="input-group">
+                      <span class="input-group-text">$</span>
+                      <input
+                        type="number"
+                        class="form-control text-end"
+                        id="product-crossed_out_price"
+                        formControlName="crossed_out_price"
+                      >
+                    </div>
+                  </fieldset>
+                </div>
+
+                <div class="col-12">
+                  <fieldset>
+                    <label for="product-price" class="form-label">Precio real</label>
+                    <div class="input-group">
+                      <span class="input-group-text">$</span>
+                      <input
+                        type="number"
+                        class="form-control text-end"
+                        id="product-price"
+                        formControlName="price"
+                      >
+                    </div>
+
+                    @if (ProductForm.get('price')?.invalid && ProductForm.get('price')?.touched) {
+                      <p class="text-danger small mt-1 mb-0">El precio actual es obligatorio</p>
+                    }
+                  </fieldset>
+                </div>
+
+                <div class="col-12">
+                  <fieldset>
+                    <label for="product-stock" class="form-label">Stock disponible</label>
+                    <div class="input-group">
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        (click)="decrementStock()"
+                      >
+                        -
+                      </button>
+
+                      <input
+                        type="number"
+                        min="-1"
+                        class="form-control text-center"
+                        id="product-stock"
+                        formControlName="stock"
+                      >
+
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        (click)="incrementStock()"
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    @if (ProductForm.get('stock')?.invalid && ProductForm.get('stock')?.touched) {
+                      <p class="text-danger small mt-1 mb-0">El stock disponible es obligatorio</p>
+                    }
+                  </fieldset>
+                </div>
+              </div>
+
+              <fieldset class="mb-3">
+                <label for="product-category" class="form-label">Categoría del producto</label>
+                <select
+                  id="product-category"
+                  formControlName="category"
+                  class="form-select"
+                >
+                  <option [ngValue]="null" disabled selected>Seleccione una categoría</option>
+                  <option *ngFor="let category of categories" [ngValue]="category.id">
+                    {{ category.name }}
+                  </option>
+                </select>
+              </fieldset>
+
+              <fieldset class="mb-3">
+                <label for="product-description" class="form-label">Descripción del producto</label>
+                <textarea
+                  id="product-description"
+                  formControlName="description"
+                  class="form-control"
+                  rows="5"
+                  placeholder="Ingrese aquí una descripción del producto"
+                ></textarea>
+              </fieldset>
+
+              <button [disabled]="ProductForm.invalid" class="btn btn-primary w-100">
+                {{ isEditMode ? 'Actualizar producto' : 'Crear producto' }}
+              </button>
+            </div>
+
+          </div>
+        </form>
+
+      </div>
     </div>
   </div>
 </div>
