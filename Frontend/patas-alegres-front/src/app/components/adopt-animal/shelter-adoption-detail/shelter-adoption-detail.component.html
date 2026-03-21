@@ -1,13 +1,13 @@
 <div class="bg-light min-vh-100 py-4">
-  <div class="container-fluid px-3 px-lg-4">
-    
-    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+  <div class="container px-3 px-lg-4">
+
+    <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between mb-4 gap-3">
       <div>
         <h2 class="fw-bold mb-1 text-dark">Detalle de solicitud</h2>
         <p class="text-muted small mb-0">Gestión de adopciones del refugio</p>
       </div>
-      <a class="btn btn-outline-secondary btn-sm px-4 shadow-sm" routerLink="/shelter-adoptions">
-        <i class="bi bi-arrow-left"></i> Volver
+      <a class="btn btn-outline-secondary" routerLink="/shelter-adoptions">
+        <i class="bi bi-arrow-left me-1"></i> Volver
       </a>
     </div>
 
@@ -33,20 +33,22 @@
                 <img
                   [src]="getMainPhoto()"
                   [alt]="item?.animal?.name || 'Animal'"
-                  class="rounded-3 shadow-sm border"
-                  style="width: 130px; height: 130px; object-fit: cover;"
+                  class="img-fluid rounded-3 border shadow-sm"
                 />
               </div>
 
-              <div class="col text-center text-sm-start">
-                <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap mb-2">
+              <div class="col">
+                <div class="d-flex flex-column flex-sm-row align-items-start justify-content-between gap-3 mb-3">
                   <div>
-                    <h3 class="fw-bold text-primary mb-1">{{ item?.animal?.name }}</h3>
+                    <h3 class="fw-bold h4 mb-1 text-dark">{{ item?.animal?.name }}</h3>
                     <div class="small text-muted">
-                      Fecha del pedido: <span class="fw-bold text-dark ms-1">{{ item?.adoption_date | date:'dd/MM/yyyy' }}</span>
+                      Fecha del pedido:
+                      <span class="fw-semibold text-dark ms-1">{{ item?.adoption_date | date:'dd/MM/yyyy' }}</span>
                     </div>
                   </div>
-                  <span class="badge rounded-pill px-3 py-2 fs-6" 
+
+                  <span
+                    class="badge rounded-pill px-3 py-2"
                     [ngClass]="{
                       'text-bg-warning': getCurrentState() === 'PENDIENTE',
                       'text-bg-success': getCurrentState() === 'APROBADA',
@@ -57,9 +59,13 @@
                   </span>
                 </div>
 
-                <div class="mt-3 p-3 bg-light rounded-3">
-                  <label class="small text-muted fw-bold text-uppercase d-block mb-1" style="font-size: 0.65rem;">Comentario del solicitante</label>
-                  <p class="mb-0 small text-dark fst-italic">"{{ item?.comments || 'Sin comentarios adicionales.' }}"</p>
+                <div class="card border-0 bg-body-tertiary">
+                  <div class="card-body p-3">
+                    <div class="small text-muted text-uppercase fw-bold mb-1">Comentario del solicitante</div>
+                    <p class="mb-0 small text-dark">
+                      {{ item?.comments || 'Sin comentarios adicionales.' }}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -67,31 +73,31 @@
         </div>
 
         <div class="card border-0 shadow-sm">
-          <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+          <div class="card-header bg-white border-0 pt-4 px-4 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-1">
             <h6 class="fw-bold mb-0">Solicitante</h6>
             <span class="text-muted small">Datos de contacto</span>
           </div>
           <div class="card-body px-4 pb-4">
             <div class="row g-3">
               <div class="col-12 col-md-4">
-                <label class="small text-muted fw-bold text-uppercase d-block mb-1" style="font-size: 0.65rem;">Nombre completo</label>
+                <div class="small text-muted text-uppercase fw-bold mb-1">Nombre completo</div>
                 <div class="fw-semibold">{{ item?.person?.name ?? '—' }}</div>
               </div>
               <div class="col-12 col-md-4">
-                <label class="small text-muted fw-bold text-uppercase d-block mb-1" style="font-size: 0.65rem;">Email</label>
+                <div class="small text-muted text-uppercase fw-bold mb-1">Email</div>
                 <div class="fw-semibold text-break">{{ item?.person?.email ?? '—' }}</div>
               </div>
               <div class="col-12 col-md-4">
-                <label class="small text-muted fw-bold text-uppercase d-block mb-1" style="font-size: 0.65rem;">Teléfono</label>
+                <div class="small text-muted text-uppercase fw-bold mb-1">Teléfono</div>
                 <div class="fw-semibold">{{ item?.person?.phone ?? '—' }}</div>
               </div>
             </div>
           </div>
         </div>
 
-        <div *ngIf="isCancelled()" class="alert alert-light border shadow-sm p-4">
-          <div class="d-flex align-items-center gap-3">
-            <i class="bi bi-x-circle-fill text-danger fs-2"></i>
+        <div *ngIf="isCancelled()" class="alert alert-light border shadow-sm mb-0">
+          <div class="d-flex align-items-start gap-3">
+            <i class="bi bi-x-circle-fill text-danger fs-4"></i>
             <div>
               <h6 class="fw-bold text-danger mb-1">Solicitud cancelada por el usuario</h6>
               <p class="text-muted small mb-0">No se pueden realizar cambios en una solicitud que ha sido cancelada.</p>
@@ -100,22 +106,23 @@
         </div>
 
         <div *ngIf="!isCancelled()" class="card border-0 shadow-sm overflow-hidden">
-          <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+          <div class="card-header bg-dark text-white p-3 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
             <h6 class="fw-bold mb-0">Cambiar estado de la solicitud</h6>
             <span *ngIf="stateType" class="badge text-bg-primary">{{ stateType }}</span>
           </div>
-          
+
           <div class="card-body p-4">
             <div *ngIf="statesLoading" class="text-center py-2">
-              <span class="spinner-border spinner-border-sm text-primary me-2"></span> Cargando estados...
+              <span class="spinner-border spinner-border-sm text-primary me-2"></span>
+              Cargando estados...
             </div>
 
-            <div *ngIf="statesErr" class="alert alert-danger py-2 px-3 small">{{ statesErr }}</div>
+            <div *ngIf="statesErr" class="alert alert-danger small mb-3">{{ statesErr }}</div>
 
             <div *ngIf="!statesLoading && !statesErr" class="row g-3">
               <div class="col-12">
-                <label class="form-label small fw-bold text-secondary">Seleccionar Nuevo Estado</label>
-                <select class="form-select border-2" [(ngModel)]="stateType">
+                <label class="form-label small fw-bold text-secondary">Seleccionar nuevo estado</label>
+                <select class="form-select" [(ngModel)]="stateType">
                   <option *ngFor="let s of states" [value]="s.type">{{ s.type }}</option>
                 </select>
               </div>
@@ -130,25 +137,25 @@
               </div>
 
               <div class="col-12" *ngIf="okMsg">
-                <div class="alert alert-success py-2 px-3 small">{{ okMsg }}</div>
+                <div class="alert alert-success small mb-0">{{ okMsg }}</div>
               </div>
 
               <div class="col-12" *ngIf="!canSave() && !saving">
-                <div class="alert alert-light border py-2 px-3 small text-muted">
+                <div class="alert alert-light border small text-muted mb-0">
                   <i class="bi bi-info-circle me-1"></i> Seleccioná un estado distinto para guardar.
                 </div>
               </div>
 
-              <div class="col-12 mt-4 pt-3 border-top d-flex flex-column flex-sm-row justify-content-end gap-2">
+              <div class="col-12 pt-2 d-flex flex-column flex-sm-row justify-content-end gap-2">
                 <button
-                  class="btn btn-outline-secondary px-4 fw-bold"
+                  class="btn btn-outline-secondary"
                   type="button"
                   (click)="loadDetail(item.id)"
                   [disabled]="saving">
                   Recargar
                 </button>
                 <button
-                  class="btn btn-primary px-4 fw-bold shadow-sm"
+                  class="btn btn-primary"
                   type="button"
                   (click)="saveStatus()"
                   [disabled]="saving || !canSave()">
@@ -160,39 +167,52 @@
         </div>
       </div>
 
-      <div class="col-12 col-lg-5">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-header bg-white border-0 pt-4 px-4">
-            <h6 class="fw-bold mb-1">Historial de la solicitud</h6>
-            <p class="text-muted small mb-0">Línea de tiempo de cambios de estado</p>
-          </div>
-          
-          <div class="card-body p-4">
-            <div *ngIf="getStatuses().length === 0" class="text-center py-4 text-muted small fst-italic">
-              No se registran cambios de estado previos.
+<div class="col-12 col-lg-5">
+  <div class="card border-0 shadow-sm h-100">
+    <div class="card-header bg-white border-0 pt-4 px-4">
+      <h6 class="fw-bold mb-1">Historial de la solicitud</h6>
+      <p class="text-muted small mb-0">Línea de tiempo de cambios de estado</p>
+    </div>
+
+    <div class="card-body p-4">
+      <div *ngIf="getStatuses().length === 0" class="text-center py-4 text-muted small fst-italic">
+        No se registran cambios de estado previos.
+      </div>
+
+      <div class="d-grid gap-3" *ngIf="getStatuses().length > 0">
+        <div *ngFor="let s of getStatuses()" class="border rounded-3 p-3 bg-white">
+
+          <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+            <div>
+              <div
+                class="fw-bold small text-uppercase"
+                [ngClass]="{
+                  'text-warning': s?.adoptionState?.type === 'PENDIENTE',
+                  'text-success': s?.adoptionState?.type === 'APROBADA',
+                  'text-danger': s?.adoptionState?.type === 'RECHAZADA' || s?.adoptionState?.type === 'CANCELADO',
+                  'text-secondary': s?.adoptionState?.type !== 'PENDIENTE' && s?.adoptionState?.type !== 'APROBADA' && s?.adoptionState?.type !== 'RECHAZADA' && s?.adoptionState?.type !== 'CANCELADO'
+                }"
+              >
+                {{ s?.adoptionState?.type ?? '—' }}
+              </div>
             </div>
 
-            <div *ngFor="let s of getStatuses()" class="mb-3 p-3 rounded-3 border bg-light position-relative">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="badge" 
-                  [ngClass]="{
-                    'text-bg-warning': s?.adoptionState?.type === 'PENDIENTE',
-                    'text-bg-success': s?.adoptionState?.type === 'APROBADA',
-                    'text-bg-danger': s?.adoptionState?.type === 'RECHAZADA' || s?.adoptionState?.type === 'CANCELADO'
-                  }">
-                  {{ s?.adoptionState?.type ?? '—' }}
-                </span>
-                <span class="text-muted small" style="font-size: 0.75rem;">
-                  {{ s?.statusChangeDate | date:'dd/MM HH:mm' }}
-                </span>
-              </div>
-              <div class="small text-dark" *ngIf="s?.reason">
-                <i class="bi bi-chat-left-dots me-1 opacity-50"></i> {{ s.reason }}
-              </div>
+            <div class="text-muted small">
+              {{ s?.statusChangeDate | date:'dd/MM HH:mm' }}
             </div>
+          </div>
+
+          <div *ngIf="s?.reason" class="small text-muted">
+            {{ s.reason }}
           </div>
         </div>
       </div>
+    </div>
 
-    </div> </div>
+    </div>
+      </div>
+
+    </div>
+
+  </div>
 </div>

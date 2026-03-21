@@ -7,7 +7,7 @@ import { AdoptionService } from '../../../services/adoption/adoption.service';
 @Component({
   selector: 'app-shelter-adoption-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, CommonModule],
   templateUrl: './shelter-adoption-detail.component.html',
   styleUrl: './shelter-adoption-detail.component.css',
 })
