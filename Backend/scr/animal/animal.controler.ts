@@ -95,7 +95,7 @@ async function findOne(req: Request, res: Response) {
       // si querés el populate completo:
       await em.populate(animal, ['rescueClass', 'breed', 'user', 'photos', 'rescueClass.address', 'rescueClass.shelters']);
 
-      return res.status(200).json({ data: animal });
+      return res.status(200).json({data: animal });
     }
 
     // Si es USER u otro rol, lo buscamos normal
@@ -106,7 +106,7 @@ async function findOne(req: Request, res: Response) {
       { populate: ['rescueClass', 'breed', 'user', 'photos', 'rescueClass.address', 'rescueClass.shelters'] }
     );
 
-    return res.status(200).json({ data: animal });
+    return res.status(200).json({data: animal });
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }

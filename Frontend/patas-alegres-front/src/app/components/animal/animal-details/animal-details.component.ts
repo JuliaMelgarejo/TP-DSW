@@ -15,6 +15,7 @@ import { PhotoService } from '../../../services/photo/photo.service.js';
 
 import { Animal } from '../../../models/animal/animal.model.js';
 import { Breed } from '../../../models/breed/breed.model.js';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-animal-details',

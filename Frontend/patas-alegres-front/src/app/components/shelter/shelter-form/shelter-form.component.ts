@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ZoneService } from '../../../services/zone/zone.service.js';
 import { VetService } from '../../../services/vet/vet.service.js';
 import { AddressPickerComponent } from "../../shared/address-picker/address-picker.component";
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-shelter-form',
@@ -18,7 +19,7 @@ export class ShelterFormComponent {
   ShelterForm: FormGroup;
 
   constructor(private route: ActivatedRoute, public shelterService: ShelterService, private zoneService: ZoneService, private vetService: VetService
-    , private fb: FormBuilder,
+    , private fb: FormBuilder, private toast: ToastNotificationService
   ){
     this.ShelterForm = this.fb.group({
       name: ['', Validators.required],
@@ -50,12 +51,10 @@ export class ShelterFormComponent {
   postShelter(){
     this.shelterService.postShelter(this.ShelterForm.value).subscribe({
       next: (data) => {
-        console.log(data);
-        alert('Refugio creado con éxito');
+        this.toast.show(data.message, 'success')
       },
-      error: (error) => {
-        console.log(error);
-        alert('Error al crear el refugio: ' + (error.error?.message || 'Error desconocido'));
+      error: (e) => {
+        this.toast.show(e.error.msg, 'danger')
       }
     })
   }

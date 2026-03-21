@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { OrderService } from '../../../services/order/order-srvice.service';
 import { AppConfig } from '../../../core/config/app.config.js';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-order-shelter-detail',
@@ -24,7 +25,8 @@ export class OrderShelterDetailComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private toast: ToastNotificationService
   ) {}
 
   ngOnInit() {
@@ -64,7 +66,8 @@ export class OrderShelterDetailComponent {
       },
       error: (err) => {
         this.loading = false;
-        alert(err?.error?.message || 'No se pudo cargar el pedido');
+        let msg = err?.error?.message || 'No se pudo cargar el pedido';
+        this.toast.show(msg, 'danger')
       }
     });
   }
@@ -147,7 +150,8 @@ export class OrderShelterDetailComponent {
       },
       error: (err) => {
         this.saving = false;
-        alert(err?.error?.message || 'Error cambiando estado');
+        let msg = err?.error?.message || 'Error cambiando estado';
+        this.toast.show(msg, 'danger')
       }
     });
   }

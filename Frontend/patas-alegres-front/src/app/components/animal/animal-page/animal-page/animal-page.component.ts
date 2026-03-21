@@ -19,11 +19,7 @@ import { AuthService } from '../../../../services/auth/auth.service';
 export class AnimalPageComponent {
   constructor(public auth: AuthService) {}
 
-  ngOnInit() {
-  console.log('decoded token:', this.auth.getDecodedToken());
-  console.log('role:', this.auth.getRole());
-  console.log('isShelter:', this.auth.isShelter());
-}
+  ngOnInit() {}
 }
 
 //esto es para que despues manejemos los roles cuando tengamos bien el registro 

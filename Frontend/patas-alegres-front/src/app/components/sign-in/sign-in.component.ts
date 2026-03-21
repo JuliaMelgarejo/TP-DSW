@@ -8,6 +8,7 @@ import { debounceTime, distinctUntilChanged, switchMap, takeUntil, catchError,fi
 import { UserService } from '../../services/user/user.service.js';
 import { PersonService } from '../../services/person/person.service.js';
 import { AddressPickerComponent } from "../shared/address-picker/address-picker.component";
+import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-sign-in',
@@ -32,6 +33,7 @@ export class SignInComponent implements OnInit, OnDestroy {
     public userService: UserService,
     public personService: PersonService,
     public router: Router,
+    private toast: ToastNotificationService,
   ) {
     this.UserForm = this.fb.group({
       username: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -95,8 +97,8 @@ export class SignInComponent implements OnInit, OnDestroy {
           this.checkingUsername = true;
 
           return this.userService.checkUsername(username).pipe(
-            catchError((error) => {
-              console.log('ERROR CHECK USERNAME:', error);
+            catchError((e) => {
+              this.toast.show(e.error.msg, 'danger')
               return of(null);
             }),
             finalize(() => {
@@ -185,8 +187,8 @@ export class SignInComponent implements OnInit, OnDestroy {
     };
 
     this.userService.signIn(payload).subscribe({
-      next: () => {
-        alert('Usuario y persona creados exitosamente');
+      next: (res) => {
+        this.toast.show(res.message, 'success')
         this.router.navigate(['/login']);
       },
       error: (err: HttpErrorResponse) => {
