@@ -1,130 +1,22 @@
-/* Header sticky */
-.pa-header{
-  position: sticky;
-  top: 0;
-  z-index: 1020; /* Bootstrap sticky navbar level */
+.nav-link {
+  color: var(--bs-dark-rgb);
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
-/* Navbar container */
-.pa-nav{
-  position: relative;
+.nav-link:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--bs-primary);
 }
 
-/* Marca */
-.pa-brand-text{
-  font-weight: 800;
-  color: var(--pa-text);
-  text-decoration: none;
-  font-size: 1.05rem;
+.nav-link.active {
+  background-color: var(--bs-primary);
+  color: white !important;
 }
 
-/* Links desktop */
-.pa-nav-link{
-  color: var(--pa-text-muted);
-  text-decoration: none;
-  font-weight: 700;
-  padding: 10px 8px;
-  border-radius: 10px;
-  transition: .2s ease;
-}
-
-.pa-nav-link:hover{
-  color: var(--pa-primary-dark);
-  background: rgba(255,255,255,.55);
-}
-
-.pa-nav-active{
-  color: var(--pa-primary-dark);
-  background: rgba(255,255,255,.65);
-}
-
-/* Logout */
-.pa-logout{
-  color: var(--pa-danger);
-}
-
-/* Botón icono mobile */
-.pa-icon-btn{
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  border: 1px solid var(--pa-border);
-  background: rgba(255,255,255,.65);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.pa-icon-btn:hover{
-  border-color: var(--pa-primary);
-}
-
-/* Drawer mobile (no competir con offcanvas) */
-.pa-mobile-drawer{
-  display: none;
-}
-
-@media (max-width: 991.98px){
-
-  .pa-mobile-drawer{
-    display: block;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 100%;
-    background: var(--pa-surface);
-    border-top: 1px solid var(--pa-border);
-    box-shadow: var(--pa-shadow);
-    transform: translateY(-8px);
-    opacity: 0;
-    pointer-events: none;
-    transition: .2s ease;
+@media (min-width: 992px) {
+  .btn-logout {
+    width: auto !important;
   }
-
-  .pa-mobile-drawer.is-open{
-    transform: translateY(0);
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .pa-mobile-link{
-    display: block;
-    padding: 12px 12px;
-    border-radius: 12px;
-    text-decoration: none;
-    color: var(--pa-text);
-    font-weight: 700;
-    margin-bottom: 6px;
-    transition: .15s ease;
-  }
-
-  .pa-mobile-link:hover{
-    background: var(--pa-surface-soft);
-  }
-
-  .pa-mobile-active{
-    background: rgba(107,46,58,.1);
-    color: var(--pa-primary-dark);
-  }
-
-}
-
-/* backdrop propio (si lo usas) */
-.pa-backdrop{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.25);
-  z-index: 1010; /* debajo del navbar */
-}
-
-/* botón danger */
-.pa-btn-danger{
-  background: var(--pa-danger);
-  border-color: var(--pa-danger);
-  color: #fff;
-}
-
-.pa-btn-danger:hover{
-  filter: brightness(.95);
 }
