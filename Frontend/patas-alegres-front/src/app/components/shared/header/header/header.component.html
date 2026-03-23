@@ -1,6 +1,6 @@
 <header>
   <nav class="navbar navbar-expand-lg bg-dark border-bottom">
-    <div class="container px-3 px-lg-4">
+    <div class="container-fluid">
       <a routerLink="/home" class="navbar-brand fw-bold">
         Patas alegres
       </a>
@@ -8,8 +8,8 @@
       <button
         class="navbar-toggler"
         type="button"
-        data-toggle="collapse"
-        data-target="#navbarContent"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarContent"
         aria-controls="navbarContent"
         aria-expanded="false"
         aria-label="Toggle navigation"
@@ -17,60 +17,57 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarContent">
+      <div class="collapse navbar-collapse d-lg-flex justify-content-lg-between" id="navbarContent">
         <!-- Usuario base -->
-        <ul *ngIf="auth.isUser()" class="navbar-nav  ms-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a routerLink="/profile" class="nav-link" (click)="closeMenu()">Mi perfil</a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/shelter" class="nav-link" (click)="closeMenu()">Refugios</a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/animal" class="nav-link" (click)="closeMenu()">Animales</a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/my-adoptions" class="nav-link" (click)="closeMenu()">Pedidos de adopción</a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/orders" class="nav-link" (click)="closeMenu()">Compras</a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/product" class="nav-link" (click)="closeMenu()">Productos</a>
-          </li>
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          <!-- Usuario base -->
+          <ng-container *ngIf="auth.isUser()">
+            <li class="nav-item">
+              <a routerLink="/profile" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Mi perfil</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/shelter" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Refugios</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/animal" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Animales</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/my-adoptions" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Pedidos de adopción</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/orders" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Compras</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/product" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Productos</a>
+            </li>
+          </ng-container>
+
+          <!-- Usuario dueño -->
+          <ng-container *ngIf="auth.isShelter()">
+            <li class="nav-item">
+              <a routerLink="/my-shelter" class="nav-link" (click)="closeMenu()">Mi refugio</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/rescue" class="nav-link" (click)="closeMenu()">Nuevo rescate</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/animal" class="nav-link" (click)="closeMenu()">Animales</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/product" class="nav-link" (click)="closeMenu()">Productos</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/order-shelter" class="nav-link" (click)="closeMenu()">Pedidos</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/shelter-adoptions" class="nav-link" (click)="closeMenu()">Solicitudes</a>
+            </li>
+          </ng-container>
         </ul>
 
-        <!-- Usuario refugio -->
-        <ul *ngIf="auth.isShelter()" class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a routerLink="/my-shelter" class="nav-link" (click)="closeMenu()">Mi refugio</a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/rescue" class="nav-link" (click)="closeMenu()">Nuevo rescate</a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/animal" class="nav-link" (click)="closeMenu()">Animales</a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/product" class="nav-link" (click)="closeMenu()">Productos</a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/order-shelter" class="nav-link" (click)="closeMenu()">Pedidos</a>
-          </li>
-          <li class="nav-item">
-            <a routerLink="/shelter-adoptions" class="nav-link" (click)="closeMenu()">Solicitudes</a>
-          </li>
-        </ul>
-
-        <div class="d-lg-flex ms-lg-3">
-          <button
-            type="button"
-            class="btn btn-outline-danger btn-sm mt-2 mt-lg-0"
-            (click)="logOut(); closeMenu()"
-          >
-            Cerrar sesión
-          </button>
-        </div>
+        <button type="button" class="btn btn-danger w-100 btn-logout" (click)="logOut(); closeMenu()">
+          Cerrar sesión
+        </button>
       </div>
     </div>
   </nav>
