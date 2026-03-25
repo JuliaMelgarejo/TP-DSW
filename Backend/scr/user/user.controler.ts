@@ -193,21 +193,18 @@ async function newUser(req: Request, res: Response) {
     });
   }
 }
-
-export const login = async (req: Request, res: Response) => {
-  const em = orm.em
+async function login(req: Request, res: Response){
+  const em = orm.em.fork();
   const { username, password } = req.body;
-
   const user = await em.findOne(User, { username });
-
   if (!user) {
     return res.status(400).json({
-      msg: `No existe un usuario con el nombre ${username} en la base de datos`
+      msg: `No existe un usuario con el nombre ${username} en la base de datos ${user}`
+      
     });
   }
 
   const passwordValid = await bcrypt.compare(password, user.password);
-
   if (!passwordValid) {
     return res.status(400).json({
       msg: `Password incorrecta`
@@ -307,4 +304,4 @@ function sanitizeUserInput(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-export { newUser, sanitizeUserInput, checkUsername }
+export { newUser, sanitizeUserInput, checkUsername, login };

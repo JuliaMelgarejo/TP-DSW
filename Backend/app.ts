@@ -54,7 +54,7 @@ app.use('/api/rescue', rescueRouter)
 app.use('/api/vet', vetRouter)
 app.use('/api/adoption', adoptionRouter)
 app.use('/api/user', userRouter)
-app.use('/api/login', userRouter)
+
 app.use('/api/photo', photoRouter);
 app.use('/api/product', productRouter)
 app.use('/api/category', categoryRouter)
