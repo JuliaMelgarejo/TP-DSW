@@ -33,29 +33,31 @@ export class MyAdoptionDetailComponent {
     this.load(id);
   }
 
-  load(id: number) {
-    this.loading = true;
-    this.errMsg = '';
-    this.okMsg = '';
-    this.deleteErrMsg = '';
+load(id: number) {
+  this.loading = true;
+  this.errMsg = '';
 
-    this.adoptionService.getAdoptionDetail(id).subscribe({
-      next: (res) => {
-        this.item = (res as any).data ?? null;
-        this.loading = false;
+  this.adoptionService.getMyAdoptions().subscribe({
+    next: (res) => {
+      const adoptions = (res as any).data ?? [];
+      this.item = adoptions.find((a: any) => a.id === id) ?? null;
+      this.loading = false;
 
-        // si el backend te devuelve deleted_at y ya está borrada, podés redirigir
-        if (this.item?.deleted_at) {
-          this.router.navigate(['/my-adoptions']);
-        }
-      },
-      error: (err) => {
-        this.loading = false;
-        this.errMsg = err?.error?.message ?? 'No se pudo cargar el detalle';
-      },
-    });
-  }
+      if (!this.item) {
+        this.errMsg = 'Solicitud no encontrada';
+        return;
+      }
 
+      if (this.item?.deleted_at) {
+        this.router.navigate(['/my-adoptions']);
+      }
+    },
+    error: (err) => {
+      this.loading = false;
+      this.errMsg = err?.error?.message ?? 'No se pudo cargar el detalle';
+    },
+  });
+}
   // ✅ Soft delete
   softDelete() {
     const id = Number(this.item?.id);

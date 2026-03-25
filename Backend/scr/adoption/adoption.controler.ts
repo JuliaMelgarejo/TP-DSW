@@ -7,7 +7,7 @@ import { Person } from '../person/person.entity.js';
 import { AdoptionState } from '../adoptionState/adoptionState.entity.js';
 import { AdoptionStatus } from '../adoptionStatus/adoptionStatus.entity.js';
 
-const em = orm.em;
+const em = orm.em.fork();
 
 // ===========================
 // SANITIZE
