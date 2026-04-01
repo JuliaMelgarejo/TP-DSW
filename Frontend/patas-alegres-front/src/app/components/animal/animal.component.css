@@ -13,3 +13,46 @@ ul {
   list-style-type: none;
   padding: 0;
 }
+
+.animal-card {
+  border-radius: 16px;
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+
+.animal-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 30px rgba(0,0,0,0.15);
+}
+
+.animal-img {
+  height: 260px;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.animal-card:hover .animal-img {
+  transform: scale(1.08);
+}
+
+.animal-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+}
+
+.btn-primary {
+  border-radius: 1rem;
+  transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  background-color: rgba(var(--bs-primary-rgb), 0.85);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.animal-card:hover .btn-primary {
+  transform: scale(1.08);
+}

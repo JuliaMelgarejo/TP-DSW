@@ -1,4 +1,4 @@
-<div class="bg-light min-vh-100 py-4">
+<div class="min-vh-100 py-4">
   <div class="container px-3" style="max-width: 1100px;">
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
@@ -119,36 +119,64 @@
       No hay refugios para mostrar.
     </div>
 
-    <div *ngIf="!loading && shelters.length > 0" class="row g-3">
+    <div *ngIf="!loading && shelters.length > 0" class="row g-4">
       <div class="col-12 col-md-6 col-lg-4" *ngFor="let shelter of shelters">
+        
         <div
-          class="card h-100 border-0 shadow-sm"
-          style="cursor: pointer;"
+          class="card h-100 border-0 shadow-sm shelter-card"
           (click)="goToShelterDetail(shelter.id!)"
         >
-          <div class="card-body">
-            <div class="fw-bold mb-2">{{ shelter.name }}</div>
 
-            <div class="text-muted small">
-              <strong>Ubicación:</strong>
-            </div>
-            <div class="text-muted small mb-2">
-              {{ shelter.address.city || shelter.address.province || 'Sin datos' }}
+          <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between align-items-start mb-3">
+
+              <div class="d-flex align-items-center gap-3">
+                <!-- ICONO -->
+                <div class="shelter-icon">
+                  🐾
+                </div>
+
+                <div>
+                  <div class="fw-bold fs-5" style="color: var(--primary)">
+                    {{ shelter.name }}
+                  </div>
+                  <div class="text-muted small">
+                    {{ shelter.address?.city || shelter.address?.province || 'Sin datos' }}
+                  </div>
+                </div>
+              </div>
+
+              <span class="badge bg-light text-dark">
+                {{ getAnimalsCount(shelter) }} 🐶
+              </span>
             </div>
 
-            <div class="text-muted small">
-              <strong>Dirección:</strong>
-            </div>
-            <div class="text-muted small mb-2">
-              {{ getAddressText(shelter) }}
+            <div class="mb-3">
+              <div class="text-muted small">Dirección</div>
+              <div class="fw-semibold" style="color: var(--foreground)">
+                {{ getAddressText(shelter) }}
+              </div>
             </div>
 
-            <div class="text-muted small">
-              <strong>Cantidad de animales:</strong>
-              {{ getAnimalsCount(shelter) }}
+            <div class="d-flex justify-content-between align-items-center">
+
+              <div class="text-muted small d-flex align-items-center gap-2">
+                📍
+                <span>
+                  {{ shelter.address?.city || 'Ubicación no disponible' }}
+                </span>
+              </div>
+
+              <div class="text-muted small">
+                {{ getAnimalsCount(shelter) }} animales
+              </div>
+
             </div>
+
           </div>
         </div>
+
       </div>
     </div>
 
