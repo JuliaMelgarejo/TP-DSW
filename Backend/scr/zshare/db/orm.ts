@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { SqlHighlighter } from "@mikro-orm/sql-highlighter";
 import { MikroORM } from "@mikro-orm/core";
 import { MySqlDriver } from "@mikro-orm/mysql";
