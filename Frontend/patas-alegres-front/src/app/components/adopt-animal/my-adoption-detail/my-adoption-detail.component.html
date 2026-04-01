@@ -1,20 +1,16 @@
 <div class="bg-light min-vh-100 py-4">
   <div class="container px-3" style="max-width: 1100px;">
 
-    <!-- Volver -->
     <div class="d-flex justify-content-between align-items-center mb-3">
       <a class="btn btn-outline-secondary" routerLink="/my-adoptions">
         Volver
       </a>
     </div>
 
-    <!-- Loading -->
     <div *ngIf="loading">Cargando...</div>
 
-    <!-- Contenido -->
     <div *ngIf="!loading && item">
 
-      <!-- Header -->
       <div class="d-flex justify-content-between align-items-start gap-3 mb-3 flex-wrap">
 
         <div>
@@ -37,20 +33,18 @@
 
       <div class="row g-3">
 
-        <!-- Columna izquierda: foto + datos + acciones -->
         <div class="col-12 col-lg-5">
 
-          <div class="conteiner-lg p-3 bg-white rounded">
+          <div class="container-lg p-3 bg-white rounded">
 
-            <!-- Foto del animal -->
-          <div class="mb-3">
-            <img
-              [src]="getMainPhoto()"
-              alt="Foto del animal"
-              style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;"
-              onerror="this.style.display='none'"
-            />
-          </div>
+            <div class="mb-3">
+              <img
+                [src]="getMainPhoto()"
+                alt="Foto del animal"
+                style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;"
+                onerror="this.style.display='none'"
+              />
+            </div>
             <h4>
               <div class="fw-bold mb-2">Datos de la solicitud</div>
             </h4>
@@ -72,7 +66,6 @@
 
             <hr class="my-3"/>
 
-            <!-- Acciones -->
             <div class="d-flex flex-column gap-2">
               <button
                 type="button"
@@ -93,10 +86,9 @@
 
         </div>
 
-        <!-- Columna derecha: historial de estados -->
         <div class="col-12 col-lg-7">
 
-          <div class="conteiner-lg p-3 bg-white rounded">
+          <div class="container-lg p-3 bg-white rounded">
 
             <div class="fw-bold mb-3">Historial de estados</div>
 
@@ -156,12 +148,10 @@
 
     </div>
 
-    <!-- Error -->
     <div *ngIf="!loading && errMsg" class="alert alert-danger mt-3">
       <i class="bi bi-exclamation-octagon-fill me-2"></i> {{ errMsg }}
     </div>
 
-    <!-- No encontrado -->
     <div *ngIf="!loading && !item && !errMsg" class="text-muted">
       Solicitud no encontrada.
     </div>

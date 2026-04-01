@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdoptionService } from '../../../services/adoption/adoption.service';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './my-adoption-detail.component.html',
   styleUrl: './my-adoption-detail.component.css',
 })
-export class MyAdoptionDetailComponent {
+export class MyAdoptionDetailComponent implements OnInit {
   item: any = null;
   loading = true;
   errMsg = '';
@@ -33,31 +33,32 @@ export class MyAdoptionDetailComponent {
     this.load(id);
   }
 
-load(id: number) {
-  this.loading = true;
-  this.errMsg = '';
+  load(id: number) {
+    this.loading = true;
+    this.errMsg = '';
 
-  this.adoptionService.getMyAdoptions().subscribe({
-    next: (res) => {
-      const adoptions = (res as any).data ?? [];
-      this.item = adoptions.find((a: any) => a.id === id) ?? null;
-      this.loading = false;
+    this.adoptionService.getMyAdoptions().subscribe({
+      next: (res) => {
+        const adoptions = (res as any).data ?? [];
+        this.item = adoptions.find((a: any) => a.id === id) ?? null;
+        this.loading = false;
 
-      if (!this.item) {
-        this.errMsg = 'Solicitud no encontrada';
-        return;
-      }
+        if (!this.item) {
+          this.errMsg = 'Solicitud no encontrada';
+          return;
+        }
 
-      if (this.item?.deleted_at) {
-        this.router.navigate(['/my-adoptions']);
-      }
-    },
-    error: (err) => {
-      this.loading = false;
-      this.errMsg = err?.error?.message ?? 'No se pudo cargar el detalle';
-    },
-  });
-}
+        if (this.item?.deleted_at) {
+          this.router.navigate(['/my-adoptions']);
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        this.errMsg = err?.error?.message ?? 'No se pudo cargar el detalle';
+      },
+    });
+  }
+
   // ✅ Soft delete
   softDelete() {
     const id = Number(this.item?.id);
@@ -91,30 +92,9 @@ load(id: number) {
     return p.startsWith('http') ? p : this.BACKEND_BASE + p;
   }
 
-  // estado actual: tomamos el último status por fecha
+  // ✅ ¡Aquí está la simplificación!
+  // El backend ahora nos manda directamente el "currentState" y el arreglo correcto de "statuses"
   getCurrentState(): string {
-    // OJO: en tu entity se llama "adoptions" pero en el resto veníamos usando "statuses".
-    // Entonces chequeamos ambas variantes.
-    const statuses =
-      this.item?.adoptions?.items ??
-      this.item?.adoptions ??
-      this.item?.statuses?.items ??
-      this.item?.statuses ??
-      [];
-
-    if (!Array.isArray(statuses) || statuses.length === 0) return 'PENDIENTE';
-
-    const latest = [...statuses].sort((a: any, b: any) => {
-      const da = new Date(a?.statusChangeDate ?? a?.fechaCambioEstado ?? 0).getTime();
-      const db = new Date(b?.statusChangeDate ?? b?.fechaCambioEstado ?? 0).getTime();
-      return db - da;
-    })[0];
-
-    return (
-      latest?.adoptionState?.type ??
-      latest?.state?.tipoEstado ??
-      latest?.state?.name ??
-      'PENDIENTE'
-    );
+    return this.item?.currentState ?? 'PENDIENTE';
   }
 }
