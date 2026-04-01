@@ -3,6 +3,25 @@
 /* Bootstrap */
 @import "bootstrap/scss/bootstrap";
 
+:root {
+  --background-color: #{$background-color};
+  --background: #{$primary};
+
+  --card: #ffffff;
+  --card-foreground: #1f1f1f;
+
+  --primary: #c64e31;
+  --primary-foreground: #ffffff;
+
+  --secondary: #F7E6E4;
+  --secondary-foreground: #6B5A5D;
+
+  --border: #e5e5e5;
+  --radius: 0.625rem;
+
+  --bs-emphasis-color: #{$primary-foreground};
+  --bs-emphasis-color-rgb: #{to-rgb($primary-foreground)};
+}
 
 .pa-timeline {
   position: relative;
@@ -47,6 +66,34 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--foreground);
+}
+
+.card {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.form-control {
+  border-color: var(--border);
+  border-radius: var(--radius);
+}
+
+.pa-box {
+  background-color: var(--secondary);
+  border-radius: var(--radius);
+  padding: 1rem;
 }
 
 @media (min-width: 992px) {

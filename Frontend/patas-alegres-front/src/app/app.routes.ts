@@ -38,6 +38,7 @@ import { OrderComponent } from './components/order/order.component.js';
 import { OrderShelterDetailComponent } from './components/order/order-shelter-detail/order-shelter-detail.component.js';
 import { guestGuard } from './utils/guest.guard.js';
 import { ShelterPublicDetailComponent } from './components/shelter/shelter-public/shelter-public-detail/shelter-public-detail.component.js';
+import { PersonProfileComponent } from './components/person/person-profile/person-profile.component.js';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
@@ -62,7 +63,8 @@ export const routes: Routes = [
   {path: 'person', component: PersonComponent, canActivate:[authGuard], data: { roles: ['ADMIN'] }},
   {path: 'person/create', component: PersonFormComponent, canActivate:[authGuard]},
   {path: 'person/:id', component: PersonDetailComponent, canActivate:[authGuard]},
-  { path: 'profile', component: PersonDetailComponent, canActivate:[authGuard] },
+  { path: 'profile', component: PersonProfileComponent, canActivate:[authGuard] },
+  { path: 'profile/edit/:id', component: PersonDetailComponent, canActivate:[authGuard] },
 
   {path: 'breed', component: BreedComponent, canActivate:[authGuard]},
   {path: 'breed/create', component: BreedFormComponent, canActivate:[authGuard]},

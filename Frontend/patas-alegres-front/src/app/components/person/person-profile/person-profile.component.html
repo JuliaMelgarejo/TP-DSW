@@ -1,0 +1,78 @@
+<div class="container py-4">
+  <h1 class="mb-4">Mi perfil</h1>
+
+  <div class="row g-4">
+
+    <!-- INFO -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="mb-0">Información personal</h5>
+
+            <button class="btn btn-outline-primary btn-sm" [routerLink]="['/profile/edit', selectedPerson?.id]">
+              Editar
+            </button>
+          </div>
+
+          <!-- HEADER -->
+          <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                 style="width:60px;height:60px;">
+              👤
+            </div>
+            <div>
+              <h4 class="mb-0">
+                {{ selectedPerson?.name }} {{ selectedPerson?.surname }}
+              </h4>
+              <small class="text-muted">Miembro activo</small>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- DATOS -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <small class="text-muted">Email</small>
+              <div class="fw-semibold text-dark">{{ selectedPerson?.email }}</div>
+            </div>
+
+            <div class="col-md-6">
+              <small class="text-muted">Teléfono</small>
+              <div class="fw-semibold text-dark">{{ selectedPerson?.phoneNumber }}</div>
+            </div>
+
+            <div class="col-12">
+              <small class="text-muted">Dirección</small>
+              <div class="fw-semibold text-dark">{{ selectedPerson?.address?.formattedAddress }}</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="mb-3">Tu actividad</h5>
+
+          <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded mb-2">
+            <span>Adopciones</span>
+            <strong>2</strong>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded mb-2">
+            <span>Pedidos</span>
+            <strong>5</strong>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,22 +1,39 @@
 .nav-link {
-  color: var(--bs-dark-rgb);
   padding: 6px 12px;
   border-radius: 8px;
   transition: all 0.2s ease;
 }
 
 .nav-link:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: var(--bs-primary);
+  background-color: rgb(255, 255, 255, 0.15);
+  border-radius: 1rem;
+  -webkit-border-radius: 1rem;
+  -moz-border-radius: 1rem;
+  -ms-border-radius: 1rem;
+  -o-border-radius: 1rem;
 }
 
 .nav-link.active {
   background-color: var(--bs-primary);
-  color: white !important;
+}
+
+.navbar {
+  --bs-navbar-color: rgba(var(--bs-emphasis-color-rgb), 0.85);
+  --bs-navbar-hover-color: rgba(var(--bs-emphasis-color-rgb), 1);
+  --bs-navbar-hover-bg: rgba(white, 1);
 }
 
 @media (min-width: 992px) {
   .btn-logout {
     width: auto !important;
+    border-radius: 1rem  ;
+    -webkit-border-radius: 1rem  ;
+    -moz-border-radius: 1rem  ;
+    -ms-border-radius: 1rem  ;
+    -o-border-radius: 1rem  ;
+  }
+
+  .navbar-nav {
+    gap: 0.7rem;
   }
 }
