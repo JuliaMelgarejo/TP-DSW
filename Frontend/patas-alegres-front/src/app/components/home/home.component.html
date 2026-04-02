@@ -1,35 +1,47 @@
-<div class="bg-light min-vh-100 py-3 py-lg-4">
+<div class="min-vh-100 py-3 py-lg-4">
   <div class="container px-3 px-lg-4">
-
     <!-- HERO -->
-    <div class="card border-0 shadow-sm overflow-hidden mb-4">
+    <div class="card shadow-sm overflow-hidden mb-4">
       <div class="card-body p-4 p-lg-5">
         <div class="row align-items-center g-4">
           <div class="col-12 col-lg-7">
             <span class="badge text-bg-primary mb-3">Patas Alegres</span>
-            <h1 class="fw-bold mb-3">Adoptá, comprá y ayudá a refugios cerca tuyo</h1>
+            <h1 class="fw-bold mb-3">
+              Adoptá, comprá y ayudá a refugios cerca tuyo
+            </h1>
             <p class="text-muted mb-4">
-              Encontrá animales en adopción, productos solidarios y refugios para colaborar de forma simple.
+              Encontrá animales en adopción, productos solidarios y refugios
+              para colaborar de forma simple.
             </p>
 
-            <div class="d-grid d-md-flex gap-2">
-            </div>
+            <div class="d-grid d-md-flex gap-2"></div>
           </div>
 
           <div class="col-12 col-lg-5">
-            <div class="card border-0 bg-body-tertiary">
+            <div class="card bg-body-tertiary">
               <div class="card-body p-3 p-lg-4">
-                <div class="small text-muted text-uppercase fw-bold mb-2">Accesos rápidos</div>
+                <div class="small text-muted text-uppercase fw-bold mb-2">
+                  Accesos rápidos
+                </div>
 
                 <div class="d-grid gap-2">
-                  <a class="btn btn-outline-secondary text-start" routerLink="/shelter">
+                  <a
+                    class="btn btn-outline-secondary text-start"
+                    routerLink="/shelter"
+                  >
                     Refugios
                   </a>
-                  <a class="btn btn-outline-secondary text-start" routerLink="/my-adoptions">
+                  <a
+                    class="btn btn-outline-secondary text-start"
+                    routerLink="/my-adoptions"
+                  >
                     Tus solicitudes de adopción
                   </a>
-                  <a class="btn btn-outline-secondary text-start" routerLink="/orders">
-                    Mis pedidos 
+                  <a
+                    class="btn btn-outline-secondary text-start"
+                    routerLink="/orders"
+                  >
+                    Mis pedidos
                   </a>
                 </div>
               </div>
@@ -42,12 +54,13 @@
     <!-- DESTACADOS -->
     <div class="row g-3 mb-4">
       <div class="col-12 col-lg-6">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card shadow-sm h-100">
           <div class="card-body p-4">
             <span class="badge text-bg-primary mb-2">Adopciones</span>
             <h3 class="fw-bold mb-2">Conocé animales que buscan una familia</h3>
             <p class="text-muted mb-3">
-              Explorá perros y gatos disponibles en refugios y encontrá a tu próximo compañero.
+              Explorá perros y gatos disponibles en refugios y encontrá a tu
+              próximo compañero.
             </p>
             <a class="btn btn-primary" routerLink="/animal">Ver animales</a>
           </div>
@@ -55,23 +68,25 @@
       </div>
 
       <div class="col-12 col-lg-6">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card shadow-sm h-100">
           <div class="card-body p-4">
             <span class="badge text-bg-success mb-2">Compras solidarias</span>
             <h3 class="fw-bold mb-2">Comprá productos y ayudá a refugios</h3>
             <p class="text-muted mb-3">
-              Cada compra puede colaborar con el cuidado, alimento y bienestar de los animales.
+              Cada compra puede colaborar con el cuidado, alimento y bienestar
+              de los animales.
             </p>
-            <a class="btn btn-outline-primary" routerLink="/product">Ir a productos</a>
+            <a class="btn btn-outline-primary" routerLink="/product"
+              >Ir a productos</a
+            >
           </div>
         </div>
       </div>
     </div>
 
     <!-- REFUGIOS CERCA -->
-    <div class="card border-0 shadow-sm mb-4" *ngIf="auth.isUser()">
+    <div class="card shadow-sm mb-4" *ngIf="auth.isUser()">
       <div class="card-body p-3 p-lg-4">
-
         <div class="mb-4">
           <h2 class="fw-bold mb-1">Refugios cercanos</h2>
           <p class="text-muted mb-0">
@@ -80,28 +95,36 @@
         </div>
 
         <div class="row g-3">
-
           <!-- LISTA -->
           <div class="col-12 col-lg-4 order-2 order-lg-1">
             <div class="d-grid gap-3">
-
               <a
                 *ngFor="let shelter of shelters"
                 [routerLink]="['/shelter', shelter.id]"
-                class="card border-0 shadow-sm text-decoration-none text-dark"
+                class="card shadow-sm text-decoration-none text-dark"
               >
                 <div class="card-body">
-
-                  <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                  <div
+                    class="d-flex justify-content-between align-items-start gap-2 mb-2"
+                  >
                     <h6 class="fw-bold mb-0">{{ shelter.name }}</h6>
 
-                    <span class="badge text-bg-primary" *ngIf="this.isUserInsideMap && shelter.distance">
-                      A {{ shelter.distance < 1 ? (shelter.distance * 1000 | number:'1.0-0') + ' m' : shelter.distance + ' km' }}
+                    <span
+                      class="badge text-bg-primary"
+                      *ngIf="this.isUserInsideMap && shelter.distance"
+                    >
+                      A
+                      {{
+                        shelter.distance < 1
+                          ? (shelter.distance * 1000 | number: "1.0-0") + " m"
+                          : shelter.distance + " km"
+                      }}
                     </span>
                   </div>
 
                   <div class="small mb-1">
-                    {{ shelter.address.street }} {{ shelter.address.streetNumber }}
+                    {{ shelter.address.street }}
+                    {{ shelter.address.streetNumber }}
                   </div>
 
                   <div class="small text-muted mb-2">
@@ -111,10 +134,8 @@
                   <div class="small text-muted">
                     📞 {{ shelter.phoneNumber }}
                   </div>
-
                 </div>
               </a>
-
             </div>
           </div>
 
@@ -128,35 +149,33 @@
                 [zoom]="zoom"
                 [options]="mapOptions"
                 (idle)="loadShelters()"
-                (boundsChanged)="loadSheltersDebounced()">
-
+                (boundsChanged)="loadSheltersDebounced()"
+              >
                 @for (shelter of shelters; track shelter.id) {
                   <map-advanced-marker
                     #marker="mapAdvancedMarker"
                     [position]="{
                       lat: +shelter.address.latitude,
-                      lng: +shelter.address.longitude
+                      lng: +shelter.address.longitude,
                     }"
-                    (mapClick)="openInfoWindow(marker, shelter)">
+                    (mapClick)="openInfoWindow(marker, shelter)"
+                  >
                   </map-advanced-marker>
                 }
 
                 <map-info-window>
                   <div *ngIf="selectedShelter">
-                    <strong>{{ selectedShelter.name }}</strong><br>
-                    {{ selectedShelter.address.formattedAddress }}<br>
+                    <strong>{{ selectedShelter.name }}</strong
+                    ><br />
+                    {{ selectedShelter.address.formattedAddress }}<br />
                     {{ selectedShelter.phoneNumber }}
                   </div>
                 </map-info-window>
-
               </google-map>
             </div>
           </div>
-
         </div>
-
       </div>
     </div>
-
   </div>
 </div>

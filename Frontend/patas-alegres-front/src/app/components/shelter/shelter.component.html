@@ -1,7 +1,8 @@
 <div class="min-vh-100 py-4">
-  <div class="container px-3" style="max-width: 1100px;">
-
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
+  <div class="container px-3" style="max-width: 1100px">
+    <div
+      class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3"
+    >
       <h1 class="mb-0">Lista de refugios disponibles</h1>
 
       <button
@@ -14,22 +15,31 @@
       </button>
     </div>
 
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="filtersPanel" aria-labelledby="filtersPanelLabel" data-bs-backdrop="static">
+    <div
+      class="offcanvas offcanvas-end"
+      tabindex="-1"
+      id="filtersPanel"
+      aria-labelledby="filtersPanelLabel"
+      data-bs-backdrop="static"
+    >
       <!-- header -->
       <div class="offcanvas-header flex-wrap gap-2">
         <h5 class="offcanvas-title" id="filtersPanelLabel">
           Filtros y ordenamiento
         </h5>
 
-        <button class="btn btn-sm btn-outline-secondary ms-md-auto" (click)="clearFilters()">
+        <button
+          class="btn btn-sm btn-outline-secondary ms-md-auto"
+          (click)="clearFilters()"
+        >
           Limpiar filtros
         </button>
 
         <button
           type="button"
           class="btn-close"
-          data-bs-dismiss="offcanvas">
-        </button>
+          data-bs-dismiss="offcanvas"
+        ></button>
       </div>
 
       <div class="px-3" *ngIf="activeFilters.length">
@@ -49,25 +59,31 @@
             <button
               type="button"
               class="btn-close btn-close-white btn-sm"
-              (click)="removeFilter(filter.key)">
-            </button>
+              (click)="removeFilter(filter.key)"
+            ></button>
           </div>
         </div>
       </div>
 
-      <hr>
+      <hr />
 
       <div class="offcanvas-body">
         <!-- PAIS -->
         <div>
           <h5 class="mb-3">Pais</h5>
-          <select class="form-select" [(ngModel)]="filters.country" (change)="onCountryChange()">
+          <select
+            class="form-select"
+            [(ngModel)]="filters.country"
+            (change)="onCountryChange()"
+          >
             <option value="undefined" disabled>Filtre por país</option>
-            <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+            <option *ngFor="let country of countries" [value]="country">
+              {{ country }}
+            </option>
           </select>
         </div>
 
-        <hr>
+        <hr />
 
         <!-- Provincia -->
         <div>
@@ -79,13 +95,19 @@
             [disabled]="!filters.country"
           >
             <option disabled value="undefined">
-              {{ filters.country ? 'Filtre por provincia' : 'Primero seleccione país' }}
+              {{
+                filters.country
+                  ? "Filtre por provincia"
+                  : "Primero seleccione país"
+              }}
             </option>
-            <option *ngFor="let province of provinces" [value]="province">{{ province }}</option>
+            <option *ngFor="let province of provinces" [value]="province">
+              {{ province }}
+            </option>
           </select>
         </div>
 
-        <hr>
+        <hr />
 
         <!-- Ciudad -->
         <div>
@@ -97,9 +119,15 @@
             [disabled]="!filters.province"
           >
             <option disabled value="undefined">
-              {{ filters.province ? 'Filtre por ciudad' : 'Primero seleccione provincia' }}
+              {{
+                filters.province
+                  ? "Filtre por ciudad"
+                  : "Primero seleccione provincia"
+              }}
             </option>
-            <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+            <option *ngFor="let city of cities" [value]="city">
+              {{ city }}
+            </option>
           </select>
         </div>
       </div>
@@ -107,7 +135,11 @@
       <!-- footer -->
       <div class="p-3 border-top">
         <p class="mb-2">{{ totalShelters }} refugios encontrados</p>
-        <button class="btn btn-primary w-100" (click)="applyFilters()" data-bs-dismiss="offcanvas">
+        <button
+          class="btn btn-primary w-100"
+          (click)="applyFilters()"
+          data-bs-dismiss="offcanvas"
+        >
           Aplicar filtros
         </button>
       </div>
@@ -121,33 +153,31 @@
 
     <div *ngIf="!loading && shelters.length > 0" class="row g-4">
       <div class="col-12 col-md-6 col-lg-4" *ngFor="let shelter of shelters">
-        
         <div
-          class="card h-100 border-0 shadow-sm shelter-card"
+          class="card h-100 shadow-sm shelter-card"
           (click)="goToShelterDetail(shelter.id!)"
         >
-
           <div class="card-body p-4">
-
             <div class="d-flex justify-content-between align-items-start mb-3">
-
               <div class="d-flex align-items-center gap-3">
                 <!-- ICONO -->
-                <div class="shelter-icon">
-                  🐾
-                </div>
+                <div class="shelter-icon">🐾</div>
 
                 <div>
                   <div class="fw-bold fs-5" style="color: var(--primary)">
                     {{ shelter.name }}
                   </div>
                   <div class="text-muted small">
-                    {{ shelter.address?.city || shelter.address?.province || 'Sin datos' }}
+                    {{
+                      shelter.address?.city ||
+                        shelter.address?.province ||
+                        "Sin datos"
+                    }}
                   </div>
                 </div>
               </div>
 
-              <span class="badge bg-light text-dark">
+              <span class="badge text-dark">
                 {{ getAnimalsCount(shelter) }} 🐶
               </span>
             </div>
@@ -160,25 +190,20 @@
             </div>
 
             <div class="d-flex justify-content-between align-items-center">
-
               <div class="text-muted small d-flex align-items-center gap-2">
                 📍
                 <span>
-                  {{ shelter.address?.city || 'Ubicación no disponible' }}
+                  {{ shelter.address?.city || "Ubicación no disponible" }}
                 </span>
               </div>
 
               <div class="text-muted small">
                 {{ getAnimalsCount(shelter) }} animales
               </div>
-
             </div>
-
           </div>
         </div>
-
       </div>
     </div>
-
   </div>
 </div>

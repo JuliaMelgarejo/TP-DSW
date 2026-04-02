@@ -1,8 +1,7 @@
-<div class="bg-light min-vh-100 py-4">
+<div class="min-vh-100 py-4">
   <div class="container px-3">
-
     <h2 class="fw-bold text-black mb-4">
-      {{ isShelter() ? 'Pedidos (tu refugio)' : 'Mis pedidos' }}
+      {{ isShelter() ? "Pedidos (tu refugio)" : "Mis pedidos" }}
     </h2>
 
     <div *ngIf="loading" class="text-center py-5">
@@ -10,68 +9,93 @@
       <p class="text-muted mt-2">Cargando pedidos...</p>
     </div>
 
-    <div *ngIf="!loading && orders.length === 0" class="card border-0 shadow-sm p-5 text-center">
+    <div
+      *ngIf="!loading && orders.length === 0"
+      class="card shadow-sm p-5 text-center"
+    >
       <p class="text-muted mb-0">No hay pedidos por ahora.</p>
     </div>
 
     <div *ngIf="!loading && orders.length > 0" class="row g-3">
-
       <div class="col-12 col-md-6" *ngFor="let o of orders">
         <a
-          class="card h-100 border-0 shadow-sm text-decoration-none transition-hover"
+          class="card h-100 shadow-sm text-decoration-none transition-hover"
           [routerLink]="['/orders', o.id]"
-          style="transition: transform 0.2s ease, shadow 0.2s ease;"
-          onmouseover="this.style.transform='translateY(-3px)'; this.classList.add('shadow')"
-          onmouseout="this.style.transform='translateY(0)'; this.classList.remove('shadow')"
+          style="
+            transition:
+              transform 0.2s ease,
+              shadow 0.2s ease;
+          "
+          onmouseover="
+            this.style.transform = 'translateY(-3px)';
+            this.classList.add('shadow');
+          "
+          onmouseout="
+            this.style.transform = 'translateY(0)';
+            this.classList.remove('shadow');
+          "
         >
           <div class="card-body p-4">
-
             <div class="d-flex justify-content-between align-items-start gap-3">
               <div class="text-dark">
-                <div class="fw-bold h5 mb-1 text-primary">Pedido #{{ o.id }}</div>
-                
-                <div class="text-muted mb-2" style="font-size: 0.85rem;">
+                <div class="fw-bold h5 mb-1 text-primary">
+                  Pedido #{{ o.id }}
+                </div>
+
+                <div class="text-muted mb-2" style="font-size: 0.85rem">
                   <i class="bi bi-calendar3 me-1"></i>
-                  {{ o.fecha | date:'dd/MM/yyyy HH:mm' }}
+                  {{ o.fecha | date: "dd/MM/yyyy HH:mm" }}
                 </div>
 
                 <div class="small mb-1" *ngIf="isShelter()">
-                  <span class="text-muted">Cliente:</span> 
-                  <span class="fw-semibold ms-1">{{ o.customer?.name || '—' }}</span>
+                  <span class="text-muted">Cliente:</span>
+                  <span class="fw-semibold ms-1">{{
+                    o.customer?.name || "—"
+                  }}</span>
                 </div>
 
                 <div class="small mb-1" *ngIf="isUser()">
-                  <span class="text-muted">Estado:</span> 
+                  <span class="text-muted">Estado:</span>
                   <span class="fw-semibold ms-1">{{ o.currentState }}</span>
                 </div>
 
                 <div class="small mb-1">
-                  <span class="text-muted">Items:</span> 
+                  <span class="text-muted">Items:</span>
                   <span class="fw-semibold ms-1">{{ getItemsCount(o) }}</span>
                 </div>
 
-                <div class="small text-truncate" style="max-width: 200px;" *ngIf="o.firstProductName">
+                <div
+                  class="small text-truncate"
+                  style="max-width: 200px"
+                  *ngIf="o.firstProductName"
+                >
                   <span class="text-muted">Producto:</span>
-                  <span class="fw-semibold ms-1 text-secondary small">{{ o.firstProductName }}</span>
+                  <span class="fw-semibold ms-1 text-secondary small">{{
+                    o.firstProductName
+                  }}</span>
                 </div>
               </div>
 
               <div class="text-end">
                 <div class="fw-bold h4 mb-2 text-dark">$ {{ o.total }}</div>
-                <span class="badge rounded-pill px-3 py-2 shadow-sm" [ngClass]="getStatusBadgeClass(o.currentState)">
+                <span
+                  class="badge rounded-pill px-3 py-2 shadow-sm"
+                  [ngClass]="getStatusBadgeClass(o.currentState)"
+                >
                   {{ o.currentState }}
                 </span>
               </div>
             </div>
 
-            <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
+            <div
+              class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center"
+            >
               <span class="fw-bold text-primary small">Ver detalle</span>
               <i class="bi bi-chevron-right text-primary"></i>
             </div>
-
           </div>
         </a>
       </div>
-
-    </div> </div>
+    </div>
+  </div>
 </div>

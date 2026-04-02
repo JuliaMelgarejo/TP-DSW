@@ -1,54 +1,72 @@
-<div class="bg-light min-vh-100 py-4">
-  <div class="container" >
-
+<div class="min-vh-100 py-4">
+  <div class="container">
     <div class="d-flex align-items-center justify-content-between mb-4">
       <div>
         <h2 class="fw-bold mb-1 text-dark">Detalle de solicitud</h2>
-        <p class="text-muted small mb-0">Información del pedido y estado actual</p>
+        <p class="text-muted small mb-0">
+          Información del pedido y estado actual
+        </p>
       </div>
-      <a class="btn btn-outline-secondary btn-sm px-3 shadow-sm" routerLink="/my-adoptions">
+      <a
+        class="btn btn-outline-secondary btn-sm px-3 shadow-sm"
+        routerLink="/my-adoptions"
+      >
         <i class="bi bi-arrow-left"></i> Volver
       </a>
     </div>
 
-    <div *ngIf="loading" class="card border-0 shadow-sm mb-4">
+    <div *ngIf="loading" class="card shadow-sm mb-4">
       <div class="card-body text-center py-5">
         <div class="spinner-border text-primary mb-2" role="status"></div>
         <p class="text-muted mb-0">Cargando detalles...</p>
       </div>
     </div>
 
-    <div *ngIf="!loading && errMsg" class="alert alert-danger border-0 shadow-sm mb-4" role="alert">
+    <div
+      *ngIf="!loading && errMsg"
+      class="alert alert-danger shadow-sm mb-4"
+      role="alert"
+    >
       <i class="bi bi-exclamation-octagon-fill me-2"></i> {{ errMsg }}
     </div>
 
-    <div *ngIf="!loading && item" class="card border-0 shadow-sm">
+    <div *ngIf="!loading && item" class="card shadow-sm">
       <div class="card-body p-4">
-        
         <div class="d-flex gap-4 align-items-start mb-4">
           <img
             [src]="getMainPhoto()"
             class="detail-img"
-            alt="Foto del animal" />
+            alt="Foto del animal"
+          />
 
           <div class="flex-grow-1">
             <h3 class="fw-bold text-primary mb-2">{{ item?.animal?.name }}</h3>
 
             <div class="mb-2">
-              <span class="text-muted small fw-bold text-uppercase d-block" >Estado actual</span>
-              <span class="badge rounded-pill px-3 py-2" 
+              <span class="text-muted small fw-bold text-uppercase d-block"
+                >Estado actual</span
+              >
+              <span
+                class="badge rounded-pill px-3 py-2"
                 [ngClass]="{
                   'text-bg-warning': getCurrentState() === 'Pendiente',
                   'text-bg-success': getCurrentState() === 'Aprobada',
-                  'text-bg-info text-white': getCurrentState() !== 'Pendiente' && getCurrentState() !== 'Aprobada'
-                }">
+                  'text-bg-info text-white':
+                    getCurrentState() !== 'Pendiente' &&
+                    getCurrentState() !== 'Aprobada',
+                }"
+              >
                 {{ getCurrentState() }}
               </span>
             </div>
 
             <div>
-              <span class="text-muted small fw-bold text-uppercase d-block" >Fecha del pedido</span>
-              <span class="fw-semibold text-dark">{{ item?.adoption_date | date:'dd/MM/yyyy' }}</span>
+              <span class="text-muted small fw-bold text-uppercase d-block"
+                >Fecha del pedido</span
+              >
+              <span class="fw-semibold text-dark">{{
+                item?.adoption_date | date: "dd/MM/yyyy"
+              }}</span>
             </div>
           </div>
         </div>
@@ -56,8 +74,13 @@
         <hr class="text-muted opacity-25" />
 
         <div class="mb-4 p-3 bg-light rounded-3">
-          <label class="fw-bold small text-secondary text-uppercase mb-1 d-block">Comentario del solicitante</label>
-          <div class="text-dark italic">{{ item?.comments || 'Sin comentarios adicionales.' }}</div>
+          <label
+            class="fw-bold small text-secondary text-uppercase mb-1 d-block"
+            >Comentario del solicitante</label
+          >
+          <div class="text-dark italic">
+            {{ item?.comments || "Sin comentarios adicionales." }}
+          </div>
         </div>
 
         <div class="d-flex flex-column gap-3 mt-4">
@@ -68,16 +91,17 @@
             [disabled]="deleting"
           >
             <i class="bi bi-trash3 me-1"></i>
-            {{ deleting ? 'Eliminando solicitud...' : 'Eliminar solicitud' }}
+            {{ deleting ? "Eliminando solicitud..." : "Eliminar solicitud" }}
           </button>
 
-          <div *ngIf="deleteErrMsg" class="alert alert-danger py-2 px-3 small border-0 shadow-sm mb-0">
+          <div
+            *ngIf="deleteErrMsg"
+            class="alert alert-danger py-2 px-3 small shadow-sm mb-0"
+          >
             <i class="bi bi-exclamation-circle me-2"></i> {{ deleteErrMsg }}
           </div>
         </div>
-
       </div>
     </div>
-
   </div>
 </div>

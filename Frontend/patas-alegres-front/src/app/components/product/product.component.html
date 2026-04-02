@@ -1,6 +1,8 @@
 <div class="min-vh-100 py-4">
   <div class="container px-3">
-    <div class="d-flex justify-content-between align-items-center mb-3 buttom-header">
+    <div
+      class="d-flex justify-content-between align-items-center mb-3 buttom-header"
+    >
       <div class="mb-4">
         <span class="badge bg-secondary-subtle text-secondary px-3 py-2">
           Compras solidarias
@@ -8,9 +10,7 @@
         <h1 class="mb-0 d-md-block">
           {{ getTitle() }}
         </h1>
-        <p class="text-muted">
-          No dejes de apoyarlos
-        </p>
+        <p class="text-muted">No dejes de apoyarlos</p>
       </div>
 
       <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -30,60 +30,85 @@
     </div>
 
     <!-- OFFCANVAS -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="filtersPanel" aria-labelledby="filtersPanelLabel" data-bs-backdrop="static">
+    <div
+      class="offcanvas offcanvas-end"
+      tabindex="-1"
+      id="filtersPanel"
+      aria-labelledby="filtersPanelLabel"
+      data-bs-backdrop="static"
+    >
       <!-- header -->
       <div class="offcanvas-header flex-wrap gap-2">
         <h5 class="offcanvas-title" id="filtersPanelLabel">
           Filtros y ordenamiento
         </h5>
 
-        <button class="btn btn-sm btn-outline-secondary ms-md-auto" (click)="clearFilters()">
+        <button
+          class="btn btn-sm btn-outline-secondary ms-md-auto"
+          (click)="clearFilters()"
+        >
           Limpiar filtros
         </button>
 
         <button
           type="button"
           class="btn-close"
-          data-bs-dismiss="offcanvas">
-        </button>
+          data-bs-dismiss="offcanvas"
+        ></button>
       </div>
 
-      <div class="px-3" *ngIf="filters.shelterId || filters.categoryId || filters.sort">
+      <div
+        class="px-3"
+        *ngIf="filters.shelterId || filters.categoryId || filters.sort"
+      >
         <h6 class="mb-2">Filtros activos</h6>
         <div class="d-flex flex-wrap gap-2 mb-3">
           <!-- Shelter -->
-          <div *ngIf="filters.shelterId" class="badge bg-primary d-flex align-items-center gap-2 px-3 py-2">
+          <div
+            *ngIf="filters.shelterId"
+            class="badge bg-primary d-flex align-items-center gap-2 px-3 py-2"
+          >
             Refugio: {{ getShelterName(filters.shelterId) }}
             <button
               type="button"
               class="btn-close btn-close-white btn-sm"
-              (click)="removeFilter('shelter')">
-            </button>
+              (click)="removeFilter('shelter')"
+            ></button>
           </div>
 
           <!-- Categoria -->
-          <div *ngIf="filters.categoryId" class="badge bg-success d-flex align-items-center gap-2 px-3 py-2">
+          <div
+            *ngIf="filters.categoryId"
+            class="badge bg-success d-flex align-items-center gap-2 px-3 py-2"
+          >
             Categoría: {{ getCategoryName(filters.categoryId) }}
             <button
               type="button"
               class="btn-close btn-close-white btn-sm"
-              (click)="removeFilter('category')">
-            </button>
+              (click)="removeFilter('category')"
+            ></button>
           </div>
 
           <!-- Orden -->
-          <div *ngIf="filters.sort" class="badge bg-dark d-flex align-items-center gap-2 px-3 py-2">
-            {{ filters.sort === 'price_desc' ? 'Precio mayor → menor' : 'Precio menor → mayor' }}
+          <div
+            *ngIf="filters.sort"
+            class="badge bg-dark d-flex align-items-center gap-2 px-3 py-2"
+          >
+            {{
+              filters.sort === "price_desc"
+                ? "Precio mayor → menor"
+                : "Precio menor → mayor"
+            }}
             <button
               type="button"
               class="btn-close btn-close-white btn-sm"
-              (click)="removeFilter('sort')">
-            </button>
+              (click)="removeFilter('sort')"
+            ></button>
           </div>
         </div>
       </div>
 
-      <hr>
+      <hr />
 
       <div class="offcanvas-body">
         <!-- ORDEN -->
@@ -96,10 +121,8 @@
             value="price_desc"
             [(ngModel)]="filters.sort"
             (change)="applyFilters()"
-          >
-          <label class="form-check-label">
-            Precio (Mayor → menor)
-          </label>
+          />
+          <label class="form-check-label"> Precio (Mayor → menor) </label>
         </div>
 
         <div class="form-check">
@@ -110,13 +133,11 @@
             value="price_asc"
             [(ngModel)]="filters.sort"
             (change)="applyFilters()"
-          >
-          <label class="form-check-label">
-            Precio (Menor → mayor)
-          </label>
+          />
+          <label class="form-check-label"> Precio (Menor → mayor) </label>
         </div>
 
-        <hr>
+        <hr />
 
         <!-- REFUGIO -->
         <h5 class="mb-3">Refugio</h5>
@@ -128,10 +149,8 @@
             [value]=""
             [(ngModel)]="filters.shelterId"
             (change)="applyFilters()"
-          >
-          <label class="form-check-label">
-            Todos
-          </label>
+          />
+          <label class="form-check-label"> Todos </label>
         </div>
 
         <div class="form-check" *ngFor="let shelter of shelters">
@@ -142,13 +161,13 @@
             [value]="shelter.id"
             [(ngModel)]="filters.shelterId"
             (change)="applyFilters()"
-          >
+          />
           <label class="form-check-label">
             {{ shelter.name }}
           </label>
         </div>
 
-        <hr>
+        <hr />
 
         <!-- CATEGORIA -->
         <h5 class="mb-3">Categoría</h5>
@@ -160,10 +179,8 @@
             [value]=""
             [(ngModel)]="filters.categoryId"
             (change)="applyFilters()"
-          >
-          <label class="form-check-label">
-            Todas
-          </label>
+          />
+          <label class="form-check-label"> Todas </label>
         </div>
 
         <div class="form-check" *ngFor="let category of categories">
@@ -174,7 +191,7 @@
             [value]="category.id"
             [(ngModel)]="filters.categoryId"
             (change)="applyFilters()"
-          >
+          />
           <label class="form-check-label">
             {{ category.name }}
           </label>
@@ -184,7 +201,11 @@
       <!-- footer -->
       <div class="p-3 border-top">
         <p class="mb-2">{{ totalProducts }} productos encontrados</p>
-        <button class="btn btn-primary w-100" (click)="applyFilters()" data-bs-dismiss="offcanvas">
+        <button
+          class="btn btn-primary w-100"
+          (click)="applyFilters()"
+          data-bs-dismiss="offcanvas"
+        >
           Aplicar filtros
         </button>
       </div>
@@ -199,7 +220,7 @@
     <div class="row g-4" *ngIf="products && products.length !== 0">
       <div class="col-12 col-md-6 col-lg-4" *ngFor="let product of products">
         <a
-          class="card h-100 border-0 shadow-sm product-card text-decoration-none"
+          class="card h-100 shadow-sm product-card text-decoration-none"
           [routerLink]="!isShelter ? ['/product', product.id] : null"
         >
           <div class="position-relative overflow-hidden">
@@ -217,23 +238,29 @@
           </div>
           <div class="card-body d-flex flex-column">
             <div class="d-flex justify-content-between align-items-start mb-2">
-              <div class="fw-semibold text-dark" style="font-size: 1rem;">
-                {{ product?.name || '—' }}
+              <div class="fw-semibold text-dark" style="font-size: 1rem">
+                {{ product?.name || "—" }}
               </div>
               <div class="text-end">
-                <div class="fw-bold text-secondary" style="font-size: 1.2rem;">
-                  $ {{ product.prices[0].amount || '—' }}
+                <div class="fw-bold text-secondary" style="font-size: 1.2rem">
+                  $ {{ product.prices[0].amount || "—" }}
                 </div>
-                <div *ngIf="product.crossed_out_price" class="text-muted small text-decoration-line-through">
+                <div
+                  *ngIf="product.crossed_out_price"
+                  class="text-muted small text-decoration-line-through"
+                >
                   $ {{ product.crossed_out_price }}
                 </div>
               </div>
             </div>
             <p class="text-muted small flex-grow-1">
-              {{ product?.description || 'Sin descripción disponible' }}
+              {{ product?.description || "Sin descripción disponible" }}
             </p>
             <div class="mt-3">
-              <button *ngIf="!isShelter" class="btn btn-outline-secondary w-100">
+              <button
+                *ngIf="!isShelter"
+                class="btn btn-outline-secondary w-100"
+              >
                 Ver producto
               </button>
               <button
@@ -244,19 +271,20 @@
                 Editar producto
               </button>
             </div>
-
           </div>
         </a>
-
       </div>
     </div>
 
     <!-- PAGINACIÓN -->
-    <div class="d-flex flex-wrap justify-content-center align-items-center gap-1 gap-md-2 mt-4">
+    <div
+      class="d-flex flex-wrap justify-content-center align-items-center gap-1 gap-md-2 mt-4"
+    >
       <button
         class="btn btn-secondary"
         (click)="goToPage(page - 1)"
-        [disabled]="page === 1">
+        [disabled]="page === 1"
+      >
         Anterior
       </button>
 
@@ -264,17 +292,18 @@
         *ngFor="let pag of pages"
         class="btn btn-outline-secondary"
         [class.btn-primary]="pag === page"
-        (click)="goToPage(pag)">
+        (click)="goToPage(pag)"
+      >
         {{ pag }}
       </button>
 
       <button
         class="btn btn-secondary"
         (click)="goToPage(page + 1)"
-        [disabled]="page === totalPages">
+        [disabled]="page === totalPages"
+      >
         Siguiente
       </button>
     </div>
-
   </div>
 </div>
