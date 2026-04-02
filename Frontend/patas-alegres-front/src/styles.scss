@@ -74,15 +74,56 @@ body {
 }
 
 .card {
-  background-color: var(--card);
-  color: var(--card-foreground);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
+  //background-color: var(--card);
+  //color: var(--card-foreground);
+  border-radius: 1rem;
+  // border: 1px solid var(--border);
+  border-radius: 16px;
+  -webkit-border-radius: 1rem;
+  -moz-border-radius: 1rem;
+  -ms-border-radius: 1rem;
+  -o-border-radius: 1rem;
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.15);
+}
+
+.card-img-top {
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.card:hover .card-img-top {
+  transform: scale(1.08);
+}
+
+.card-img-top::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+}
+
+.badge {
+  border-radius: 1rem;
+  -webkit-border-radius: 1rem;
+  -moz-border-radius: 1rem;
+  -ms-border-radius: 1rem;
+  -o-border-radius: 1rem;
+}
+
+.buttom-header {
+  flex-direction: column;
 }
 
 .btn-primary {
   background-color: var(--primary);
   border-color: var(--primary);
+  color: white;
 }
 
 .form-control {
@@ -99,6 +140,10 @@ body {
 @media (min-width: 992px) {
   .carousel-inner img {
     height: 500px;
+  }
+
+  .buttom-header {
+    flex-direction: row;
   }
 }
 

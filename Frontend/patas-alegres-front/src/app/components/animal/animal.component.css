@@ -52,7 +52,3 @@ ul {
   background-color: rgba(var(--bs-primary-rgb), 0.85);
   box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
-
-.animal-card:hover .btn-primary {
-  transform: scale(1.08);
-}
