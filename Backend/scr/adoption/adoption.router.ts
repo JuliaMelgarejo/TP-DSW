@@ -3,12 +3,13 @@ import { sanitizeAdoptionInput, findAll, add, update, remove, findMine, findForS
 import { validateToken } from "../validate-token/validate-token.routes.js";
 import { addStatusForShelter, sanitizeAdoptionStatusInput } from "../adoptionStatus/adoptionStatus.controller.js";
 import { shelterAdoptionGuard } from "../guards/shelter-adoption.guar.js";
+import { shelterAnimalGuard } from "../guards/shelter-animal.guard.js";
 
 export const adoptionRouter = Router();
 adoptionRouter.get('/me', validateToken, findMine);
 adoptionRouter.get('/shelter', validateToken, findForShelter);
 adoptionRouter.get('/shelter/:id', validateToken,shelterAdoptionGuard, findOneForShelter);
-adoptionRouter.get('/shelter/animals/:animalId',validateToken,shelterAdoptionGuard ,findShelterByAnimal);
+adoptionRouter.get('/shelter/animals/:animalId',validateToken,shelterAnimalGuard ,findShelterByAnimal);
 adoptionRouter.get('/', validateToken ,findAll)
 adoptionRouter.post('/:id/status', validateToken,shelterAdoptionGuard ,addStatusForShelter);
 //adoptionRouter.get('/:id', validateToken ,findOne)
