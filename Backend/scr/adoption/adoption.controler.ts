@@ -7,7 +7,7 @@ import { Person } from '../person/person.entity.js';
 import { AdoptionState } from '../adoptionState/adoptionState.entity.js';
 import { AdoptionStatus } from '../adoptionStatus/adoptionStatus.entity.js';
 
-const em = orm.em;
+const em = orm.em.fork();
 
 // ===========================
 // SANITIZE
@@ -76,7 +76,6 @@ function toShelterListDto(a: any) {
     currentState: current,
   };
 }
-
 function toMineListDto(a: any) {
   return {
     id: a.id,
@@ -88,9 +87,15 @@ function toMineListDto(a: any) {
       photos: a.animal?.photos ?? [],
     },
     currentState: getLatestStateType(a),
+    statuses: getStatusesArray(a).map((s: any) => ({
+      statusChangeDate: s.statusChangeDate,
+      reason: s.reason,
+      adoptionState: {
+        type: s?.adoptionState?.type
+      }
+    })),
   };
 }
-
 async function getState(type: string) {
   return (
     (await em.findOne(AdoptionState, { type })) ??
