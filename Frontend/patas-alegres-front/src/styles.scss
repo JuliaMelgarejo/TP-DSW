@@ -10,7 +10,8 @@
   --card: #ffffff;
   --card-foreground: #1f1f1f;
 
-  --primary: #c64e31;
+  --primary: #{$primary};
+  --primary-rgb: #{to-rgb($primary)};
   --primary-foreground: #ffffff;
 
   --secondary: #F7E6E4;

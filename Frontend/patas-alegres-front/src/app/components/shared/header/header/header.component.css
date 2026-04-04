@@ -24,13 +24,14 @@
 }
 
 @media (min-width: 992px) {
-  .btn-logout {
+  .btn-header {
     width: auto !important;
     border-radius: 1rem  ;
     -webkit-border-radius: 1rem  ;
     -moz-border-radius: 1rem  ;
     -ms-border-radius: 1rem  ;
     -o-border-radius: 1rem  ;
+    margin-left: 1rem
   }
 
   .navbar-nav {

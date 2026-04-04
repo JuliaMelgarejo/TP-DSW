@@ -138,6 +138,14 @@ async function findByBoundary(req: Request, res: Response) {
           a.id as address_id,
           a.latitude,
           a.longitude,
+          a.formatted_address,
+          a.place_id,
+          a.street,
+          a.street_number,
+          a.city,
+          a.postal_code,
+          a.province,
+          a.country,
           ROUND(ST_Distance_Sphere(point(a.longitude, a.latitude), point(?, ?)) / 1000, 2) AS distance
         FROM shelter s
         JOIN address a ON s.address_id = a.id
@@ -155,14 +163,27 @@ async function findByBoundary(req: Request, res: Response) {
         Number(east),
         10
       ]);
+      console.log(shelters)
 
       filteredShelters = shelters.map((s: any) => ({
-        ...s,
+        id: s.id,
+        name: s.name,
+        phoneNumber: s.phone_number,
+        tuition_vet: s.tuition_vet,
+        max_capacity: s.max_capacity,
         distance: Number(s.distance),
         address: {
           id: s.address_id,
           latitude: Number(s.latitude),
-          longitude: Number(s.longitude)
+          longitude: Number(s.longitude),
+          formattedAddress: s.formatted_address,
+          place_id: s.place_id,
+          street: s.street,
+          streetNumber: s.street_number,
+          city: s.city,
+          postal_code: s.postal_code,
+          province: s.province,
+          country: s.country
         }
       }));
     } else {

@@ -169,9 +169,7 @@
                   </div>
                   <div class="text-muted small">
                     {{
-                      shelter.address?.city ||
-                        shelter.address?.province ||
-                        "Sin datos"
+                      shelter.address.city || shelter.address.province || "Sin datos"
                     }}
                   </div>
                 </div>
@@ -193,7 +191,7 @@
               <div class="text-muted small d-flex align-items-center gap-2">
                 📍
                 <span>
-                  {{ shelter.address?.city || "Ubicación no disponible" }}
+                  {{ shelter.address.city || "Ubicación no disponible" }}
                 </span>
               </div>
 

@@ -50,11 +50,7 @@
 
     <div *ngIf="!loading && !errMsg && items.length > 0" class="row g-4">
       <div class="col-12 col-md-6 col-lg-4" *ngFor="let a of items">
-        <button
-          type="button"
-          class="card h-100 w-100 text-start shadow-sm transition-hover p-0 overflow-hidden text-decoration-none bg-white"
-          (click)="goDetail(a.id)"
-        >
+        <a class="card h-100 shadow-sm product-card text-decoration-none" [routerLink]="['/my-adoptions', a.id]">
           <img
             [src]="getPhoto(a)"
             [alt]="a?.animal?.name || 'Animal'"
@@ -110,7 +106,7 @@
               <i class="bi bi-chevron-right text-primary"></i>
             </div>
           </div>
-        </button>
+        </a>
       </div>
     </div>
   </div>
