@@ -5,7 +5,6 @@ export function generateOpenApi(app: any) {
 
   const endpoints = listEndpoints(app);
   const paths: any = {};
-
   const schemas: any = generateSchemas();
 
   endpoints.forEach((endpoint) => {
@@ -35,34 +34,24 @@ export function generateOpenApi(app: any) {
 
       let requestBody;
 
-      if (["POST", "PUT", "PATCH"].includes(method)) {
+      const entity = Object.keys(schemas).find(
+        (schemaName) => schemaName.toLowerCase() === tag.toLowerCase()
+      );
 
-        const entity =
-          tag.charAt(0).toUpperCase() +
-          tag.slice(1).replace(/s$/, "");
+      if (["POST", "PUT", "PATCH"].includes(method) && entity) {
 
-        if (schemas[entity]) {
-          requestBody = {
-            required: true,
-            content: {
-              "application/json": {
-                schema: {
-                  $ref: `#/components/schemas/${entity}`
-                },
-                example: generateExample(schemas[entity])
-              }
+        const cleanSchema = removeInternalFields(schemas[entity]);
+
+        requestBody = {
+          required: true,
+          content: {
+            "application/json": {
+              schema: cleanSchema,
+              example: generateExample(cleanSchema)
             }
-          };
-        } else {
-          requestBody = {
-            required: false,
-            content: {
-              "application/json": {
-                schema: { type: "object" }
-              }
-            }
-          };
-        }
+          }
+        };
+
       }
 
       paths[path][method.toLowerCase()] = {
@@ -74,6 +63,12 @@ export function generateOpenApi(app: any) {
         responses: {
           200: {
             description: "Successful response"
+          },
+          201: {
+            description: "Created successfully"
+          },
+          400: {
+            description: "Bad request"
           },
           401: {
             description: "Unauthorized"
@@ -135,25 +130,27 @@ function generateSchemas() {
       if (prop.type === "Date") type = "string";
 
       if (prop.reference === "m:1" || prop.reference === "1:1") {
+
         properties[prop.name] = {
           type: "integer",
           description: `ID of related ${prop.type}`
         };
-      }
-      else if (prop.reference === "1:m" || prop.reference === "m:n") {
+
+      } else if (prop.reference === "1:m" || prop.reference === "m:n") {
+
         properties[prop.name] = {
           type: "array",
-          items: {
-            type: "integer"
-          },
+          items: { type: "integer" },
           description: `Array of related ${prop.type}`
         };
-      }
-      else {
+
+      } else {
+
         properties[prop.name] = {
           type,
           description: prop.name
         };
+
       }
 
       if (!prop.nullable && prop.name !== "id") {
@@ -175,17 +172,46 @@ function generateSchemas() {
 
 
 
+function removeInternalFields(schema: any) {
+
+  const clean = JSON.parse(JSON.stringify(schema));
+
+  delete clean.properties.id;
+  delete clean.properties.createdAt;
+  delete clean.properties.updatedAt;
+
+  if (clean.required) {
+    clean.required = clean.required.filter(
+      (f: string) =>
+        f !== "id" &&
+        f !== "createdAt" &&
+        f !== "updatedAt"
+    );
+  }
+
+  return clean;
+}
+
+
+
 function generateExample(schema: any) {
 
   const example: any = {};
 
   Object.entries(schema.properties).forEach(([key, value]: any) => {
 
-    if (value.type === "string") example[key] = "string";
-    else if (value.type === "number") example[key] = 0;
+    const name = key.toLowerCase();
+
+    if (name.includes("email")) example[key] = "usuario@email.com";
+    else if (name.includes("username")) example[key] = "usuario123";
+    else if (name.includes("password")) example[key] = "Ejemplo123456";
+    else if (name.includes("name")) example[key] = "Juan";
+    else if (name.includes("role")) example[key] = "admin";
+    else if (name.includes("date")) example[key] = "2025-01-01";
+    else if (value.type === "number") example[key] = 1;
     else if (value.type === "boolean") example[key] = true;
     else if (value.type === "array") example[key] = [];
-    else example[key] = null;
+    else example[key] = "example";
 
   });
 
