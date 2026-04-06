@@ -2,17 +2,18 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule, FormBuilder } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { SignInStateService } from '../../../services/sign-in-state/sign-in-state.service.js';
-import { UserService } from '../../../services/user/user.service.js';
+import { SignInStateService } from '../../../../services/sign-in-state/sign-in-state.service.js';
+import { UserService } from '../../../../services/user/user.service.js';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AddressPickerComponent } from "../../shared/address-picker/address-picker.component";
-import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
+import { AddressPickerComponent } from "../../../shared/address-picker/address-picker.component.js";
+import { ToastNotificationService } from '../../../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-sign-in-shelter-details',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, AddressPickerComponent, RouterLink],
-  templateUrl: './sign-in-shelter-details.component.html'
+  templateUrl: './sign-in-shelter-details.component.html',
+  styleUrl: './sign-in-shelter-details.component.css'
 })
 export class SignInShelterDetailsComponent implements OnInit {
   ShelterForm: FormGroup;

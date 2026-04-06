@@ -27,6 +27,7 @@ export class UserService {
    }
 
    checkUsername(username: string) {
-    return this.http.get<{ exists: boolean; msg?: string }>(`${this.API_URL}/check-username/${username}`);
+    const encoded = encodeURIComponent(username)
+    return this.http.get<{ exists: boolean; msg?: string }>(`${this.API_URL}/check-username/${encoded}`);
    }
 }

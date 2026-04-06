@@ -67,8 +67,13 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.personService.getDocumentTypes().subscribe(types => {
-      this.documentTypes = types;
+    this.personService.getDocumentTypes().subscribe({
+      next: (types) => {
+        this.documentTypes = types;
+      },
+      error: (e) => {
+        this.toast.show(e.error.msg, 'danger')
+      }
     });
 
     const usernameControl = this.UserForm.get('username');
