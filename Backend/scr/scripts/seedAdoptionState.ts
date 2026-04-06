@@ -8,11 +8,22 @@ async function seedAdoptionState() {
 
   try {
     const estadosAdopcion = [
-      { type: "Pendiente", description: "Productos alimenticios" },
-      { type: "Aceptado", description: "Indumentaria y accesorios" },
-      { type: "Enviado", description: "Artículos para el hogar" },
-      { type: "Entregado", description: "Juguetes para mascotas" },
-      { type: "Cancelado", description: "Camas para mascotas" }
+      {
+        type: 'PENDIENTE',
+        description: 'Solicitud creada, pendiente de revisión',
+      },
+      {
+        type: 'APROBADO',
+        description: 'Solicitud aprobada por el refugio',
+      },
+      {
+        type: 'RECHAZADO',
+        description: 'Solicitud rechazada por el refugio',
+      },
+      {
+        type: 'CANCELADO',
+        description: 'Solicitud cancelada por el usuario',
+      },
     ];
 
     for (const es of estadosAdopcion) {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdoptionService } from '../../../services/adoption/adoption.service';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './my-adoption-detail.component.html',
   styleUrl: './my-adoption-detail.component.css',
 })
-export class MyAdoptionDetailComponent {
+export class MyAdoptionDetailComponent implements OnInit {
   item: any = null;
   loading = true;
   errMsg = '';
@@ -36,15 +36,18 @@ export class MyAdoptionDetailComponent {
   load(id: number) {
     this.loading = true;
     this.errMsg = '';
-    this.okMsg = '';
-    this.deleteErrMsg = '';
 
-    this.adoptionService.getAdoptionDetail(id).subscribe({
+    this.adoptionService.getMyAdoptions().subscribe({
       next: (res) => {
-        this.item = (res as any).data ?? null;
+        const adoptions = (res as any).data ?? [];
+        this.item = adoptions.find((a: any) => a.id === id) ?? null;
         this.loading = false;
 
-        // si el backend te devuelve deleted_at y ya está borrada, podés redirigir
+        if (!this.item) {
+          this.errMsg = 'Solicitud no encontrada';
+          return;
+        }
+
         if (this.item?.deleted_at) {
           this.router.navigate(['/my-adoptions']);
         }
@@ -89,30 +92,20 @@ export class MyAdoptionDetailComponent {
     return p.startsWith('http') ? p : this.BACKEND_BASE + p;
   }
 
-  // estado actual: tomamos el último status por fecha
+  // ✅ ¡Aquí está la simplificación!
+  // El backend ahora nos manda directamente el "currentState" y el arreglo correcto de "statuses"
   getCurrentState(): string {
-    // OJO: en tu entity se llama "adoptions" pero en el resto veníamos usando "statuses".
-    // Entonces chequeamos ambas variantes.
-    const statuses =
-      this.item?.adoptions?.items ??
-      this.item?.adoptions ??
-      this.item?.statuses?.items ??
-      this.item?.statuses ??
-      [];
+    return this.item?.currentState ?? 'PENDIENTE';
+  }
 
-    if (!Array.isArray(statuses) || statuses.length === 0) return 'PENDIENTE';
+  getBadgeClass(type: string): string {
+    const map: any = {
+      PENDIENTE: 'text-bg-warning',
+      APROBADO: 'text-bg-success',
+      CANCELADO: 'text-bg-danger',
+      RECHAZADO: 'text-bg-danger'
+    };
 
-    const latest = [...statuses].sort((a: any, b: any) => {
-      const da = new Date(a?.statusChangeDate ?? a?.fechaCambioEstado ?? 0).getTime();
-      const db = new Date(b?.statusChangeDate ?? b?.fechaCambioEstado ?? 0).getTime();
-      return db - da;
-    })[0];
-
-    return (
-      latest?.adoptionState?.type ??
-      latest?.state?.tipoEstado ??
-      latest?.state?.name ??
-      'PENDIENTE'
-    );
+    return map[type?.toUpperCase()] || 'text-bg-info';
   }
 }
