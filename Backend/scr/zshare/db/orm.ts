@@ -22,7 +22,7 @@ export const orm = await MikroORM.init({
 export const syncSchema = async () => {
   const generator = orm.getSchemaGenerator();
   //await generator.dropSchema();
-  //await generator.createSchema();
+  await generator.createSchema();
   await generator.updateSchema();
   if (process.env.RUN_SEEDS === 'true') {
     await import('./../../../scr/scripts/seedCategories.js');
