@@ -1,35 +1,41 @@
-<div class="card shadow-sm border-0" style="max-width: 400px;">
+<div class="card shadow-sm" style="max-width: 400px">
   <div class="card-body" *ngIf="selectedRescue">
-    
     <h5 class="card-title fw-bold mb-3">Editar Rescate</h5>
-    
+
     <form [formGroup]="rescueForm" (ngSubmit)="updateRescue()">
-      
       <div class="mb-3">
-        <label for="rescue_date" class="form-label fw-bold small text-secondary">
+        <label
+          for="rescue_date"
+          class="form-label fw-bold small text-secondary"
+        >
           Fecha de rescate:
         </label>
-        <input 
-          type="date" 
-          id="rescue_date" 
-          class="form-control" 
+        <input
+          type="date"
+          id="rescue_date"
+          class="form-control"
           formControlName="rescue_date"
-        >
+        />
       </div>
 
-      <div class="mb-3 p-2 bg-light rounded border">
+      <div class="mb-3 p-2 rounded border">
         <p class="card-text small mb-0">
-          <span class="text-muted">Descripción:</span><br>
-          <span class="fw-semibold">{{ selectedRescue?.description || 'Sin descripción' }}</span>
+          <span class="text-muted">Descripción:</span><br />
+          <span class="fw-semibold">{{
+            selectedRescue?.description || "Sin descripción"
+          }}</span>
         </p>
       </div>
 
       <div class="d-grid">
-        <button type="submit" class="btn btn-primary fw-bold" [disabled]="rescueForm.invalid">
+        <button
+          type="submit"
+          class="btn btn-primary fw-bold"
+          [disabled]="rescueForm.invalid"
+        >
           Actualizar rescate
         </button>
       </div>
-
     </form>
   </div>
 </div>

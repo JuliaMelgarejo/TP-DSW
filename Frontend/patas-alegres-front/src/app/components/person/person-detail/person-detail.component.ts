@@ -108,7 +108,7 @@ export class PersonDetailComponent {
     this.personService.updatePerson(updatedPerson).subscribe({
       next: (res) => {
         this.toast.show(res.message, 'success')
-        this.router.navigate(['/profile', res.data.id]);
+        this.router.navigate(['/profile']);
       },
       error: (e) => {
         this.toast.show(e.error.msg, 'danger')

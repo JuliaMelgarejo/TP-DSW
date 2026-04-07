@@ -1,8 +1,9 @@
-<div class="bg-light min-vh-100 py-4">
+<div class="min-vh-100 py-4">
   <div class="container px-3 px-lg-4">
-
     <!-- Header -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+    <div
+      class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4"
+    >
       <div>
         <h2 class="fw-bold mb-1">Lista de solicitudes recibidas</h2>
         <p class="text-muted small mb-0">Pedidos de adopción para tu refugio</p>
@@ -20,100 +21,133 @@
     </div>
 
     <!-- Error -->
-    <div *ngIf="!loading && errMsg" class="alert alert-danger shadow-sm border-0 d-flex align-items-center" role="alert">
+    <div
+      *ngIf="!loading && errMsg"
+      class="alert alert-danger shadow-sm d-flex align-items-center"
+      role="alert"
+    >
       <i class="bi bi-exclamation-triangle-fill me-2"></i>
       {{ errMsg }}
     </div>
 
     <!-- Empty -->
-    <div *ngIf="!loading && !errMsg && items.length === 0" class="card border-0 shadow-sm">
+    <div
+      *ngIf="!loading && !errMsg && items.length === 0"
+      class="card shadow-sm"
+    >
       <div class="card-body text-center py-5">
         <i class="bi bi-inbox text-muted fs-1"></i>
-        <p class="text-muted mt-3 mb-0">Todavía no hay solicitudes para tus animales.</p>
+        <p class="text-muted mt-3 mb-0">
+          Todavía no hay solicitudes para tus animales.
+        </p>
       </div>
     </div>
 
     <!-- Cards -->
     <div *ngIf="!loading && !errMsg && items.length > 0" class="row g-3 g-lg-4">
       <div class="col-12 col-sm-6 col-lg-4" *ngFor="let a of items">
-
         <button
           type="button"
-          class="card h-100 w-100 text-start shadow-sm border-0 p-0 overflow-hidden text-decoration-none"
-          (click)="goDetail(a.id)">
-
+          class="card h-100 w-100 text-start shadow-sm p-0 overflow-hidden text-decoration-none"
+          (click)="goDetail(a.id)"
+        >
           <img
             [src]="getPhoto(a)"
             [alt]="a?.animal?.name || 'Animal'"
             class="card-img-top"
-
           />
 
           <div class="card-body">
-
             <h5 class="card-title fw-bold text-dark mb-3">
-              {{ a?.animal?.name || 'Sin nombre' }}
+              {{ a?.animal?.name || "Sin nombre" }}
             </h5>
 
             <div class="mb-2">
-              <label class="small text-muted fw-bold text-uppercase d-block">Estado</label>
-              <span class="badge"
+              <label class="small text-muted fw-bold text-uppercase d-block"
+                >Estado</label
+              >
+              <span
+                class="badge"
                 [ngClass]="{
                   'text-bg-warning': a?.currentState === 'Pendiente',
                   'text-bg-success': a?.currentState === 'Aprobada',
                   'text-bg-danger': a?.currentState === 'Rechazada',
-                  'text-bg-info text-white': a?.currentState !== 'Pendiente' && a?.currentState !== 'Aprobada' && a?.currentState !== 'Rechazada'
-                }">
-                {{ a?.currentState || 'En revisión' }}
+                  'text-bg-info text-white':
+                    a?.currentState !== 'Pendiente' &&
+                    a?.currentState !== 'Aprobada' &&
+                    a?.currentState !== 'Rechazada',
+                }"
+              >
+                {{ a?.currentState || "En revisión" }}
               </span>
             </div>
 
             <div class="mb-2">
-              <label class="small text-muted fw-bold text-uppercase d-block">Solicitante</label>
-              <div class="fw-semibold text-dark small">{{ a?.applicant?.name || '—' }}</div>
+              <label class="small text-muted fw-bold text-uppercase d-block"
+                >Solicitante</label
+              >
+              <div class="fw-semibold text-dark small">
+                {{ a?.applicant?.name || "—" }}
+              </div>
             </div>
 
             <div class="mb-3">
-              <label class="small text-muted fw-bold text-uppercase d-block">Fecha del pedido</label>
-              <div class="text-dark small">{{ a?.adoption_date ? (a.adoption_date | date:'dd/MM/yyyy') : '—' }}</div>
+              <label class="small text-muted fw-bold text-uppercase d-block"
+                >Fecha del pedido</label
+              >
+              <div class="text-dark small">
+                {{
+                  a?.adoption_date
+                    ? (a.adoption_date | date: "dd/MM/yyyy")
+                    : "—"
+                }}
+              </div>
             </div>
 
             <div class="pt-2 border-top">
               <span class="text-primary fw-bold small">Ver detalle →</span>
             </div>
-
           </div>
         </button>
-
       </div>
     </div>
 
     <!-- Paginación -->
-    <div *ngIf="!loading && !errMsg && totalPages > 1" class="d-flex justify-content-center mt-4 mt-md-5">
+    <div
+      *ngIf="!loading && !errMsg && totalPages > 1"
+      class="d-flex justify-content-center mt-4 mt-md-5"
+    >
       <nav aria-label="Navegación de solicitudes">
         <ul class="pagination flex-wrap justify-content-center shadow-sm mb-0">
-
           <li class="page-item" [class.disabled]="page === 1">
-            <button class="page-link" (click)="goPage(page - 1)" [disabled]="page === 1">
+            <button
+              class="page-link"
+              (click)="goPage(page - 1)"
+              [disabled]="page === 1"
+            >
               <span aria-hidden="true">&laquo;</span>
             </button>
           </li>
 
-          <li class="page-item"
-              *ngFor="let p of pages"
-              [class.active]="p === page">
+          <li
+            class="page-item"
+            *ngFor="let p of pages"
+            [class.active]="p === page"
+          >
             <button class="page-link" (click)="goPage(p)">{{ p }}</button>
           </li>
 
           <li class="page-item" [class.disabled]="page === totalPages">
-            <button class="page-link" (click)="goPage(page + 1)" [disabled]="page === totalPages">
+            <button
+              class="page-link"
+              (click)="goPage(page + 1)"
+              [disabled]="page === totalPages"
+            >
               <span aria-hidden="true">&raquo;</span>
             </button>
           </li>
-
         </ul>
       </nav>
     </div>
-
   </div>
 </div>

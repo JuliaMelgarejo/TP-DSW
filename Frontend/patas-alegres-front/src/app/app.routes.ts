@@ -23,8 +23,8 @@ import { RescueComponent } from './components/rescue/rescue.component.js';
 import { RescueFormComponent } from './components/rescue/rescue-form/rescue-form.component.js';
 import { RescueDetailComponent } from './components/rescue/rescue-detail/rescue-detail.component.js';
 import { AnimalPageComponent } from './components/animal/animal-page/animal-page/animal-page.component.js';
-import { SignInShelterAccountComponent } from './components/sign-in/sign-in-shelter/sign-in-shelter-account.component.js';
-import { SignInShelterDetailsComponent } from './components/sign-in/sign-in-shelter/sign-in-shelter-details.component.js';
+import { SignInShelterAccountComponent } from './components/sign-in/sign-in-shelter/account/sign-in-shelter-account.component.js';
+import { SignInShelterDetailsComponent } from './components/sign-in/sign-in-shelter/details/sign-in-shelter-details.component.js';
 import { ProductComponent } from './components/product/product.component.js';
 import { ProductFormComponent } from './components/product/product-form/product-form.component.js';
 import { MyAdoptionsComponent } from './components/adopt-animal/my-adoptions/my-adoptions.component.js';
@@ -38,6 +38,8 @@ import { OrderComponent } from './components/order/order.component.js';
 import { OrderShelterDetailComponent } from './components/order/order-shelter-detail/order-shelter-detail.component.js';
 import { guestGuard } from './utils/guest.guard.js';
 import { ShelterPublicDetailComponent } from './components/shelter/shelter-public/shelter-public-detail/shelter-public-detail.component.js';
+import { PersonProfileComponent } from './components/person/person-profile/person-profile.component.js';
+
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
@@ -62,7 +64,8 @@ export const routes: Routes = [
   {path: 'person', component: PersonComponent, canActivate:[authGuard], data: { roles: ['ADMIN'] }},
   {path: 'person/create', component: PersonFormComponent, canActivate:[authGuard]},
   {path: 'person/:id', component: PersonDetailComponent, canActivate:[authGuard]},
-  { path: 'profile', component: PersonDetailComponent, canActivate:[authGuard] },
+  { path: 'profile', component: PersonProfileComponent, canActivate:[authGuard] },
+  { path: 'profile/edit/:id', component: PersonDetailComponent, canActivate:[authGuard] },
 
   {path: 'breed', component: BreedComponent, canActivate:[authGuard]},
   {path: 'breed/create', component: BreedFormComponent, canActivate:[authGuard]},

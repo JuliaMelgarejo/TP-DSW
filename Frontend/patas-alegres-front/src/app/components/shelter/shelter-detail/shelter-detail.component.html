@@ -1,9 +1,10 @@
-<div class="bg-light min-vh-100 py-4">
+<div class="min-vh-100 py-4">
   <div class="container px-3 px-lg-4">
-    <div class="card border-0 shadow-sm">
+    <div class="card shadow-sm">
       <div class="card-body p-3 p-lg-4">
-
-        <div class="mb-3 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+        <div
+          class="mb-3 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2"
+        >
           <div>
             <h3 class="mb-1">Mi refugio</h3>
             <div class="text-muted small">Modificá los datos del refugio</div>
@@ -18,42 +19,79 @@
 
         <form [formGroup]="shelterForm" (submit)="updateShelter()">
           <div class="row g-3">
-
             <div class="col-12 col-lg-6">
               <div class="d-flex flex-column">
-
                 <div class="mb-3">
                   <label class="form-label">Nombre:</label>
-                  <input type="text" formControlName="name" class="form-control">
-                  <p class="text-danger small mt-1 mb-0" *ngIf="shelterForm.get('name')?.invalid && shelterForm.get('name')?.touched">
+                  <input
+                    type="text"
+                    formControlName="name"
+                    class="form-control"
+                  />
+                  <p
+                    class="text-danger small mt-1 mb-0"
+                    *ngIf="
+                      shelterForm.get('name')?.invalid &&
+                      shelterForm.get('name')?.touched
+                    "
+                  >
                     El nombre es obligatorio
                   </p>
                 </div>
 
                 <div class="mb-3">
                   <label class="form-label">Teléfono:</label>
-                  <input type="text" formControlName="phoneNumber" class="form-control">
-                  <p class="text-danger small mt-1 mb-0" *ngIf="shelterForm.get('phoneNumber')?.invalid && shelterForm.get('phoneNumber')?.touched">
+                  <input
+                    type="text"
+                    formControlName="phoneNumber"
+                    class="form-control"
+                  />
+                  <p
+                    class="text-danger small mt-1 mb-0"
+                    *ngIf="
+                      shelterForm.get('phoneNumber')?.invalid &&
+                      shelterForm.get('phoneNumber')?.touched
+                    "
+                  >
                     El teléfono es obligatorio
                   </p>
                 </div>
 
                 <div class="mb-3">
                   <label class="form-label">Matrícula Veterinaria:</label>
-                  <input type="text" formControlName="tuitionVet" class="form-control">
-                  <p class="text-danger small mt-1 mb-0" *ngIf="shelterForm.get('tuitionVet')?.invalid && shelterForm.get('tuitionVet')?.touched">
+                  <input
+                    type="text"
+                    formControlName="tuitionVet"
+                    class="form-control"
+                  />
+                  <p
+                    class="text-danger small mt-1 mb-0"
+                    *ngIf="
+                      shelterForm.get('tuitionVet')?.invalid &&
+                      shelterForm.get('tuitionVet')?.touched
+                    "
+                  >
                     La matrícula es obligatoria
                   </p>
                 </div>
 
                 <div class="mb-3">
                   <label class="form-label">Capacidad máxima:</label>
-                  <input type="number" formControlName="max_capacity" class="form-control">
-                  <p class="text-danger small mt-1 mb-0" *ngIf="shelterForm.get('max_capacity')?.invalid && shelterForm.get('max_capacity')?.touched">
+                  <input
+                    type="number"
+                    formControlName="max_capacity"
+                    class="form-control"
+                  />
+                  <p
+                    class="text-danger small mt-1 mb-0"
+                    *ngIf="
+                      shelterForm.get('max_capacity')?.invalid &&
+                      shelterForm.get('max_capacity')?.touched
+                    "
+                  >
                     La capacidad es obligatoria
                   </p>
                 </div>
-
               </div>
             </div>
 
@@ -62,16 +100,18 @@
                 <app-address-picker [form]="addressForm"></app-address-picker>
               </div>
             </div>
-
           </div>
 
           <div class="mt-3">
-            <button type="submit" [disabled]="shelterForm.invalid" class="btn btn-primary w-100">
+            <button
+              type="submit"
+              [disabled]="shelterForm.invalid"
+              class="btn btn-primary w-100"
+            >
               Actualizar Refugio
             </button>
           </div>
         </form>
-
       </div>
     </div>
   </div>

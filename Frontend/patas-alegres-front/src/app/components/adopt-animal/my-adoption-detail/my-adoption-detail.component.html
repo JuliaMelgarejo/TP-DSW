@@ -1,4 +1,4 @@
-<div class="bg-light min-vh-100 py-4">
+<div class="min-vh-100 py-4">
   <div class="container px-3" style="max-width: 1100px;">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -104,23 +104,11 @@
               class="pa-timeline"
             >
 
-              <div
-                *ngFor="let s of item.statuses"
-                class="pa-timeline-item"
-              >
-
+              <div *ngFor="let s of item.statuses" class="pa-timeline-item">
                 <div class="pa-timeline-dot"></div>
-
                 <div class="pa-timeline-content">
-
                   <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-
-                    <span class="badge" [ngClass]="{
-                      'text-bg-warning': s?.adoptionState?.type === 'PENDIENTE',
-                      'text-bg-success': s?.adoptionState?.type === 'APROBADO',
-                      'text-bg-danger':  s?.adoptionState?.type === 'CANCELADO' || s?.adoptionState?.type === 'RECHAZADO',
-                      'text-bg-info':    s?.adoptionState?.type !== 'PENDIENTE' && s?.adoptionState?.type !== 'APROBADO' && s?.adoptionState?.type !== 'CANCELADO' && s?.adoptionState?.type !== 'RECHAZADO'
-                    }">
+                    <span class="badge" [ngClass]="getBadgeClass(s?.adoptionState?.type)">
                       {{ s?.adoptionState?.type }}
                     </span>
 
@@ -155,6 +143,5 @@
     <div *ngIf="!loading && !item && !errMsg" class="text-muted">
       Solicitud no encontrada.
     </div>
-
   </div>
 </div>

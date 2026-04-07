@@ -5,8 +5,8 @@
         <div class="card shadow-sm">
           <div class="card-body">
             <div class="text-center mb-4 mb-lg-5">
-              <h1 class="fw-bold mb-2">Patas alegres</h1>
-              <h5 class="fw-semibold mb-0">Registremos tu usuario</h5>
+              <h2 class="fw-bold mb-1">Patas alegres</h2>
+              <h5 class="mb-0">Paso 1 - Datos de cuenta</h5>
               <div class="form-helper">
                 Los campos marcados con <span class="required-mark">*</span> son obligatorios
               </div>
@@ -16,7 +16,7 @@
               {{ submitError }}
             </div>
 
-            <form [formGroup]="UserForm" (ngSubmit)="SignIn()">
+            <form [formGroup]="UserForm">
               <div class="row g-4">
                 <div class="col-12 col-lg-6">
                   <h6 class="text-muted mb-2">Datos de usuario</h6>
@@ -31,8 +31,7 @@
                         [class.is-invalid]="
                           (UserForm.get('username')?.touched &&
                             UserForm.get('username')?.invalid) ||
-                          !!usernameExistsError ||
-                          !!backendErrors['username']
+                          !!usernameExistsError
                         "
                       />
 
@@ -58,13 +57,6 @@
 
                       <div class="invalid-feedback" *ngIf="usernameExistsError">
                         {{ usernameExistsError }}
-                      </div>
-
-                      <div
-                        class="invalid-feedback"
-                        *ngIf="backendErrors['username']"
-                      >
-                        {{ backendErrors["username"] }}
                       </div>
 
                       <div class="form-text" *ngIf="checkingUsername">
@@ -105,13 +97,6 @@
                         Debe tener mínimo 8 caracteres, una mayúscula, una
                         minúscula, un número y un símbolo
                       </div>
-
-                      <div
-                        class="invalid-feedback"
-                        *ngIf="backendErrors['password']"
-                      >
-                        {{ backendErrors["password"] }}
-                      </div>
                     </div>
                   </div>
 
@@ -127,8 +112,7 @@
                           placeholder="Ingresar aquí el nombre"
                           [class.is-invalid]="
                             (UserForm.get('person.name')?.invalid &&
-                              UserForm.get('person.name')?.touched) ||
-                            !!backendErrors['person.name']
+                              UserForm.get('person.name')?.touched)
                           "
                         />
 
@@ -141,13 +125,6 @@
                         >
                           El nombre es obligatorio
                         </div>
-
-                        <div
-                          class="invalid-feedback"
-                          *ngIf="backendErrors['person.name']"
-                        >
-                          {{ backendErrors["person.name"] }}
-                        </div>
                       </div>
 
                       <div class="mb-2">
@@ -159,8 +136,7 @@
                           placeholder="Ingresar aquí el apellido"
                           [class.is-invalid]="
                             (UserForm.get('person.surname')?.invalid &&
-                              UserForm.get('person.surname')?.touched) ||
-                            !!backendErrors['person.surname']
+                              UserForm.get('person.surname')?.touched)
                           "
                         />
 
@@ -172,13 +148,6 @@
                           "
                         >
                           El apellido es obligatorio
-                        </div>
-
-                        <div
-                          class="invalid-feedback"
-                          *ngIf="backendErrors['person.surname']"
-                        >
-                          {{ backendErrors["person.surname"] }}
                         </div>
                       </div>
                       
@@ -192,8 +161,7 @@
                           formControlName="birthdate"
                           [class.is-invalid]="
                             (UserForm.get('person.birthdate')?.invalid &&
-                              UserForm.get('person.birthdate')?.touched) ||
-                            !!backendErrors['person.birthdate']
+                              UserForm.get('person.birthdate')?.touched)
                           "
                         />
 
@@ -218,13 +186,6 @@
                         >
                           La fecha de nacimiento no puede ser futura
                         </div>
-
-                        <div
-                          class="invalid-feedback"
-                          *ngIf="backendErrors['person.birthdate']"
-                        >
-                          {{ backendErrors["person.birthdate"] }}
-                        </div>
                       </div>
                     </div>
 
@@ -242,8 +203,7 @@
                           class="form-select form-select-lg"
                           [class.is-invalid]="
                             (UserForm.get('person.doc_type')?.invalid &&
-                              UserForm.get('person.doc_type')?.touched) ||
-                            !!backendErrors['person.doc_type']
+                              UserForm.get('person.doc_type')?.touched)
                           "
                         >
                           <option [ngValue]="null" disabled>
@@ -266,13 +226,6 @@
                         >
                           El tipo de documento es obligatorio
                         </div>
-
-                        <div
-                          class="invalid-feedback"
-                          *ngIf="backendErrors['person.doc_type']"
-                        >
-                          {{ backendErrors["person.doc_type"] }}
-                        </div>
                       </div>
 
                       <div class="mb-2">
@@ -286,8 +239,7 @@
                           placeholder="Ingresar aquí el número"
                           [class.is-invalid]="
                             (UserForm.get('person.doc_nro')?.invalid &&
-                              UserForm.get('person.doc_nro')?.touched) ||
-                            !!backendErrors['person.doc_nro']
+                              UserForm.get('person.doc_nro')?.touched)
                           "
                         />
 
@@ -309,13 +261,6 @@
                           "
                         >
                           El número de documento solo debe contener números
-                        </div>
-
-                        <div
-                          class="invalid-feedback"
-                          *ngIf="backendErrors['person.doc_nro']"
-                        >
-                          {{ backendErrors["person.doc_nro"] }}
                         </div>
                       </div>
 
@@ -384,8 +329,7 @@
                         placeholder="Ingresar aquí el email"
                         [class.is-invalid]="
                           (UserForm.get('person.email')?.invalid &&
-                            UserForm.get('person.email')?.touched) ||
-                          !!backendErrors['person.email']
+                            UserForm.get('person.email')?.touched)
                         "
                       />
 
@@ -398,13 +342,6 @@
                       >
                         El email no es válido
                       </div>
-
-                      <div
-                        class="invalid-feedback"
-                        *ngIf="backendErrors['person.email']"
-                      >
-                        {{ backendErrors["person.email"] }}
-                      </div>
                     </div>
                   </div>
 
@@ -416,54 +353,27 @@
                         [form]="addressForm"
                       ></app-address-picker>
                     </div>
-
-                    <div
-                      class="text-danger small mt-2"
-                      *ngIf="backendErrors['person.address']"
-                    >
-                      {{ backendErrors["person.address"] }}
-                    </div>
-                    <div
-                      class="text-danger small mt-1"
-                      *ngIf="backendErrors['person.address.formattedAddress']"
-                    >
-                      {{ backendErrors["person.address.formattedAddress"] }}
-                    </div>
-                    <div
-                      class="text-danger small mt-1"
-                      *ngIf="backendErrors['person.address.city']"
-                    >
-                      {{ backendErrors["person.address.city"] }}
-                    </div>
-                    <div
-                      class="text-danger small mt-1"
-                      *ngIf="backendErrors['person.address.province']"
-                    >
-                      {{ backendErrors["person.address.province"] }}
-                    </div>
-                    <div
-                      class="text-danger small mt-1"
-                      *ngIf="backendErrors['person.address.country']"
-                    >
-                      {{ backendErrors["person.address.country"] }}
-                    </div>
                   </div>
                 </div>
               </div>
-
               <div
                 class="d-grid d-md-flex gap-2 mt-4 justify-content-md-center"
               >
                 <button
                   type="button"
                   class="btn btn-secondary w-100"
+                  (click)="goBack()"
                   routerLink="/login"
                 >
                   Volver
                 </button>
 
-                <button type="submit" class="btn btn-primary w-100">
-                  Registrarme
+                <button
+                  type="button"
+                  class="btn btn-primary w-100"
+                  (click)="next()"
+                >
+                  Continuar
                 </button>
               </div>
             </form>

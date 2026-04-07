@@ -1,8 +1,9 @@
-<div class="bg-light min-vh-100 py-3 py-lg-4" *ngIf="selectedAnimal; else loadingTpl">
+<div class="min-vh-100 py-3 py-lg-4" *ngIf="selectedAnimal; else loadingTpl">
   <div class="container px-3 px-lg-4 py-2 py-lg-4">
-
     <!-- HEADER -->
-    <div class="d-flex flex-column flex-lg-row align-items-start justify-content-between gap-3 mb-3 mb-lg-4">
+    <div
+      class="d-flex flex-column flex-lg-row align-items-start justify-content-between gap-3 mb-3 mb-lg-4"
+    >
       <div class="w-100">
         <h2 class="mb-1">{{ selectedAnimal.name }}</h2>
         <h6 class="card-subtitle mb-0 text-body-secondary">
@@ -13,33 +14,37 @@
       <!-- Botones desktop -->
       <div class="d-grid gap-2 d-md-flex justify-content-md-end w-100">
         <a class="btn btn-outline-secondary" routerLink="/animal">Volver</a>
-        <button type="button" class="btn btn-primary" (click)="openAdoptModal()">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="openAdoptModal()"
+        >
           Interesado en adoptar
         </button>
       </div>
     </div>
 
     <div class="row g-3 g-lg-4 align-items-start">
-
       <!-- IZQUIERDA: CARRUSEL MÁS ANCHO -->
       <div class="col-12 col-lg-7">
         <div class="rounded-3 overflow-hidden bg-white shadow-sm">
-
           <div
             [id]="carouselId()"
             class="carousel slide carousel-dark animal-carousel"
-            data-bs-ride="carousel">
-
+            data-bs-ride="carousel"
+          >
             <div class="carousel-inner">
               <div
                 *ngFor="let img of getPhotoUrls(); let i = index"
                 class="carousel-item"
                 data-bs-interval="10000"
-                [class.active]="i === 0">
+                [class.active]="i === 0"
+              >
                 <img
                   [src]="img"
                   class="d-block w-100"
-                  [alt]="selectedAnimal.name + ' - foto ' + (i + 1)">
+                  [alt]="selectedAnimal.name + ' - foto ' + (i + 1)"
+                />
               </div>
             </div>
 
@@ -48,8 +53,12 @@
               class="carousel-control-prev"
               type="button"
               [attr.data-bs-target]="'#' + carouselId()"
-              data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              data-bs-slide="prev"
+            >
+              <span
+                class="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
               <span class="visually-hidden">Previous</span>
             </button>
 
@@ -58,29 +67,33 @@
               class="carousel-control-next"
               type="button"
               [attr.data-bs-target]="'#' + carouselId()"
-              data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              data-bs-slide="next"
+            >
+              <span
+                class="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
               <span class="visually-hidden">Next</span>
             </button>
-
           </div>
-
         </div>
       </div>
 
       <!-- DERECHA: INFO -->
       <div class="col-12 col-lg-5">
-        <div class="card text-center shadow-sm border-0 h-100">
-
+        <div class="card text-center shadow-sm h-100">
           <!-- Header con pills -->
-          <div class="card-header bg-white border-0 pb-0">
-            <ul class="nav nav-pills card-header-pills justify-content-center flex-wrap gap-2">
+          <div class="card-header bg-white pb-0">
+            <ul
+              class="nav nav-pills card-header-pills justify-content-center flex-wrap gap-2"
+            >
               <li class="nav-item">
                 <button
                   type="button"
                   class="nav-link"
                   [class.active]="activeInfo === 'description'"
-                  (click)="showInfo('description')">
+                  (click)="showInfo('description')"
+                >
                   Descripción
                 </button>
               </li>
@@ -90,7 +103,8 @@
                   type="button"
                   class="nav-link"
                   [class.active]="activeInfo === 'breed'"
-                  (click)="showInfo('breed')">
+                  (click)="showInfo('breed')"
+                >
                   Raza
                 </button>
               </li>
@@ -100,7 +114,8 @@
                   type="button"
                   class="nav-link"
                   [class.active]="activeInfo === 'rescue'"
-                  (click)="showInfo('rescue')">
+                  (click)="showInfo('rescue')"
+                >
                   Rescate
                 </button>
               </li>
@@ -109,12 +124,11 @@
 
           <!-- Body -->
           <div class="card-body px-3 px-lg-4 py-4 text-start text-lg-center">
-
             <!-- Descripción -->
             <div *ngIf="activeInfo === 'description'">
               <h5 class="card-title mb-3">Descripción</h5>
               <p class="card-text mb-0">
-                {{ selectedAnimal.description || 'Sin descripción' }}
+                {{ selectedAnimal.description || "Sin descripción" }}
               </p>
             </div>
 
@@ -148,33 +162,32 @@
                 {{ getRescueComments() }}
               </p>
             </div>
-
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- BOTONES MOBILE -->
     <div class="d-lg-none d-grid gap-2 mt-3">
       <a class="btn btn-outline-secondary w-100" routerLink="/animal">Volver</a>
-      <button type="button" class="btn btn-primary w-100" (click)="openAdoptModal()">
+      <button
+        type="button"
+        class="btn btn-primary w-100"
+        (click)="openAdoptModal()"
+      >
         Interesado en adoptar
       </button>
     </div>
-
   </div>
 </div>
 
-<app-adopt-modal
-  *ngIf="selectedAnimal"
-  [animalId]="selectedAnimal.id">
+<app-adopt-modal *ngIf="selectedAnimal" [animalId]="selectedAnimal.id">
 </app-adopt-modal>
 
 <ng-template #loadingTpl>
-  <div class="bg-light min-vh-100 py-4">
+  <div class="min-vh-100 py-4">
     <div class="container px-3">
-      <div class="card border-0 shadow-sm">
+      <div class="card shadow-sm">
         <div class="card-body">
           <div class="text-black">Cargando...</div>
         </div>

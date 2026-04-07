@@ -97,4 +97,15 @@ export class MyAdoptionDetailComponent implements OnInit {
   getCurrentState(): string {
     return this.item?.currentState ?? 'PENDIENTE';
   }
+
+  getBadgeClass(type: string): string {
+    const map: any = {
+      PENDIENTE: 'text-bg-warning',
+      APROBADO: 'text-bg-success',
+      CANCELADO: 'text-bg-danger',
+      RECHAZADO: 'text-bg-danger'
+    };
+
+    return map[type?.toUpperCase()] || 'text-bg-info';
+  }
 }

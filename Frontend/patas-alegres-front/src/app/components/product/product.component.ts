@@ -173,4 +173,8 @@ export class ProductComponent {
       (1 - product.prices[0].amount / product.crossed_out_price) * 100
     )
   }
+
+  getTitle(): string {
+    return this.isShelter ? 'Productos de tú refugio' : 'Productos para apoyar un refugios';
+  }
 }

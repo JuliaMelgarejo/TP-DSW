@@ -4,19 +4,20 @@ import {FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule, Fo
 import { Router, RouterLink } from '@angular/router';
 import { Subject, of } from 'rxjs';
 import {debounceTime, distinctUntilChanged,switchMap,takeUntil, catchError,finalize} from 'rxjs/operators';
-import { UserService } from '../../../services/user/user.service.js';
-import { ErrorService } from '../../../services/errors/error.service.js';
-import { PersonService } from '../../../services/person/person.service.js';
-import { SignInStateService } from '../../../services/sign-in-state/sign-in-state.service.js';
-import { AddressPickerComponent } from "../../shared/address-picker/address-picker.component";
-import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
+import { UserService } from '../../../../services/user/user.service.js';
+import { ErrorService } from '../../../../services/errors/error.service.js';
+import { PersonService } from '../../../../services/person/person.service.js';
+import { SignInStateService } from '../../../../services/sign-in-state/sign-in-state.service.js';
+import { AddressPickerComponent } from "../../../shared/address-picker/address-picker.component";
+import { ToastNotificationService } from '../../../../services/toast-notification/toast-notification.service.js';
 
 
 @Component({
   selector: 'app-sign-in-shelter-account',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule,AddressPickerComponent, RouterLink],
-  templateUrl: './sign-in-shelter-account.component.html'
+  templateUrl: './sign-in-shelter-account.component.html',
+  styleUrl: './sign-in-shelter-account.component.css'
 })
 export class SignInShelterAccountComponent implements OnInit, OnDestroy {
   UserForm: FormGroup;
