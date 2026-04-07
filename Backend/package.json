@@ -9,6 +9,7 @@
     "build": "tsc -p ./tsconfig.json",
     "start:dev": "cross-env NODE_ENV=development tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/app.js\"",
     "start:prod": "cross-env NODE_ENV=production node dist/app.js",
+    "start": "yarn start:prod",
     "seed:categories": "node dist/scr/scripts/seedCategories.js",
     "seed:adoptionState": "node dist/scr/scripts/seedAdoptionState.js",
     "seed:orderState": "node dist/scr/scripts/seedOrderState.js",
