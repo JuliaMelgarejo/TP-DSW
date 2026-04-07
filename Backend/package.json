@@ -42,5 +42,8 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "reflect-metadata": "0.2.2"
+  },
+  "resolutions": {
+   "@types/express": "4.17.21"
   }
 }
