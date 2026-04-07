@@ -11,7 +11,7 @@ import { ViewChild } from '@angular/core';
 import { AnimalLite, Rescue } from '../../models/rescue/rescue.model';
 import { AuthService } from '../../services/auth/auth.service';
 import { PhotoService } from '../../services/photo/photo.service';
-import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service.js';
+import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service';
 type Option = { id: number; name: string };
 
 @Component({

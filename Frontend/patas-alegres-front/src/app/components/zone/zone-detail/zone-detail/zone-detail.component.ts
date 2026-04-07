@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ZoneService } from '../../../../services/zone/zone.service.js';
-import { Zone } from '../../../../models/zone/zone.model.js';
+import { ZoneService } from '../../../../services/zone/zone.service';
+import { Zone } from '../../../../models/zone/zone.model';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
 

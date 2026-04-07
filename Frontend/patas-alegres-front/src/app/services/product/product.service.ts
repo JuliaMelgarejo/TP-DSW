@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Product } from '../../models/product/product.js';
+import { Product } from '../../models/product/product';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { ProductFilters } from '../../models/product/product-filters.js';
-import { AppConfig } from '../../core/config/app.config.js';
+import { ProductFilters } from '../../models/product/product-filters';
+import { AppConfig } from '../../core/config/app.config';
 
 @Injectable({
   providedIn: 'root'

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { VetService } from '../../services/vet/vet.service.js';
+import { VetService } from '../../services/vet/vet.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 

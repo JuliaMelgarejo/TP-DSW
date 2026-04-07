@@ -25,7 +25,7 @@ export interface FilterOption {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './filters-panel-animal.component.html',
-  styleUrl: './filters-panel.component.css',
+  styleUrl: './filters-panel-animal.component.css',
 })
 export class FiltersPanelComponent {
   @Input() appliedChips: string[] = []; // si querés mostrar chips “Perro”, “Córdoba”, etc.

@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
-import { AnimalService } from '../../services/animal/animal.service.js';
+import { AnimalService } from '../../services/animal/animal.service';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { AnimalFilterPipe } from '../../pipes/animal-filter.pipe.js';
+import { AnimalFilterPipe } from '../../pipes/animal-filter.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Animal } from '../../models/animal/animal.model.js';
-import { Shelter } from '../../models/shelter/shelter.model.js';
-import { AnimalFilters } from '../../models/animal/animal-filters.js';
-import { AuthService } from '../../services/auth/auth.service.js';
-import { ShelterService } from '../../services/shelter/shelter.service.js';
-import { BreedService } from '../../services/breed/breed.service.js';
-import { Breed } from '../../models/breed/breed.model.js';
+import { Animal } from '../../models/animal/animal.model';
+import { Shelter } from '../../models/shelter/shelter.model';
+import { AnimalFilters } from '../../models/animal/animal-filters';
+import { AuthService } from '../../services/auth/auth.service';
+import { ShelterService } from '../../services/shelter/shelter.service';
+import { BreedService } from '../../services/breed/breed.service';
+import { Breed } from '../../models/breed/breed.model';
 
 @Component({
   selector: 'app-animal',

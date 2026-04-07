@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { VetService } from '../../../services/vet/vet.service.js';
+import { VetService } from '../../../services/vet/vet.service';
 
 @Component({
   selector: 'app-vet-form',

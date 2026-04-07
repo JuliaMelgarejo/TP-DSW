@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
-import { ProductService } from '../../../services/product/product.service.js';
-import { CartService } from '../../../services/Cart/cart-service.service.js';
-import { OrderService } from '../../../services/order/order-srvice.service.js';
+import { ProductService } from '../../../services/product/product.service';
+import { CartService } from '../../../services/Cart/cart-service.service';
+import { OrderService } from '../../../services/order/order-srvice.service';
 import { FormsModule } from '@angular/forms';
-import { AppConfig } from '../../../core/config/app.config.js';
-import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
+import { AppConfig } from '../../../core/config/app.config';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service';
 
 @Component({
   selector: 'app-product-detail',
