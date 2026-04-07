@@ -10,7 +10,7 @@ import {
   getDocumentTypes
 } from "./person.controler.js";
 import { validateToken } from "../validate-token/validate-token.routes.js";
-import { authorizeRoles } from "../middlewares/authorize-role.js";
+import { authorizeRoles } from "../common/middlewares/authorize-role.js";
 
 export const personRouter = Router();
 

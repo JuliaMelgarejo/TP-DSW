@@ -1,164 +1,267 @@
-<div class="container-fluid bg-light min-vh-100 d-flex justify-content-center  align-items-start py-5">
-  <div class="col-12 col-lg-10 col-xl-8">
+<div class="bg-light min-vh-100 py-3 py-lg-4">
+  <div class="container px-3">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10 col-xl-7">
 
-    <!-- Header -->
-    <div class="text-center mb-5">
-      <div class="fs-1">😊</div>
-      <h1 class="fw-bold">Patas alegres</h1>
-      <h4 class="mb-3">Paso 1 - Datos de cuenta</h4>
-    </div>
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-3 p-md-4">
 
-    <form [formGroup]="UserForm">
-      <div class = "row">
-        <div class="col-12 col-lg-6">
-          <!-- USERNAME -->
-          <div class="mb-4 text-center">
-            <label class="form-label fw-semibold">Usuario</label>
-            <input
-              type="text"
-              class="form-control form-control-lg"
-              formControlName="username"
-              placeholder="Ingresar aqui el usuario"
-            />
-            <p class="error" *ngIf="UserForm.get('username')?.invalid && UserForm.get('username')?.touched">El tipo de documento es obligatorio</p>
-          </div>
-
-          <!-- PASSWORD -->
-          <div class="mb-4 text-center">
-            <label class="form-label fw-semibold">Contraseña</label>
-            <input
-              type="password"
-              class="form-control form-control-lg"
-              formControlName="password"
-              placeholder="Ingresar aqui la contraseña"
-            />
-            <p class="error" *ngIf="UserForm.get('password')?.invalid && UserForm.get('password')?.touched">El tipo de documento es obligatorio</p>
-          </div>
-
-          <!-- PERSON GROUP -->
-          <div formGroupName="person">
-
-            <!-- NAME -->
-            <div class="mb-4 text-center">
-              <label class="form-label fw-semibold">Nombre</label>
-              <input
-                type="text"
-                class="form-control form-control-lg"
-                formControlName="name"
-                placeholder="Ingresar aqui el nombre"
-              />
-              <p class="error" *ngIf="UserForm.get('name')?.invalid && UserForm.get('name')?.touched">El tipo de documento es obligatorio</p>
+            <div class="text-center mb-4">
+              <h2 class="fw-bold mb-1">Patas alegres</h2>
+              <h5 class="mb-0">Paso 1 - Datos de cuenta</h5>
             </div>
 
-            <!-- SURNAME -->
-            <div class="mb-4 text-center">
-              <label class="form-label fw-semibold">Apellido</label>
-              <input
-                type="text"
-                class="form-control form-control-lg"
-                formControlName="surname"
-                placeholder="Ingresar aqui el apellido"
-              />
-              <p class="error" *ngIf="UserForm.get('surname')?.invalid && UserForm.get('surname')?.touched">El tipo de documento es obligatorio</p>
+            <div *ngIf="submitError" class="alert alert-danger">
+              {{ submitError }}
             </div>
 
-            <!-- DOC TYPE -->
-            <div class="mb-4 text-center">
-              <label class="form-label fw-semibold">Tipo de documento</label>
+            <form [formGroup]="UserForm">
+              <div class="row g-3">
 
-              <div class="input-group input-group-lg">
-                <select
-                  class="form-select"
-                  formControlName="doc_type"
-                >
-                  <option value="" disabled selected>Tipos de documentos</option>
-                  <option value="dni">DNI</option>
-                  <option value="pasaporte">Pasaporte</option>
-                  <option value="cuit">CUIT</option>
-                </select>
+                <div class="col-12 col-lg-6">
+
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Usuario</label>
+
+                    <input
+                      type="text"
+                      formControlName="username"
+                      placeholder="Ingresar aqui el usuario"
+                      class="form-control"
+                      [class.is-invalid]="
+                        (UserForm.get('username')?.touched && UserForm.get('username')?.invalid) ||
+                        !!usernameExistsError
+                      "
+                    />
+
+                    <div class="invalid-feedback" *ngIf="UserForm.get('username')?.touched && UserForm.get('username')?.hasError('required')">
+                      El usuario es obligatorio
+                    </div>
+
+                    <div class="invalid-feedback" *ngIf="UserForm.get('username')?.touched && UserForm.get('username')?.hasError('minlength')">
+                      El usuario debe tener al menos 3 caracteres
+                    </div>
+
+                    <div class="invalid-feedback" *ngIf="usernameExistsError">
+                      {{ usernameExistsError }}
+                    </div>
+
+                    <div class="form-text" *ngIf="checkingUsername">
+                      Validando usuario...
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Contraseña</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      formControlName="password"
+                      placeholder="Ingresar aqui la contraseña"
+                      [class.is-invalid]="UserForm.get('password')?.invalid && UserForm.get('password')?.touched"
+                    />
+
+                    <div class="invalid-feedback" *ngIf="UserForm.get('password')?.touched && UserForm.get('password')?.hasError('required')">
+                      La contraseña es obligatoria
+                    </div>
+
+                    <div class="invalid-feedback" *ngIf="UserForm.get('password')?.touched && UserForm.get('password')?.hasError('pattern')">
+                      Debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo
+                    </div>
+                  </div>
+
+                  <div formGroupName="person">
+
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold">Nombre</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        formControlName="name"
+                        placeholder="Ingresar aqui el nombre"
+                        [class.is-invalid]="UserForm.get('person.name')?.invalid && UserForm.get('person.name')?.touched"
+                      />
+
+                      <div class="invalid-feedback" *ngIf="UserForm.get('person.name')?.touched && UserForm.get('person.name')?.hasError('required')">
+                        El nombre es obligatorio
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold">Apellido</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        formControlName="surname"
+                        placeholder="Ingresar aqui el apellido"
+                        [class.is-invalid]="UserForm.get('person.surname')?.invalid && UserForm.get('person.surname')?.touched"
+                      />
+
+                      <div class="invalid-feedback" *ngIf="UserForm.get('person.surname')?.touched && UserForm.get('person.surname')?.hasError('required')">
+                        El apellido es obligatorio
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold">Tipo de documento</label>
+
+                      <select
+                        class="form-select"
+                        formControlName="doc_type"
+                        [class.is-invalid]="UserForm.get('person.doc_type')?.invalid && UserForm.get('person.doc_type')?.touched"
+                      >
+                        <option [ngValue]="null" disabled>Tipos de documentos</option>
+                        <option *ngFor="let doc of documentTypes" [ngValue]="doc.value">
+                          {{ doc.label }}
+                        </option>
+                      </select>
+
+                      <div class="invalid-feedback" *ngIf="UserForm.get('person.doc_type')?.touched && UserForm.get('person.doc_type')?.hasError('required')">
+                        El tipo de documento es obligatorio
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="col-12 col-lg-6" formGroupName="person">
+
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Numero de documento</label>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="doc_nro"
+                      placeholder="Ingresar aqui el numero"
+                      [class.is-invalid]="UserForm.get('person.doc_nro')?.invalid && UserForm.get('person.doc_nro')?.touched"
+                    />
+
+                    <div class="invalid-feedback" *ngIf="UserForm.get('person.doc_nro')?.touched && UserForm.get('person.doc_nro')?.hasError('required')">
+                      El número de documento es obligatorio
+                    </div>
+
+                    <div class="invalid-feedback" *ngIf="UserForm.get('person.doc_nro')?.touched && UserForm.get('person.doc_nro')?.hasError('pattern')">
+                      El número de documento solo debe contener números
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Numero de cuit</label>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="nroCuit"
+                      placeholder="Ingresar aqui el numero de cuit"
+                      [class.is-invalid]="UserForm.get('person.nroCuit')?.invalid && UserForm.get('person.nroCuit')?.touched"
+                    />
+
+                    <div class="invalid-feedback" *ngIf="UserForm.get('person.nroCuit')?.touched && UserForm.get('person.nroCuit')?.hasError('pattern')">
+                      El CUIT debe tener exactamente 11 números
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Fecha de nacimiento</label>
+
+                    <input
+                      type="date"
+                      class="form-control"
+                      formControlName="birthdate"
+                      [class.is-invalid]="UserForm.get('person.birthdate')?.invalid && UserForm.get('person.birthdate')?.touched"
+                    />
+
+                    <div class="invalid-feedback" *ngIf="UserForm.get('person.birthdate')?.touched && UserForm.get('person.birthdate')?.hasError('required')">
+                      La fecha de nacimiento es obligatoria
+                    </div>
+
+                    <div class="invalid-feedback" *ngIf="UserForm.get('person.birthdate')?.touched && UserForm.get('person.birthdate')?.hasError('futureDate')">
+                      La fecha de nacimiento no puede ser futura
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Numero de telefono</label>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="phoneNumber"
+                      placeholder="Ingresar aqui el numero de telefono"
+                      [class.is-invalid]="UserForm.get('person.phoneNumber')?.invalid && UserForm.get('person.phoneNumber')?.touched"
+                    />
+
+                    <div class="invalid-feedback" *ngIf="UserForm.get('person.phoneNumber')?.touched && UserForm.get('person.phoneNumber')?.hasError('pattern')">
+                      El teléfono debe tener entre 6 y 15 números
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Email</label>
+
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="email"
+                      placeholder="Ingresar aqui el email"
+                      [class.is-invalid]="UserForm.get('person.email')?.invalid && UserForm.get('person.email')?.touched"
+                    />
+
+                    <div class="invalid-feedback" *ngIf="UserForm.get('person.email')?.touched && UserForm.get('person.email')?.hasError('email')">
+                      El email no tiene un formato válido
+                    </div>
+                  </div>
+
+                  <div class="card border-0 bg-body-tertiary">
+                    <div class="card-body p-2 p-md-3">
+                      <app-address-picker [form]="addressForm"></app-address-picker>
+
+                      <div class="text-danger small mt-2" *ngIf="addressForm.get('formattedAddress')?.touched && addressForm.get('formattedAddress')?.hasError('required')">
+                        Tenés que seleccionar una dirección válida
+                      </div>
+
+                      <div class="text-danger small mt-1" *ngIf="addressForm.get('city')?.touched && addressForm.get('city')?.hasError('required')">
+                        La ciudad es obligatoria
+                      </div>
+
+                      <div class="text-danger small mt-1" *ngIf="addressForm.get('province')?.touched && addressForm.get('province')?.hasError('required')">
+                        La provincia es obligatoria
+                      </div>
+
+                      <div class="text-danger small mt-1" *ngIf="addressForm.get('country')?.touched && addressForm.get('country')?.hasError('required')">
+                        El país es obligatorio
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
               </div>
-            </div>
+
+              <div class="d-grid d-md-flex gap-2 mt-4">
+                <button
+                  type="button"
+                  class="btn btn-secondary w-100"
+                  (click)="goBack()"
+                  routerLink="/login"
+                >
+                  Volver
+                </button>
+
+                <button
+                  type="button"
+                  class="btn btn-primary w-100"
+                  (click)="next()"
+                >
+                  Continuar
+                </button>
+              </div>
+            </form>
 
           </div>
         </div>
 
-        <div class="col-12 col-lg-6" formGroupName="person">
-          <!-- DOC NUMBER -->
-          <div class="mb-4 text-center">
-            <label class="form-label fw-semibold">Numero de documento</label>
-            <input
-              type="text"
-              class="form-control form-control-lg"
-              formControlName="doc_nro"
-              placeholder="Ingresar aqui el numero"
-            />
-            <p class="error" *ngIf="UserForm.get('doc_nro')?.invalid && UserForm.get('doc_nro')?.touched">El tipo de documento es obligatorio</p>
-          </div>
-
-          <!-- CUIT -->
-          <div class="mb-4">
-            <label class="form-label fw-semibold">Numero de cuit</label>
-            <input
-              type="text"
-              class="form-control form-control-lg"
-              formControlName="nroCuit"
-              placeholder="Ingresar aqui el numero de cuit"
-            />
-          </div>
-
-          <!-- BIRTHDATE -->
-          <div class="mb-4 text-center">
-            <label class="form-label fw-semibold">Fecha de nacimiento</label>
-            <input
-              type="date"
-              class="form-control form-control-lg"
-              formControlName="birthdate"
-            />
-            <p class="error" *ngIf="UserForm.get('birthdate')?.invalid && UserForm.get('birthdate')?.touched">El tipo de documento es obligatorio</p>
-          </div>
-          
-          <!-- PHONENUMBER -->
-          <div class="mb-4 text-center">
-            <label class="form-label fw-semibold">Numero de telefono</label>
-            <input
-              type="text"
-              class="form-control form-control-lg"
-              formControlName="phoneNumber"
-              placeholder="Ingresar aqui el numero de telefono"
-            />
-            <p class="error" *ngIf="UserForm.get('phoneNumber')?.invalid && UserForm.get('phoneNumber')?.touched">El tipo de documento es obligatorio</p>
-          </div>
-
-          
-          <!-- EMAIL -->
-          <div class="mb-4 text-center">
-            <label class="form-label fw-semibold">Email</label>
-            <input
-              type="text"
-              class="form-control form-control-lg"
-              formControlName="email"
-              placeholder="Ingresar aqui el email"
-            />
-          </div>
-
-          <div class="form-fieldset mb-3 d-flex flex-column rounded">
-            <app-address-picker
-              [form]="addressForm">
-            </app-address-picker>
-          </div>
-        </div>
       </div>
-      <!-- SUBMIT -->
-     <div class="d-flex justify-content-center mt-5">
-        <button
-          type="submit"
-          class="btn btn-secondary btn-lg px-5 py-3"
-          style="min-width: 300px;"
-          (click)="next()"
-        >
-          Continuar
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
 </div>

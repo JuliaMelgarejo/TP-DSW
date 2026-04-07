@@ -14,7 +14,7 @@ export class User extends BaseEntity {
   @Property({nullable: false, unique:true })
   username!: string
 
-  @Property({nullable: false, unique:true})
+  @Property({nullable: false})
   password!: string
 
   @Enum(() => UserRole)

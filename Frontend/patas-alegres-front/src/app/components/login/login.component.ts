@@ -7,6 +7,7 @@ import { UserService } from '../../services/user/user.service.js';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorService } from '../../services/errors/error.service.js';
 import { AuthService } from '../../services/auth/auth.service.js';
+import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service.js';
 
 
 @Component({
@@ -24,7 +25,8 @@ export class LoginComponent {
     private userservice :UserService,
     private router :Router,
     private errorservice: ErrorService,
-    private authService: AuthService
+    private authService: AuthService,
+    private toast: ToastNotificationService,
   ){
 
   }
@@ -32,7 +34,7 @@ export class LoginComponent {
   login(){
     // Validamos que el usuario ingrese datos
     if (this.username == '' || this.password == '') {
-     alert('Todos los campos son obligatorios');
+      this.toast.show('Todos los campos son obligatorios', 'warning')
       return
     }
 
@@ -45,10 +47,12 @@ export class LoginComponent {
     this.userservice.login(user).subscribe({
       next: (token) => {
         this.authService.setToken(token);
+        this.toast.show('Inicio sesion correctamente', 'success')
         this.router.navigate(['/home'])
       },
      error: (e: HttpErrorResponse) => {
-          this.errorservice.msjError(e);
+        // this.errorservice.msjError(e);
+        this.toast.show(e.error.msg, 'warning')
       }
     })
   }

@@ -6,6 +6,7 @@ import { ShelterService } from '../../../services/shelter/shelter.service.js';
 import { Shelter } from '../../../models/shelter/shelter.model.js';
 import { AuthService } from '../../../services/auth/auth.service.js';
 import { AddressPickerComponent } from "../../shared/address-picker/address-picker.component";
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-shelter-detail',
@@ -23,6 +24,7 @@ export class ShelterDetailComponent {
     private route: ActivatedRoute,
     public shelterService: ShelterService,
     public auth: AuthService,
+    private toast: ToastNotificationService
   ) {
 
     this.shelterForm = this.fb.group({
@@ -91,7 +93,7 @@ export class ShelterDetailComponent {
     };
 
     this.shelterService.updateShelter(updated).subscribe({
-      next: () => console.log('Refugio actualizado')
+      next: () => this.toast.show('Refugio actualizado', 'success')
     });
   }
 }

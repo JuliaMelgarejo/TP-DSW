@@ -9,14 +9,16 @@ export class Shelter {
   address: Address;
   max_capacity: number;
   rescues: Rescue[] = [];
+  distance?: number;
 
-  constructor(name: string, phoneNumber: string, tuitionVet: string, address: Address, max_capacity: number, rescues: Rescue[] = [], id?: number){
+  constructor(name: string, phoneNumber: string, tuitionVet: string, address: Address, max_capacity: number, rescues: Rescue[] = [], distance?: number, id?: number){
     this.name = name;
     this.phoneNumber = phoneNumber;
     this.tuitionVet = tuitionVet;
     this.address = address;
     this.max_capacity = max_capacity;
     this.rescues = rescues;
+    this.distance = distance;
     this.id = id;
   }
 }

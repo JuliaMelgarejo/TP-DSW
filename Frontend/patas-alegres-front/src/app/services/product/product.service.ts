@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment.js';
 import { Product } from '../../models/product/product.js';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ProductFilters } from '../../models/product/product-filters.js';
+import { AppConfig } from '../../core/config/app.config.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  readonly API_URL= `${environment.apiUrl}/product`;
+  readonly API_URL= `${AppConfig.apiUrl}/product`;
   products: Product[] = [];
 
   constructor(private http: HttpClient) { 

@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Person } from '../../models/person/person.model.js';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment.js';
+import { AppConfig } from '../../core/config/app.config.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PersonService {
-  readonly API_URL = `${environment.apiUrl}/person`
+  readonly API_URL = `${AppConfig.apiUrl}/person`
 
   people: Person[] = [];
 

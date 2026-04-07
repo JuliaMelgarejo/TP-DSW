@@ -1,85 +1,133 @@
-<div class="container-fluid bg-light min-vh-100 d-flex justify-content-center  align-items-start py-5">
-  <div class="col-12 col-lg-10 col-xl-8">
+<div class="bg-light min-vh-100 py-4 py-lg-5">
+  <div class="container px-3 px-lg-4">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10 col-xl-8">
 
-    <!-- Header -->
-    <div class="text-center mb-5">
-      <div class="fs-1">😊</div>
-      <h1 class="fw-bold">Patas alegres</h1>
-      <h4 class="mb-3">Paso 2 - Datos del refugio</h4>
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-3 p-md-4 p-lg-5">
 
-    <form [formGroup]="ShelterForm">
-      <div class = "row">
-        <div class="col-12 col-lg-6">
-          <!-- NAME -->
-          <div class="mb-4 text-center">
-            <label class="form-label fw-semibold">Nombre de tu refugio</label>
-            <input
-              type="text"
-              class="form-control form-control-lg"
-              formControlName="name"
-              placeholder="Ingresar aqui el nombre del refugio"
-            />
-            <p class="error" *ngIf="ShelterForm.get('name')?.invalid && ShelterForm.get('name')?.touched">El nombre del refugio es obligatorio</p>
-          </div>
+            <div class="text-center mb-4 mb-lg-5">
+              <h1 class="fw-bold mb-2">Patas alegres</h1>
+              <h4 class="mb-0">Paso 2 - Datos del refugio</h4>
+            </div>
 
-          <!-- Contacto -->
-          <div class="mb-4 text-center">
-            <label class="form-label fw-semibold">Numero de contacto</label>
-            <input
-              type="text"
-              class="form-control form-control-lg"
-              formControlName="phoneNumber"
-              placeholder="Ingresar aqui el numero de contacto"
-            />
-          </div>
+            <div *ngIf="submitError" class="alert alert-danger">
+              {{ submitError }}
+            </div>
 
-          <!-- Veterinaria -->
-          <div class="mb-4 text-center">
-            <label class="form-label fw-semibold">Matricula de veterinaria</label>
-            <input
-              type="text"
-              class="form-control form-control-lg"
-              formControlName="tuitionVet"
-              placeholder="Ingresar aqui la matricula de veterinaria"
-            />
-            <p class="error" *ngIf="ShelterForm.get('tuitionVet')?.invalid && ShelterForm.get('tuitionVet')?.touched">La matricula de veterinaria es obligatoria</p>
-          </div>
+            <form [formGroup]="ShelterForm" (ngSubmit)="finish()">
+              <div class="row g-4">
 
-          <!-- Capacidad maxima -->
-          <div class="mb-4 text-center">
-            <label class="form-label fw-semibold">Capacidad maxima</label>
-            <input
-              type="number"
-              class="form-control form-control-lg"
-              formControlName="max_capacity"
-              placeholder="Ingresar aqui la capacidad maxima del refugio"
-            />
-            <p class="error" *ngIf="ShelterForm.get('max_capacity')?.invalid && ShelterForm.get('max_capacity')?.touched">La capacidad maxima es obligatoria</p>
+                <div class="col-12 col-lg-6">
+                  <div class="mb-4">
+                    <label class="form-label fw-semibold">Nombre de tu refugio</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-lg"
+                      formControlName="name"
+                      placeholder="Ingresar aquí el nombre del refugio"
+                    />
+                    <p class="text-danger small mt-1 mb-0" *ngIf="ShelterForm.get('name')?.touched && ShelterForm.get('name')?.hasError('required')">
+                      El nombre del refugio es obligatorio
+                    </p>
+                    <p class="text-danger small mt-1 mb-0" *ngIf="backendErrors['shelter.name']">
+                      {{ backendErrors['shelter.name'] }}
+                    </p>
+                  </div>
+
+                  <div class="mb-4">
+                    <label class="form-label fw-semibold">Número de contacto</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-lg"
+                      formControlName="phoneNumber"
+                      placeholder="Ingresar aquí el número de contacto"
+                    />
+                    <p class="text-danger small mt-1 mb-0" *ngIf="ShelterForm.get('phoneNumber')?.touched && ShelterForm.get('phoneNumber')?.hasError('required')">
+                      El teléfono del refugio es obligatorio
+                    </p>
+                    <p class="text-danger small mt-1 mb-0" *ngIf="backendErrors['shelter.phoneNumber']">
+                      {{ backendErrors['shelter.phoneNumber'] }}
+                    </p>
+                  </div>
+
+                  <div class="mb-4">
+                    <label class="form-label fw-semibold">Matrícula de veterinaria</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-lg"
+                      formControlName="tuitionVet"
+                      placeholder="Ingresar aquí la matrícula veterinaria"
+                    />
+                    <p class="text-danger small mt-1 mb-0" *ngIf="ShelterForm.get('tuitionVet')?.touched && ShelterForm.get('tuitionVet')?.hasError('required')">
+                      La matrícula veterinaria es obligatoria
+                    </p>
+                    <p class="text-danger small mt-1 mb-0" *ngIf="backendErrors['shelter.tuitionVet']">
+                      {{ backendErrors['shelter.tuitionVet'] }}
+                    </p>
+                  </div>
+
+                  <div class="mb-4 mb-lg-0">
+                    <label class="form-label fw-semibold">Capacidad máxima</label>
+                    <input
+                      type="number"
+                      class="form-control form-control-lg"
+                      formControlName="max_capacity"
+                      placeholder="Ingresar aquí la capacidad máxima"
+                    />
+                    <p class="text-danger small mt-1 mb-0" *ngIf="ShelterForm.get('max_capacity')?.touched && ShelterForm.get('max_capacity')?.hasError('required')">
+                      La capacidad máxima es obligatoria
+                    </p>
+                    <p class="text-danger small mt-1 mb-0" *ngIf="ShelterForm.get('max_capacity')?.touched && ShelterForm.get('max_capacity')?.hasError('min')">
+                      La capacidad máxima debe ser mayor a 0
+                    </p>
+                    <p class="text-danger small mt-1 mb-0" *ngIf="backendErrors['shelter.max_capacity']">
+                      {{ backendErrors['shelter.max_capacity'] }}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                  <div class="card border-0 bg-body-tertiary">
+                    <div class="card-body p-3 p-md-4">
+                      <app-address-picker [form]="addressForm"></app-address-picker>
+
+                      <p class="text-danger small mt-2 mb-0" *ngIf="backendErrors['shelter.address']">
+                        {{ backendErrors['shelter.address'] }}
+                      </p>
+                      <p class="text-danger small mt-1 mb-0" *ngIf="backendErrors['shelter.address.formattedAddress']">
+                        {{ backendErrors['shelter.address.formattedAddress'] }}
+                      </p>
+                      <p class="text-danger small mt-1 mb-0" *ngIf="backendErrors['shelter.address.city']">
+                        {{ backendErrors['shelter.address.city'] }}
+                      </p>
+                      <p class="text-danger small mt-1 mb-0" *ngIf="backendErrors['shelter.address.province']">
+                        {{ backendErrors['shelter.address.province'] }}
+                      </p>
+                      <p class="text-danger small mt-1 mb-0" *ngIf="backendErrors['shelter.address.country']">
+                        {{ backendErrors['shelter.address.country'] }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="d-grid d-md-flex gap-2 mt-4">
+                <button class="btn btn-secondary w-100" type="button" (click)="goBack()">
+                  Volver
+                </button>
+
+                <button class="btn btn-success w-100" type="submit">
+                  Finalizar
+                </button>
+              </div>
+            </form>
+
           </div>
         </div>
 
-        <div class="col-12 col-lg-6">
-          <div class="form-fieldset mb-3 d-flex flex-column rounded">
-            <app-address-picker
-              [form]="addressForm">
-            </app-address-picker>
-          </div>
-        </div>
       </div>
-
-      <div class="d-flex gap-2">
-        <button class="btn btn-secondary w-50"
-                routerLink="/signIn/shelter/account">
-          Volver
-        </button>
-
-        <button class="btn btn-success w-50"
-                (click)="finish()">
-          Finalizar
-        </button>
-      </div>
-
-    </form>
-
+    </div>
   </div>
 </div>

@@ -1,228 +1,144 @@
-<div class="pa-page">
-  <div class="pa-container">
+<div class="bg-light min-vh-100 py-4">
+  <div class="container">
 
-    <div class="row g-3">
-
-      <!-- =========================
-           IZQUIERDA: FORM RESCATE
-           ========================= -->
+    <div class="row g-4">
       <div class="col-12 col-lg-6">
-
-        <!-- CARD FORM -->
         <app-rescue-form
-          class="mobile-form-card"
           (submitRescue)="createRescue($event)">
         </app-rescue-form>
 
-        <!-- =========================
-             MOBILE: ANIMALES + CONFIRMAR (PEGADO AL FORM)
-             ========================= -->
-        <div class="pa-card pa-section pa-panel d-lg-none mobile-animals-card">
+        <div class="card shadow-sm border-0 mt-3 d-lg-none">
+          <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <h6 class="fw-bold mb-0 text-dark">Animales cargados</h6>
+              <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addAnimalModal">
+                + Agregar animal
+              </button>
+            </div>
 
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <div class="fw-bold">Animales cargados</div>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <ng-container *ngIf="animals.length > 0; else noAnimalsMobile">
+                <span class="badge text-bg-white border text-dark d-flex align-items-center gap-2 px-3 py-2 fw-semibold" *ngFor="let a of animals; let i = index">
+                  {{ a.name }}
+                  <button class="btn-close" style="width: 0.5em; height: 0.5em;" type="button" (click)="removeAnimal(i)"></button>
+                </span>
+              </ng-container>
+              <ng-template #noAnimalsMobile>
+                <p class="text-muted small mb-0">Todavía no agregaste animales.</p>
+              </ng-template>
+            </div>
 
-            <button
-              class="pa-btn pa-btn-primary"
-              type="button"
-              data-bs-toggle="modal"
-              data-bs-target="#addAnimalModal">
-              + Agregar animal
+            <button class="btn btn-primary w-100 fw-bold py-2" type="button" (click)="submitRescueFromParent()" [disabled]="saving">
+              {{ saving ? 'Guardando...' : 'Confirmar rescate' }}
             </button>
           </div>
-
-          <div class="d-flex flex-wrap gap-2 mb-2">
-            <ng-container *ngIf="animals.length > 0; else noAnimalsMobile">
-              <span class="pa-chip pa-chip-accent" *ngFor="let a of animals; let i = index">
-                {{ a.name }}
-                <button class="pa-btn-link ms-2" type="button" (click)="removeAnimal(i)">×</button>
-              </span>
-            </ng-container>
-
-            <ng-template #noAnimalsMobile>
-              <span class="pa-muted pa-small">Todavía no agregaste animales.</span>
-            </ng-template>
-          </div>
-
-          <div class="mt-3">
-            <button
-              class="pa-btn pa-btn-primary w-100"
-              type="button"
-              (click)="submitRescueFromParent()">
-              Confirmar rescate
-            </button>
-          </div>
-
         </div>
       </div>
 
-      <!-- =========================
-           DESKTOP: ANIMALES + CONFIRMAR (COLUMNA DERECHA)
-           ========================= -->
       <div class="col-12 col-lg-6 d-none d-lg-block">
-        <div class="pa-card pa-section pa-panel">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+              <h5 class="fw-bold mb-0">Animales para registrar</h5>
+              <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addAnimalModal">
+                + Agregar animal
+              </button>
+            </div>
 
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <div class="fw-bold">Animales cargados</div>
-
-            <button
-              class="pa-btn pa-btn-primary"
-              type="button"
-              data-bs-toggle="modal"
-              data-bs-target="#addAnimalModal">
-              + Agregar animal
-            </button>
+            <div class="flex-grow-1">
+              <div class="d-flex flex-wrap gap-2 mb-4">
+                <ng-container *ngIf="animals.length > 0; else noAnimalsDesktop">
+                  <span class="badge text-bg-white border text-dark d-flex align-items-center gap-2 px-3 py-2 fs-6 fw-semibold" *ngFor="let a of animals; let i = index">
+                    {{ a.name }}
+                    <button class="btn-close" style="width: 0.6em; height: 0.6em;" type="button" (click)="removeAnimal(i)"></button>
+                  </span>
+                </ng-container>
+                <ng-template #noAnimalsDesktop>
+                  <div class="text-center py-5 border rounded bg-white w-100">
+                    <p class="text-muted mb-0">No hay animales en la lista.</p>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+            
+            <div class="mt-4 pt-3 border-top">
+              <button class="btn btn-primary btn-lg w-100 fw-bold" type="button" (click)="submitRescueFromParent()" [disabled]="saving || animals.length === 0">
+                {{ saving ? 'Procesando...' : 'Confirmar y Guardar Rescate' }}
+              </button>
+            </div>
           </div>
-
-          <div class="d-flex flex-wrap gap-2 mb-2">
-            <ng-container *ngIf="animals.length > 0; else noAnimalsDesktop">
-              <span class="pa-chip pa-chip-accent" *ngFor="let a of animals; let i = index">
-                {{ a.name }}
-                <button class="pa-btn-link ms-2" type="button" (click)="removeAnimal(i)">×</button>
-              </span>
-            </ng-container>
-
-            <ng-template #noAnimalsDesktop>
-              <span class="pa-muted pa-small">Todavía no agregaste animales.</span>
-            </ng-template>
-          </div>
-          
-          <div class="mt-3">
-            <button
-              class="pa-btn pa-btn-primary w-100"
-              type="button"
-              (click)="submitRescueFromParent()">
-              Confirmar rescate
-            </button>
-          </div>
-
         </div>
       </div>
-
     </div>
-
-    <!-- Loader -->
-    <div class="text-center pa-muted mt-3" *ngIf="saving">
-      Guardando...
-    </div>
-
   </div>
 </div>
 
-
-<!-- =========================
-     MODAL: AGREGAR ANIMAL
-     ========================= -->
 <div class="modal fade" id="addAnimalModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
-
-    <div class="modal-content pa-card" style="border-radius: var(--pa-radius); overflow:hidden;">
-
-      <div class="modal-header"
-           style="border-bottom:1px solid var(--pa-border); background: var(--pa-surface);">
-        <div class="fw-bold">Agregar animal rescatado</div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-content border-0 shadow-lg">
+      
+      <div class="modal-header border-bottom-0">
+        <h5 class="modal-title fw-bold">Nuevo integrante rescatado</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <div class="modal-body" style="background: var(--pa-bg);">
+      <div class="modal-body py-0">
+        <div class="p-3 bg-light rounded-3 mb-3">
+          <form [formGroup]="animalForm" class="row g-3">
+            
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-secondary">Nombre del animal</label>
+              <input
+                class="form-control"
+                type="text"
+                formControlName="name"
+                placeholder="Ej: Rocky"
+                [class.is-invalid]="animalForm.get('name')?.touched && animalForm.get('name')?.invalid" />
+              <div class="invalid-feedback">El nombre es necesario.</div>
+            </div>
 
-        <div class="pa-filters-wrap">
-          <div class="pa-card pa-section pa-panel">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-secondary">Fecha de nacimiento (aprox)</label>
+              <input class="form-control" type="date" formControlName="birth_date" />
+            </div>
 
-            <form [formGroup]="animalForm" class="d-grid pa-gap-md">
+            <div class="col-12">
+              <label class="form-label small fw-bold text-secondary">Raza / Categoría</label>
+              <select class="form-select" formControlName="breedId" 
+                [class.is-invalid]="animalForm.get('breedId')?.touched && animalForm.get('breedId')?.invalid">
+                <option [ngValue]="null">Seleccionar una opción</option>
+                <option *ngFor="let b of breeds" [ngValue]="b.id">{{ b.name }}</option>
+              </select>
+              <div class="invalid-feedback">Selecciona una raza.</div>
+            </div>
 
-              <!-- Nombre -->
-              <div>
-                <div class="fw-bold mb-1">Nombre</div>
-                <input
-                  class="pa-input w-100"
-                  type="text"
-                  formControlName="name"
-                  placeholder="Ingresa aquí el nombre" />
-                <div class="text-danger small"
-                     *ngIf="animalForm.controls.name.touched && animalForm.controls.name.invalid">
-                  Requerido
-                </div>
-              </div>
-
-              <!-- Fecha nacimiento -->
-              <div>
-                <div class="fw-bold mb-1">Fecha de nacimiento</div>
-                <input
-                  class="pa-input w-100"
-                  type="date"
-                  formControlName="birth_date" />
-              </div>
-
+            <div class="col-12">
+              <label class="form-label small fw-bold text-secondary">Descripción y estado</label>
+              <textarea class="form-control" rows="3" formControlName="description" 
+                placeholder="Estado de salud, temperamento, etc."></textarea>
+            </div>
+            
+            <div class="col-12">
+              <label class="form-label small fw-bold text-secondary">Fotografía</label>
+              <input class="form-control" type="file" accept="image/*" (change)="onAnimalPhotoChange($event)" />
               
-              <!-- Description -->
-                <div>
-                  <div class="fw-bold mb-1">Descripción</div>
-                  <textarea
-                    class="pa-input w-100"
-                    rows="2"
-                    formControlName="description"
-                    placeholder="Descripción del animal">
-                  </textarea>
-                </div>
-              
-              <!-- FOTO (opcional) -->
-                <div>
-                  <div class="fw-bold mb-1">Foto (opcional)</div>
-
-                  <input
-                    class="pa-input w-100"
-                    type="file"
-                    accept="image/*"
-                    (change)="onAnimalPhotoChange($event)"
-                  />
-
-
-                  <div *ngIf="selectedAnimalPreview" class="mt-2">
-                    <img
-                      [src]="selectedAnimalPreview"
-                      alt="Vista previa"
-                      style="width: 100%; max-height: 220px; object-fit: cover; border-radius: 12px; border: 1px solid var(--pa-border);"
-                    />
-                  </div>
-                </div>
-
-
-
-              <!-- Breed -->
-              <div>
-                <div class="fw-bold mb-1">Raza</div>
-                <select class="pa-input w-100" formControlName="breedId">
-                  <option [ngValue]="null">Seleccionar raza</option>
-                  <option *ngFor="let b of breeds" [ngValue]="b.id">{{ b.name }}</option>
-                </select>
-
-                <div class="text-danger small"
-                     *ngIf="animalForm.controls.breedId.touched && animalForm.controls.breedId.invalid">
-                  Requerido
-                </div>
+              <div *ngIf="selectedAnimalPreview" class="mt-3 text-center border rounded p-2 bg-white">
+                <img [src]="selectedAnimalPreview" class="img-fluid rounded" style="max-height: 250px;">
               </div>
-
-              <!-- Botones -->
-              <div class="d-flex gap-2 mt-2">
-                <button class="pa-btn pa-btn-outline w-100" type="button" data-bs-dismiss="modal">
-                  Cancelar
-                </button>
-
-                <button
-                  class="pa-btn pa-btn-primary w-100"
-                  type="button"
-                  (click)="addAnimalFromModal()"
-                  [attr.data-bs-dismiss]="animalForm.valid ? 'modal' : null">
-                  Confirmo
-                </button>
-              </div>
-
-            </form>
-
-          </div>
+            </div>
+          </form>
         </div>
+      </div>
 
+      <div class="modal-footer border-top-0 pb-4 px-4">
+        <button class="btn btn-outline-secondary px-4" type="button" data-bs-dismiss="modal">Cancelar</button>
+        <button
+          class="btn btn-primary px-5 fw-bold"
+          type="button"
+          (click)="addAnimalFromModal()"
+          [attr.data-bs-dismiss]="animalForm.valid ? 'modal' : null">
+          Agregar a la lista
+        </button>
       </div>
 
     </div>

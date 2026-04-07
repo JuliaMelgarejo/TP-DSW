@@ -1,38 +1,83 @@
-<div class="container mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold mb-6 text-center">Adoptando a {{ selectedAnimal?.name }}</h1>
+<div class="bg-light min-vh-100 py-5">
+  <div class="container" style="max-width: 800px;">
+    
+    <div class="text-center mb-5">
+      <h1 class="fw-bold display-6">Adoptando a <span class="text-primary">{{ selectedAnimal?.name }}</span></h1>
+      <p class="text-muted">Ingresá los datos del adoptante para continuar</p>
+    </div>
 
-  <section class="mb-8">
-    <form (ngSubmit)="searchPerson()">
-      <div class="form-group d-flex justify-content-center align-items-center gap-3">
-        <label for="docType">Tipo de Documento</label>
-        <select class="form-control" [(ngModel)]="docType" name="docType" required style="max-width: fit-content;">
-          <option value="dni">DNI</option>
-          <option value="ci">CI</option>
-          <option value="pasaporte">Pasaporte</option>
-        </select>
+    <section class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-4">
+        <form (ngSubmit)="searchPerson()" class="row g-3 align-items-end justify-content-center">
+          
+          <div class="col-12 col-md-4">
+            <label for="docType" class="form-label small fw-bold text-secondary text-uppercase">Tipo de Documento</label>
+            <select class="form-select" [(ngModel)]="docType" name="docType" required id="docType">
+              <option value="dni">DNI</option>
+              <option value="ci">CI</option>
+              <option value="pasaporte">Pasaporte</option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label for="docNro" class="form-label small fw-bold text-secondary text-uppercase">Número de Documento</label>
+            <input 
+              type="text" 
+              id="docNro"
+              class="form-control" 
+              [(ngModel)]="docNro" 
+              name="docNro" 
+              required 
+              placeholder="Ej: 12345678"
+            />
+          </div>
+
+          <div class="col-12 col-md-auto">
+            <button type="submit" class="btn btn-dark px-4 fw-bold w-100">
+              <i class="bi bi-search me-2"></i>Buscar Persona
+            </button>
+          </div>
+        </form>
       </div>
+    </section>
 
-      <div class="form-group d-flex justify-content-center align-items-center gap-1">
-        <label for="docNro" class="pt-3 pb-3">Número de Documento</label>
-        <input type="text" [(ngModel)]="docNro" name="docNro" required style="max-width: fit-content; width: 6em;" placeholder="12345678"/>
-      </div>
-
-      <div class="d-flex justify-content-center align-items-center w-100">
-        <button type="submit">Buscar Persona</button>
-      </div>
-    </form>
-
-    <div *ngIf="foundPerson">
-      <h3>Persona Encontrada:</h3>
-      <p>{{ foundPerson.name }} {{ foundPerson.surname }}</p>
-
-      <div *ngIf="selectedAnimal && foundPerson" class="confirmation-section">
-        <div class="form-group">
-          <label for="comments">Comentarios (opcional):</label>
-          <textarea class="form-control" [(ngModel)]="comments" name="comments" rows="3" placeholder="Comentarios adicionales..."></textarea>
+    <div *ngIf="foundPerson" class="card border-primary shadow-sm animate__animated animate__fadeIn">
+      <div class="card-body p-4">
+        
+        <div class="d-flex align-items-center mb-4">
+          <div class="bg-primary text-white rounded-circle p-3 me-3">
+            <i class="bi bi-person-check fs-4"></i>
+          </div>
+          <div>
+            <h5 class="mb-0 fw-bold">Persona Encontrada</h5>
+            <p class="text-muted mb-0">{{ foundPerson.name }} {{ foundPerson.surname }}</p>
+          </div>
         </div>
-        <button class="btn btn-primary mt-3" (click)="confirmAdoption()">Confirmar adopción</button>
+
+        <hr class="text-muted opacity-25" />
+
+        <div *ngIf="selectedAnimal && foundPerson" class="mt-4">
+          <div class="mb-3">
+            <label for="comments" class="form-label small fw-bold text-secondary text-uppercase">Comentarios (opcional)</label>
+            <textarea 
+              class="form-control" 
+              id="comments"
+              [(ngModel)]="comments" 
+              name="comments" 
+              rows="3" 
+              placeholder="Agregá notas sobre el proceso de adopción..."
+            ></textarea>
+          </div>
+          
+          <div class="d-grid mt-4">
+            <button class="btn btn-primary btn-lg fw-bold shadow-sm" (click)="confirmAdoption()">
+              Confirmar adopción definitiva
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
-  </section>
+
+  </div>
 </div>

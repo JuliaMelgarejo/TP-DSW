@@ -34,6 +34,8 @@ logs
 
 # Environment variables
 .env
+.env.development
+.env.production
 
 # Coverage directory used by tools like istanbul
 coverage/

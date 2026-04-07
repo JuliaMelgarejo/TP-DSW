@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment.js';
+import { AppConfig } from '../../core/config/app.config.js';
 
 @Injectable({ providedIn: 'root' })
 export class PhotoService {
@@ -25,7 +25,7 @@ export class PhotoService {
     formData.append('photo', file);
 
     return this.http.post(
-      `${environment.apiUrl}/photo/${type}/${id}`,
+      `${AppConfig.apiUrl}/photo/${type}/${id}`,
       formData
     );
   }

@@ -1,65 +1,159 @@
-<div class="pa-page">
-  <div class="pa-container pa-panel">
+<div class="bg-light min-vh-100 py-4">
+  <div class="container px-3" style="max-width: 1100px;">
 
-    <div class="d-flex align-items-center justify-content-between mb-3">
-      <div>
-        <div class="pa-h2">Detalle de solicitud</div>
-        <div class="pa-muted pa-small">Información del pedido y estado</div>
-      </div>
-
-      <a class="pa-btn pa-btn-outline" routerLink="/my-adoptions">Volver</a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <a class="btn btn-outline-secondary" routerLink="/my-adoptions">
+        Volver
+      </a>
     </div>
 
-    <div *ngIf="loading" class="pa-card pa-section">
-      <div class="pa-muted">Cargando...</div>
-    </div>
+    <div *ngIf="loading">Cargando...</div>
 
-    <div *ngIf="!loading && errMsg" class="pa-card pa-section">
-      <div class="pa-alert pa-alert-danger">{{ errMsg }}</div>
-    </div>
+    <div *ngIf="!loading && item">
 
-    <div *ngIf="!loading && item" class="pa-card pa-section">
+      <div class="d-flex justify-content-between align-items-start gap-3 mb-3 flex-wrap">
 
-      <div class="d-flex gap-3 align-items-start">
-        <img
-          [src]="getMainPhoto()"
-          style="width:120px;height:120px;border-radius:16px;object-fit:cover;border:1px solid var(--pa-border);" />
-
-        <div class="flex-grow-1">
-          <div class="pa-h3 mb-1">{{ item?.animal?.name }}</div>
-
-          <div class="pa-small mb-1">
-            <span class="pa-muted">Estado actual:</span>
-            <span class="fw-bold ms-1">{{ getCurrentState() }}</span>
-          </div>
-
-          <div class="pa-small">
-            <span class="pa-muted">Fecha del pedido:</span>
-            <span class="fw-bold ms-1">{{ item?.adoption_date | date:'dd/MM/yyyy' }}</span>
-          </div>
+        <div>
+          <h2 class="mb-1">{{ item?.animal?.name }}</h2>
+          Fecha: {{ item?.adoption_date | date:'dd/MM/yyyy' }}
         </div>
+
+        <div class="text-end">
+          <span class="badge" [ngClass]="{
+            'text-bg-warning': getCurrentState() === 'PENDIENTE',
+            'text-bg-success': getCurrentState() === 'APROBADO',
+            'text-bg-danger':  getCurrentState() === 'CANCELADO' || getCurrentState() === 'RECHAZADO',
+            'text-bg-info':    getCurrentState() !== 'PENDIENTE' && getCurrentState() !== 'APROBADO' && getCurrentState() !== 'CANCELADO' && getCurrentState() !== 'RECHAZADO'
+          }">
+            {{ getCurrentState() }}
+          </span>
+        </div>
+
       </div>
 
-      <hr style="border-color: var(--pa-border);" />
+      <div class="row g-3">
 
-      <div>
-        <div class="fw-bold mb-1">Comentario</div>
-        <div class="pa-muted">{{ item?.comments || '—' }}</div>
+        <div class="col-12 col-lg-5">
+
+          <div class="container-lg p-3 bg-white rounded">
+
+            <div class="mb-3">
+              <img
+                [src]="getMainPhoto()"
+                alt="Foto del animal"
+                style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;"
+                onerror="this.style.display='none'"
+              />
+            </div>
+            <h4>
+              <div class="fw-bold mb-2">Datos de la solicitud</div>
+            </h4>
+
+            <div class="mb-2">
+              <div class="fw-bold">Animal</div>
+              <div class="text-dark">{{ item?.animal?.name || '—' }}</div>
+            </div>
+
+            <div class="mb-2">
+              <div class="fw-bold">Fecha de solicitud</div>
+              <div class="text-dark">{{ item?.adoption_date | date:'dd/MM/yyyy' }}</div>
+            </div>
+
+            <div class="mb-3">
+              <div class="fw-bold">Comentarios</div>
+              <div class="text-dark">{{ item?.comments || 'Sin comentarios adicionales.' }}</div>
+            </div>
+
+            <hr class="my-3"/>
+
+            <div class="d-flex flex-column gap-2">
+              <button
+                type="button"
+                class="btn btn-outline-danger btn-sm fw-bold"
+                (click)="softDelete()"
+                [disabled]="deleting"
+              >
+                <i class="bi bi-trash3 me-1"></i>
+                {{ deleting ? 'Eliminando solicitud...' : 'Eliminar solicitud' }}
+              </button>
+
+              <div *ngIf="deleteErrMsg" class="alert alert-danger py-2 px-3 small border-0 mb-0">
+                <i class="bi bi-exclamation-circle me-2"></i> {{ deleteErrMsg }}
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="col-12 col-lg-7">
+
+          <div class="container-lg p-3 bg-white rounded">
+
+            <div class="fw-bold mb-3">Historial de estados</div>
+
+            <div
+              *ngIf="!item?.statuses || item.statuses.length === 0"
+              class="text-dark"
+            >
+              Sin historial.
+            </div>
+
+            <div
+              *ngIf="item?.statuses && item.statuses.length > 0"
+              class="pa-timeline"
+            >
+
+              <div
+                *ngFor="let s of item.statuses"
+                class="pa-timeline-item"
+              >
+
+                <div class="pa-timeline-dot"></div>
+
+                <div class="pa-timeline-content">
+
+                  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                    <span class="badge" [ngClass]="{
+                      'text-bg-warning': s?.adoptionState?.type === 'PENDIENTE',
+                      'text-bg-success': s?.adoptionState?.type === 'APROBADO',
+                      'text-bg-danger':  s?.adoptionState?.type === 'CANCELADO' || s?.adoptionState?.type === 'RECHAZADO',
+                      'text-bg-info':    s?.adoptionState?.type !== 'PENDIENTE' && s?.adoptionState?.type !== 'APROBADO' && s?.adoptionState?.type !== 'CANCELADO' && s?.adoptionState?.type !== 'RECHAZADO'
+                    }">
+                      {{ s?.adoptionState?.type }}
+                    </span>
+
+                    <span class="text-muted" style="font-size: 13px;">
+                      {{ s?.statusChangeDate | date:'dd/MM/yyyy HH:mm' }}
+                    </span>
+
+                  </div>
+
+                  <div *ngIf="s?.reason" class="text-muted mt-1" style="font-size: 13px;">
+                    {{ s.reason }}
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
 
-      <button
-        type="button"
-        class="pa-btn pa-btn-outline"
-        (click)="softDelete()"
-        [disabled]="deleting"
-      >
-        {{ deleting ? 'Eliminando...' : 'Eliminar solicitud' }}
-      </button>
+    </div>
 
-      <div *ngIf="deleteErrMsg" class="pa-card pa-section" style="border-color: var(--pa-danger);">
-        <div class="pa-muted">{{ deleteErrMsg }}</div>
-      </div>
+    <div *ngIf="!loading && errMsg" class="alert alert-danger mt-3">
+      <i class="bi bi-exclamation-octagon-fill me-2"></i> {{ errMsg }}
+    </div>
 
+    <div *ngIf="!loading && !item && !errMsg" class="text-muted">
+      Solicitud no encontrada.
     </div>
 
   </div>

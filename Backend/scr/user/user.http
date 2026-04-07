@@ -4,8 +4,8 @@ POST http://localhost:3000/api/user
 Content-Type: application/json
 
 {
-    "username": "simon", 
-    "password": "Gatosolitario"
+    "username": "luciano", 
+    "password": "Luciano123*"
 
 }
 
@@ -15,6 +15,6 @@ POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-    "username": "juliaa", 
-    "password": "123456"
+    "username": " luciano", 
+    "password": "Luciano123*"
 }

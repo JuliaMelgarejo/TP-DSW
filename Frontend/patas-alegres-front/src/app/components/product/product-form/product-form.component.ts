@@ -8,8 +8,9 @@ import { CategoryService } from '../../../services/Category/category.service.js'
 import { Category } from '../../../models/category/category.js';
 import { CommonModule } from '@angular/common';
 import { PhotoService } from '../../../services/photo/photo.service.js';
-import { environment } from '../../../../environments/environment.js';
 import { Product } from '../../../models/product/product.js';
+import { AppConfig } from '../../../core/config/app.config.js';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
 
 @Component({
   selector: 'app-product-form',
@@ -38,6 +39,7 @@ export class ProductFormComponent {
     public productService: ProductService,
     public auth: AuthService,
     public categoryService: CategoryService,
+    private toast: ToastNotificationService,
   ) {
     this.ProductForm = this.fb.group({
       name: ['', Validators.required],
@@ -56,8 +58,8 @@ export class ProductFormComponent {
       next: (response) => {
         this.categories = response.data;
       },
-      error: (error) => {
-        alert(error);
+      error: (e) => {
+        this.toast.show(e.error.msg, 'danger')
       }
     });
 
@@ -82,11 +84,11 @@ export class ProductFormComponent {
           category: this.selectedProduct.category.id,
         });
         if (this.selectedProduct.photos && this.selectedProduct.photos.length > 0) {
-          this.selectedProductPreview = environment.url + this.selectedProduct.photos[0].url;
+          this.selectedProductPreview = AppConfig.apiBase + this.selectedProduct.photos[0].url;
         }
       },
-      error: (error) => {
-        alert(error);
+      error: (e) => {
+        this.toast.show(e.error.msg, 'danger')
       }
     });
   }
@@ -127,8 +129,8 @@ export class ProductFormComponent {
           this.router.navigate(['/product']);
         }
       },
-      error: (error) => {
-        console.log(error);
+      error: (e) => {
+        this.toast.show(e.error.msg, 'danger')
       }
     });
   }
@@ -150,8 +152,8 @@ export class ProductFormComponent {
         }
 
       },
-      error: (error) => {
-        console.log(error);
+      error: (e) => {
+        this.toast.show(e.error.msg, 'danger')
       }
     });
 }
@@ -211,14 +213,14 @@ export class ProductFormComponent {
         this.selectedProductPreview = null;
         this.selectedProductFile = null;
     },
-      error: (err) => console.log(err),
+      error: (e) => this.toast.show(e.error.msg, 'danger')
     });
   }
 
   getPhotoUrl(p: any): string {
     const url = p?.url;
     if (!url) return 'assets/nophoto.png';
-    return url.startsWith('http') ? url : environment.url + url;
+    return url.startsWith('http') ? url : AppConfig.apiBase + url;
   }
 
   getMainPhotoUrl(){
@@ -230,7 +232,7 @@ export class ProductFormComponent {
 
     if (!url) return null;
 
-    return url.startsWith('http') ? url : environment.url + url;
+    return url.startsWith('http') ? url : AppConfig.apiBase + url;
   }
 
   goToSlide(index: number) {
