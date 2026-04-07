@@ -7,7 +7,7 @@ import { MySqlDriver } from "@mikro-orm/mysql";
 export const orm = await MikroORM.init({
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
-  dbName: 'patas_alegres',
+  dbName: process.env.DB_NAME,
   clientUrl: `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
   type: 'mysql',
   highlighter: new SqlHighlighter(),
