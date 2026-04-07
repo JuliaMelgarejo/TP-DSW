@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Adoption } from '../../models/adoption/adoption.model.js';
+import { AppConfig } from '../../core/config/app.config.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdoptionService {
-  readonly API_URL = 'http://localhost:3000/api'
+  readonly API_URL = `${AppConfig.apiUrl}`;
 
   adoptions: Adoption[] = [];
 

@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { City } from '../../models/city/city.module';
 import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '../../core/config/app.config.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CityService {
-  readonly API_URL = 'http://localhost:3000/api/city'
+  readonly API_URL = `${AppConfig.apiUrl}/city`;
 
   cities: City[] = [];
 

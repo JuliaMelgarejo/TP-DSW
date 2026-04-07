@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AdoptionService } from '../../../services/adoption/adoption.service';
+import { AppConfig } from '../../../core/config/app.config.js';
 
 @Component({
   selector: 'app-shelter-adoption-detail',
@@ -28,7 +29,7 @@ export class ShelterAdoptionDetailComponent {
   reason = '';
   saving = false;
 
-  readonly BACKEND_BASE = 'http://localhost:3000';
+  readonly BACKEND_BASE = `${AppConfig.apiBase}`;
 
   constructor(
     private route: ActivatedRoute,

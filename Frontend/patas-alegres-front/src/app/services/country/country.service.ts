@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Country } from '../../models/country/country.module';
 import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '../../core/config/app.config.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CountryService {
-  readonly API_URL= 'http://localhost:3000/api/country'
+  readonly API_URL= `${AppConfig.apiUrl}/country`;
   countries: Country[] = [];
 
   constructor(private http: HttpClient) {

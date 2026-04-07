@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Vet } from '../../models/vet/vet.model.js';
+import { AppConfig } from '../../core/config/app.config.js';
 
 
 @Injectable({
@@ -8,7 +9,7 @@ import { Vet } from '../../models/vet/vet.model.js';
 })
 export class VetService {
 
-  readonly API_URL = 'http://localhost:3000/api/vet'
+  readonly API_URL = `${AppConfig.apiUrl}/vet`;
 
   vets: Vet[] = [];
 

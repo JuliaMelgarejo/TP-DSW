@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Zone } from '../../models/zone/zone.model.js';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AppConfig } from '../../core/config/app.config.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ZoneService {
-  readonly API_URL = 'http://localhost:3000/api/zone'
+  readonly API_URL = `${AppConfig.apiUrl}/zone`;
 
   zones: Zone[] = [];
 

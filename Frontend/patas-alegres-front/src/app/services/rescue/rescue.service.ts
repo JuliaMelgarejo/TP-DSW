@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Rescue } from '../../models/rescue/rescue.model.js';
 import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '../../core/config/app.config.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RescueService {
 
-  readonly API_URL = 'http://localhost:3000/api/rescue'
+  readonly API_URL = `${AppConfig.apiUrl}/rescue`;
 
   rescues: Rescue[] = [];
 

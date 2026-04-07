@@ -22,7 +22,7 @@ export class ShelterPublicDetailComponent {
   selectedShelter: any = null;
   animals: any[] = [];
 
-  readonly BACKEND_BASE = 'http://localhost:3000';
+  readonly BACKEND_BASE = `${AppConfig.apiBase}`;
 
   center: google.maps.LatLngLiteral = {
     lat: -32.9442,

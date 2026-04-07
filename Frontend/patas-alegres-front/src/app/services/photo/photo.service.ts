@@ -5,7 +5,7 @@ import { AppConfig } from '../../core/config/app.config';
 
 @Injectable({ providedIn: 'root' })
 export class PhotoService {
-  private API = 'http://localhost:3000/api/photo';
+  private API = `${AppConfig.apiUrl}/photo`;
 
   constructor(private http: HttpClient) {}
 

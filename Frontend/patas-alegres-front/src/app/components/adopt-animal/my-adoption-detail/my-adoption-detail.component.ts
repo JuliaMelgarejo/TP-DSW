@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdoptionService } from '../../../services/adoption/adoption.service';
 import { CommonModule } from '@angular/common';
+import { AppConfig } from '../../../core/config/app.config.js';
 
 @Component({
   selector: 'app-my-adoption-detail',
@@ -20,7 +21,7 @@ export class MyAdoptionDetailComponent implements OnInit {
   okMsg = '';
   deleteErrMsg = '';
 
-  readonly BACKEND_BASE = 'http://localhost:3000';
+  readonly BACKEND_BASE = `${AppConfig.apiBase}`;
 
   constructor(
     private route: ActivatedRoute,
