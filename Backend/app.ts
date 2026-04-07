@@ -67,7 +67,7 @@ app.use('/api/orderState', orderStateRouter)
 app.use('/api/address', addressRouter);
 app.use('/api/location', locationRouter);
 
-if (process.env.NODE_ENV !== 'production'){
+if (process.env.NODE_ENV !== 'production' || process.env.RUN_SEEDS === 'true'){
   await syncSchema() //never in production*/
 }
 
