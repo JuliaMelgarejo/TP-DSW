@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service';
 import { CommonModule } from '@angular/common';
 
 @Component({

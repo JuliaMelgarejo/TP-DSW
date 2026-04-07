@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { ShelterService } from '../../services/shelter/shelter.service.js';
+import { ShelterService } from '../../services/shelter/shelter.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
-import { Shelter } from '../../models/shelter/shelter.model.js';
-import { LocationService } from '../../services/location/location.service.js';
-import { ShelterFilters } from '../../models/shelter/shelter-filters.js';
+import { Shelter } from '../../models/shelter/shelter.model';
+import { LocationService } from '../../services/location/location.service';
+import { ShelterFilters } from '../../models/shelter/shelter-filters';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service.js';
+import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service';
 
 @Component({
   selector: 'app-shelter',

@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ShelterService } from '../../../services/shelter/shelter.service.js';
+import { ShelterService } from '../../../services/shelter/shelter.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ZoneService } from '../../../services/zone/zone.service.js';
-import { VetService } from '../../../services/vet/vet.service.js';
+import { ZoneService } from '../../../services/zone/zone.service';
+import { VetService } from '../../../services/vet/vet.service';
 import { AddressPickerComponent } from "../../shared/address-picker/address-picker.component";
-import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service';
 
 @Component({
   selector: 'app-shelter-form',

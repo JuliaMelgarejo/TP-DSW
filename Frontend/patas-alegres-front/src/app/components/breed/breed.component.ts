@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BreedService } from '../../services/breed/breed.service.js';
+import { BreedService } from '../../services/breed/breed.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 

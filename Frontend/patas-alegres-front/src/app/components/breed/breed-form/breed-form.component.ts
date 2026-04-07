@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { BreedService } from '../../../services/breed/breed.service.js';
+import { BreedService } from '../../../services/breed/breed.service';
 import { CommonModule } from '@angular/common';
 
 @Component({

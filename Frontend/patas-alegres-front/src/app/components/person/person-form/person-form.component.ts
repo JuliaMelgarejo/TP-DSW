@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { PersonService } from '../../../services/person/person.service.js';
-import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
+import { PersonService } from '../../../services/person/person.service';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service';
 
 @Component({
   selector: 'app-person-form',

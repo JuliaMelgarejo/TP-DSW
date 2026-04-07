@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { PersonService } from '../../../services/person/person.service.js';
-import { AuthService } from '../../../services/auth/auth.service.js';
+import { PersonService } from '../../../services/person/person.service';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-person-profile',

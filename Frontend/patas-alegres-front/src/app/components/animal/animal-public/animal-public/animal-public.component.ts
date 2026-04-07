@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AnimalService } from '../../../../services/animal/animal.service';
 import { Animal } from '../../../../models/animal/animal.model';
 import { AdoptModalComponent } from '../../../adopt-animal/adopt-modal/adopt-modal.component';
-import { ToastNotificationService } from '../../../../services/toast-notification/toast-notification.service.js';
+import { ToastNotificationService } from '../../../../services/toast-notification/toast-notification.service';
 
 @Component({
   selector: 'app-animal-public',

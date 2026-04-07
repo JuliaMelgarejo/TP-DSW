@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService, AppRole } from '../services/auth/auth.service';
-import { ToastNotificationService } from '../services/toast-notification/toast-notification.service.js';
+import { ToastNotificationService } from '../services/toast-notification/toast-notification.service';
 
 export const authGuard: CanActivateFn = (route, _state) => {
   const router = inject(Router);
