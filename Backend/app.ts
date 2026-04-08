@@ -4,7 +4,6 @@ import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import {orm, syncSchema} from './scr/zshare/db/orm.js';
 import { RequestContext } from '@mikro-orm/core';
-
 import { animalRouter } from './scr/animal/animal.router.js';
 import { breedRouter } from './scr/breed/breed.router.js';
 import { personRouter } from './scr/person/person.router.js';
@@ -26,7 +25,7 @@ import { orderStatusRouter } from './scr/orderStatus/orderStatus.router.js';
 import { addressRouter } from './scr/address/address.router.js';
 import { locationRouter } from './scr/location/location.router.js';
 
-const app = express();
+export const app = express();
 app.use(express.json());
 
 app.use(cors({
@@ -72,6 +71,3 @@ if (process.env.NODE_ENV !== 'production'){
 }
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, ()=>{
-console.log('server running on http://localhost:' + PORT);
-})
