@@ -167,16 +167,66 @@ Durante la evaluación de cada entrega se considerarán:
 
 En la sección de [FAQ](FAQ.md) podrán encontrar respuestas a las consultas más frecuentes que se van realizando.
 
-## 7. Proyecto
+## 7. Levantar proyecto desde cero
+
+#### Primero nos movemos a la carpeta Backend
 
 1) Tirar comando para instalar dependencias: `pnpm install`
 
-2) El proyecto se inicia en modo development con el comando: `pnpm start:dev`
- o en produccion con `pnpm start:prod`
+2) En la raiz de Backend generamos el archivo .env para la conexion con la base de datos sumado a los .env.development o .env.production necesarios según en que environment vamos a ejecutarlo.
+* La estructura del archivo en cuestion debe ser:
+```
+PORT=
 
-## 8. Ejecutar seeds
+FRONTEND_URL=
 
-1) Creamos un seed{entidad}.ts en /scr/scripts
+DB_HOST=
+DB_PORT=
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
+
+NODE_ENV=
+```
+
+3) El proyecto se inicia en modo development con el comando: `pnpm start:dev` o en produccion con `pnpm start:prod`
+
+4) podemos observar las URLs del proyecto, de la documentacion, y de la api para la documentacion
+
+#### Luego nos movemos a la carpeta Frontend/patas-alegres-front
+
+1) Tirar comando para instalar dependencias: `pnpm install`
+
+2) Dentro de 'src' creamos la carpeta environments
+
+3) Creamos los archivos segun que environment vamos a utilizar siendo obligatorio solamente el primero:
+* environmet.ts
+* environment.development.ts
+* environment.production.ts
+
+4) Estructura base:
+```
+export const environment = {
+  production: false,
+
+  api: {
+    url: 'http://localhost:3000/api',
+    base: 'http://localhost:3000'
+  },
+
+  googleMaps: {
+    apiKey: '',
+    mapId: ''
+  }
+};
+```
+donde cambiariamos segun si es produccion y obtendriamos las key de google para el mapa.
+
+5) Levantamos: ```ng serve```
+
+## 8. Ejecutar seeds para tener datos
+
+1) Creamos un seed{entidad}.ts en /scr/scripts aplicando camelCase
 
 2) Agregamos en package.json dentro de `"scripts": {...` una linea como la de categorias, indicando nombre y que se ejecute con node y la carpeta exacta de la seed.
 
@@ -184,16 +234,54 @@ En la sección de [FAQ](FAQ.md) podrán encontrar respuestas a las consultas má
 
 Ejemplo agarrando como ejemplo la primer seed que importa categorias:
 * Backend\scr\scripts\seedCategories.ts
-* 
+```
   "scripts": {
     "seed:categories": "node dist/scr/scripts/seedCategories.js"
   },
-* pnpm run seed:categories
+```
+* Corremos la seed con: ```pnpm run seed:categories```
+
+Seeds actuales en la app:
+```
+    pnpm run seed:categories
+    pnpm run seed:adoptionState
+    pnpm run seed:orderState
+    pnpm run seed:products
+    pnpm run seed:animals
+```
 
 4) Ver la magia suceder.
 
-## Ejecutar frontend produccion
+## 9. Correr tests
 
-1) `ng build`
+#### Backend
+Para esto se utilizó vitetest y supertest
 
-2) `ng serve --configuration production`
+1) Estando parado en la carpeta Backend ejecutamos
+```
+pnpm test
+```
+Esto nos va a dar los tests unitarios e integration
+
+* Comandos alternativos o con mas funcionalidades:
+
+```
+pnpm vitest run --coverage
+```
+
+#### Frontend
+Se utilizo los test basicos de angular y testcafe
+
+1) Estando parados en Frontend/patas-alegres-front ejecutamos:
+
+* Para el caso de test de angular
+```
+ng test
+```
+
+* Para el caso de los test de testcafe
+
+```
+pnpm exec testcafe edge testcafe/adoption-test.ts
+```
+
