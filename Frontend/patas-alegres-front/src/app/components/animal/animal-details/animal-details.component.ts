@@ -16,6 +16,7 @@ import { PhotoService } from '../../../services/photo/photo.service';
 import { Animal } from '../../../models/animal/animal.model';
 import { Breed } from '../../../models/breed/breed.model';
 import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service';
+import { AppConfig } from '../../../core/config/app.config.js';
 
 @Component({
   selector: 'app-animal-details',
@@ -43,7 +44,7 @@ export class AnimalDetailsComponent {
   uploading = false;
   uploadError: string | null = null;
 
-  readonly BACKEND_BASE = 'http://localhost:3000';
+  readonly BACKEND_BASE = `${AppConfig.apiBase}`;
 
   constructor(
     private route: ActivatedRoute,

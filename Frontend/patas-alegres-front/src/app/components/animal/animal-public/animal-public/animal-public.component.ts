@@ -5,6 +5,7 @@ import { AnimalService } from '../../../../services/animal/animal.service';
 import { Animal } from '../../../../models/animal/animal.model';
 import { AdoptModalComponent } from '../../../adopt-animal/adopt-modal/adopt-modal.component';
 import { ToastNotificationService } from '../../../../services/toast-notification/toast-notification.service';
+import { AppConfig } from '../../../../core/config/app.config.js';
 
 @Component({
   selector: 'app-animal-public',
@@ -16,7 +17,7 @@ import { ToastNotificationService } from '../../../../services/toast-notificatio
 export class AnimalPublicComponent {
   selectedAnimal: any;
   @ViewChild(AdoptModalComponent) adoptModal!: AdoptModalComponent;
-  readonly BACKEND_BASE = 'http://localhost:3000';
+    readonly BACKEND_BASE = `${AppConfig.apiBase}`;
 
   // ✅ chips/panel
   activeInfo: 'description' | 'breed' | 'rescue' = 'breed';

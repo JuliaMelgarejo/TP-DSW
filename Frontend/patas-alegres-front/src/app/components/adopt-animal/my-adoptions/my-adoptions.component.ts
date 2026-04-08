@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AdoptionService } from '../../../services/adoption/adoption.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AppConfig } from '../../../core/config/app.config.js';
 
 @Component({
   selector: 'app-my-adoptions',
@@ -15,7 +16,7 @@ export class MyAdoptionsComponent {
   loading = true;
   errMsg = '';
 
-  readonly BACKEND_BASE = 'http://localhost:3000';
+  readonly BACKEND_BASE = `${AppConfig.apiBase}`;
 
   constructor(private adoptionService: AdoptionService, private router: Router) {}
 

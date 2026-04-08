@@ -23,7 +23,8 @@ const em = orm.em.fork();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const { type, id } = req.params;
+    const type = req.params.type as string;
+    const id = req.params.id as string;
     const dir = path.join(process.cwd(), "uploads", type, id);
     fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
@@ -47,10 +48,11 @@ const upload = multer({
 
 photoRouter.post(
   "/:type/:id",
-  upload.single("photo"),
+  upload.single("photo") as any,
   async (req, res) => {
     try {
-      const { type, id } = req.params;
+      const type = req.params.type as string;
+      const id = req.params.id as string;
       const numericId = Number(id);
 
       if (!req.file) {

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Breed } from '../../models/breed/breed.model.js';
 import { Rescue } from '../../models/rescue/rescue.model.js';
 import { AnimalFilters } from '../../models/animal/animal-filters.js';
+import { AppConfig } from '../../core/config/app.config.js';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,8 @@ export class AnimalService {
   /*updateAnimal(updatedAnimal: any) {
     throw new Error('Method not implemented.');
   }*/
-  readonly API_URL= 'http://localhost:3000/api/animal'
-  private apiUrl = 'http://localhost:3000/api';
+  readonly API_URL = `${AppConfig.apiUrl}/animal`;
+  private apiUrl = `${AppConfig.apiUrl}`;
   animals: Animal[] = [];
 
   constructor(private http: HttpClient) {

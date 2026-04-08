@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AdoptionService } from '../../../services/adoption/adoption.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AppConfig } from '../../../core/config/app.config.js';
 
 @Component({
   selector: 'app-adopt-list',
@@ -26,7 +27,7 @@ export class AdoptListComponent {
   // 🔹 filtro opcional
   animalId: number | null = null;
 
-  readonly BACKEND_BASE = 'http://localhost:3000';
+  readonly BACKEND_BASE = `${AppConfig.apiBase}`;
 
   constructor(
     private adoptionService: AdoptionService,

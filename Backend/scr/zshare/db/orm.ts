@@ -6,7 +6,7 @@ import { MySqlDriver } from "@mikro-orm/mysql";
 export const orm = await MikroORM.init({
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
-  dbName: 'patas_alegres',
+  dbName: process.env.DB_NAME,
   clientUrl: `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
   type: 'mysql',
   highlighter: new SqlHighlighter(),
@@ -21,6 +21,15 @@ export const orm = await MikroORM.init({
 export const syncSchema = async () => {
   const generator = orm.getSchemaGenerator();
   //await generator.dropSchema();
-  //await generator.createSchema();
+  // await generator.createSchema();
   await generator.updateSchema();
+  if (process.env.RUN_SEEDS === 'true') {
+    // await import('./../../../scr/scripts/seedCategories.js');
+    await import('./../../../scr/scripts/seedAdoptionState.js');
+    await import('./../../../scr/scripts/seedOrderState.js');
+    await import('./../../../scr/scripts/seedBreeds.js');
+    await import('./../../../scr/scripts/seedShelters.js');
+    await import('./../../../scr/scripts/seedProducts.js');
+    await import('./../../../scr/scripts/seedAnimals.js');
+  }
 };

@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Breed } from '../../models/breed/breed.model.js';
+import { AppConfig } from '../../core/config/app.config.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BreedService {
-  readonly API_URL = 'http://localhost:3000/api/breed'
+  readonly API_URL = `${AppConfig.apiUrl}/breed`;
 
   breeds: Breed[] = [];
 

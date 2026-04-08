@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { Shelter } from '../../models/shelter/shelter.model.js';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ShelterFilters } from '../../models/shelter/shelter-filters.js';
+import { AppConfig } from '../../core/config/app.config.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ShelterService {
-  readonly API_URL = 'http://localhost:3000/api/shelter'
+  readonly API_URL = `${AppConfig.apiUrl}/shelter`;
 
   shelters: Shelter[] = [];
 

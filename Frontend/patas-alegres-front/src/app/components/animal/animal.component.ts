@@ -11,6 +11,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { ShelterService } from '../../services/shelter/shelter.service';
 import { BreedService } from '../../services/breed/breed.service';
 import { Breed } from '../../models/breed/breed.model';
+import { AppConfig } from '../../core/config/app.config.js';
 
 @Component({
   selector: 'app-animal',
@@ -35,7 +36,7 @@ export class AnimalComponent {
   breeds: Breed[] = [];
   isShelter: boolean;
 
-  BACKEND_BASE = 'http://localhost:3000'; // esto podria pasarse a un metodo en animals o incluso en photo
+  readonly BACKEND_BASE = `${AppConfig.apiBase}`;
 
   constructor(
     public animalService: AnimalService,
