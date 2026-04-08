@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ZoneService } from '../../services/zone/zone.service.js';
+import { ZoneService } from '../../services/zone/zone.service';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 

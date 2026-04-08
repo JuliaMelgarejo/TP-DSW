@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { Rescue } from '../../../models/rescue/rescue.model.js';
+import { Rescue } from '../../../models/rescue/rescue.model';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { RescueService } from '../../../services/rescue/rescue.service.js';
+import { RescueService } from '../../../services/rescue/rescue.service';
 import { CommonModule } from '@angular/common';
-import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service';
 
 @Component({
   selector: 'app-rescue-detail',

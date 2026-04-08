@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { Breed } from '../../../models/breed/breed.model.js';
+import { Breed } from '../../../models/breed/breed.model';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { BreedService } from '../../../services/breed/breed.service.js';
+import { BreedService } from '../../../services/breed/breed.service';
 import { CommonModule } from '@angular/common';
 
 @Component({

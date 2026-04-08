@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Vet } from '../../../models/vet/vet.model.js';
-import { VetService } from '../../../services/vet/vet.service.js';
+import { Vet } from '../../../models/vet/vet.model';
+import { VetService } from '../../../services/vet/vet.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 

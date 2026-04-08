@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ShelterService } from '../../../services/shelter/shelter.service.js';
-import { Shelter } from '../../../models/shelter/shelter.model.js';
-import { AuthService } from '../../../services/auth/auth.service.js';
+import { ShelterService } from '../../../services/shelter/shelter.service';
+import { Shelter } from '../../../models/shelter/shelter.model';
+import { AuthService } from '../../../services/auth/auth.service';
 import { AddressPickerComponent } from "../../shared/address-picker/address-picker.component";
-import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service';
 
 @Component({
   selector: 'app-shelter-detail',

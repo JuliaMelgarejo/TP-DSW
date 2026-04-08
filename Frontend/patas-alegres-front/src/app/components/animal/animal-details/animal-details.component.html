@@ -1,15 +1,15 @@
-<div class="bg-light min-vh-100 py-4">
+<div class="min-vh-100 py-4">
   <div class="container py-4">
-
     <div class="row g-4">
-
       <!-- FOTO -->
       <div class="col-12 col-lg-5">
-        <div class="container-fluid ">
-
+        <div class="container-fluid">
           <div class="d-flex align-items-center justify-content-between mb-3">
             <h5 class="mb-0">Fotos</h5>
-            <span class="text-muted small" *ngIf="selectedAnimal?.photos?.length">
+            <span
+              class="text-muted small"
+              *ngIf="selectedAnimal?.photos?.length"
+            >
               {{ selectedAnimal.photos.length }} cargada(s)
             </span>
           </div>
@@ -19,14 +19,14 @@
             *ngIf="getMainPhotoUrl(); else noPhoto"
             [src]="getMainPhotoUrl()!"
             class="img-fluid rounded border mb-3"
-            style="height:280px; width:100%; object-fit:cover;"
+            style="height: 280px; width: 100%; object-fit: cover"
           />
 
           <ng-template #noPhoto>
             <img
               src="assets/nophoto.png"
               class="img-fluid rounded border mb-3"
-              style="height:280px; width:100%; object-fit:cover;"
+              style="height: 280px; width: 100%; object-fit: cover"
             />
           </ng-template>
 
@@ -35,18 +35,18 @@
             *ngIf="previewUrl"
             [src]="previewUrl"
             class="img-fluid rounded border mb-3"
-            style="height:280px; width:100%; object-fit:cover;"
+            style="height: 280px; width: 100%; object-fit: cover"
           />
 
           <!-- INPUT LOCAL -->
           <div class="input-group input-group-sm mb-3">
-          <input
-            type="file"
-            class="form-control mb-2"
-            accept="image/*"
-            (change)="onFileChange($event)"
-          />
-        </div>
+            <input
+              type="file"
+              class="form-control mb-2"
+              accept="image/*"
+              (change)="onFileChange($event)"
+            />
+          </div>
 
           <button
             type="button"
@@ -54,7 +54,7 @@
             (click)="uploadPhoto()"
             [disabled]="uploading || !selectedFile"
           >
-            {{ uploading ? 'Subiendo...' : 'Subir foto' }}
+            {{ uploading ? "Subiendo..." : "Subir foto" }}
           </button>
 
           <!-- Error upload -->
@@ -72,7 +72,7 @@
                   <img
                     [src]="getPhotoUrl(p)"
                     class="img-fluid rounded border"
-                    style="height:90px; width:100%; object-fit:cover;"
+                    style="height: 90px; width: 100%; object-fit: cover"
                     [alt]="selectedAnimal?.name + ' foto'"
                   />
 
@@ -92,56 +92,59 @@
               Tip: la primera foto es la que se muestra como principal.
             </div>
           </div>
-
         </div>
       </div>
 
       <!-- INFO -->
       <div class="col-12 col-lg-7">
         <div class="container-lg">
-
           <h5 class="mb-3">Información</h5>
 
           <form [formGroup]="animalForm">
-
             <label class="form-label fw-bold">Nombre</label>
             <input class="form-control mb-3" formControlName="name" />
 
             <label class="form-label fw-bold">Nacimiento</label>
-            <input type="date" class="form-control mb-3" formControlName="birth_date" />
-<div class="mb-3">
-  <label class="form-label fw-bold">Raza</label>
+            <input
+              type="date"
+              class="form-control mb-3"
+              formControlName="birth_date"
+            />
+            <div class="mb-3">
+              <label class="form-label fw-bold">Raza</label>
 
-  <div class="dropdown w-100" (click)="$event.stopPropagation()">
-    <button
-      type="button"
-      class="btn btn-outline-secondary dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
-      (click)="toggleBreedDropdown($event)"
-    >
-      <span>{{ selectedBreedName }}</span>
-    </button>
+              <div class="dropdown w-100" (click)="$event.stopPropagation()">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
+                  (click)="toggleBreedDropdown($event)"
+                >
+                  <span>{{ selectedBreedName }}</span>
+                </button>
 
-    <ul
-      class="dropdown-menu w-100 shadow-sm"
-      [class.show]="breedDropdownOpen"
-      style="max-height: 240px; overflow-y: auto;"
-    >
-      <li *ngIf="breeds.length === 0">
-        <span class="dropdown-item-text text-muted">No hay razas cargadas</span>
-      </li>
+                <ul
+                  class="dropdown-menu w-100 shadow-sm"
+                  [class.show]="breedDropdownOpen"
+                  style="max-height: 240px; overflow-y: auto"
+                >
+                  <li *ngIf="breeds.length === 0">
+                    <span class="dropdown-item-text text-muted"
+                      >No hay razas cargadas</span
+                    >
+                  </li>
 
-      <li *ngFor="let b of breeds">
-        <button
-          type="button"
-          class="dropdown-item"
-          (click)="selectBreed(b, $event)"
-        >
-          {{ b.name }}
-        </button>
-      </li>
-    </ul>
-  </div>
-</div>
+                  <li *ngFor="let b of breeds">
+                    <button
+                      type="button"
+                      class="dropdown-item"
+                      (click)="selectBreed(b, $event)"
+                    >
+                      {{ b.name }}
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
             <button
               type="button"
               class="btn btn-primary w-100"
@@ -150,20 +153,17 @@
               Guardar cambios
             </button>
 
-
             <button
               type="button"
               class="btn btn-secondary w-100 mt-2"
               [routerLink]="['/animal', selectedAnimal?.id, 'adoptions']"
-              [disabled]="!selectedAnimal?.id">
+              [disabled]="!selectedAnimal?.id"
+            >
               Ver solicitudes de adopción
             </button>
           </form>
-
         </div>
       </div>
-
     </div>
-
   </div>
 </div>

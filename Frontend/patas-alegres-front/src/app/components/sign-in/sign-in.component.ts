@@ -5,10 +5,10 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subject, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil, catchError,finalize} from 'rxjs/operators';
-import { UserService } from '../../services/user/user.service.js';
-import { PersonService } from '../../services/person/person.service.js';
+import { UserService } from '../../services/user/user.service';
+import { PersonService } from '../../services/person/person.service';
 import { AddressPickerComponent } from "../shared/address-picker/address-picker.component";
-import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service.js';
+import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -67,8 +67,13 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.personService.getDocumentTypes().subscribe(types => {
-      this.documentTypes = types;
+    this.personService.getDocumentTypes().subscribe({
+      next: (types) => {
+        this.documentTypes = types;
+      },
+      error: (e) => {
+        this.toast.show(e.error.msg, 'danger')
+      }
     });
 
     const usernameControl = this.UserForm.get('username');

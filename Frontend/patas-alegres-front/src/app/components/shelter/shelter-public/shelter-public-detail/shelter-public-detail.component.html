@@ -1,152 +1,160 @@
-<div class="bg-light min-vh-100 py-4">
-  <div class="container px-3" style="max-width: 1200px;">
-
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <a class="btn btn-outline-secondary" routerLink="/shelter">
-        Volver
+<div class="min-vh-100 py-4">
+  <div class="container px-3" style="max-width: 1200px">
+    <!-- VOLVER -->
+    <div class="mb-3">
+      <a class="btn btn-outline-secondary btn-sm" routerLink="/shelter">
+        ← Volver
       </a>
     </div>
 
     <div *ngIf="loading" class="text-muted">Cargando refugio...</div>
 
     <div *ngIf="!loading && selectedShelter">
-
+      <!-- HEADER -->
       <div class="text-center mb-4">
-        <h2 class="mb-2">{{ selectedShelter.name }}</h2>
+        <div class="shelter-icon-lg mx-auto mb-3">🐾</div>
+        <h2 class="fw-bold mb-1">{{ selectedShelter.name }}</h2>
+        <div class="text-muted">
+          {{ selectedShelter.address?.city || "Sin ubicación" }}
+        </div>
       </div>
 
-      <div class="row g-4 align-items-start mb-4">
-
+      <!-- INFO + MAP -->
+      <div class="row g-4 mb-4">
+        <!-- INFO -->
         <div class="col-12 col-lg-4">
-          <div class="card h-100 border-0 shadow-sm">
-            <div class="card-body">
-
+          <div class="card shadow-sm h-100">
+            <div class="card-body p-4">
               <div class="mb-3">
-                <div class="text-muted small">Ubicación:</div>
-                <div class="fw-semibold">
-                  {{ selectedShelter.address?.city || 'Sin datos' }}
-                  <span *ngIf="selectedShelter.address?.province">, {{ selectedShelter.address?.province }}</span>
+                <div class="text-muted small">Ubicación</div>
+                <div class="fw-semibold" style="color: var(--foreground)">
+                  {{ selectedShelter.address?.city || "Sin datos" }}
+                  <span *ngIf="selectedShelter.address?.province">
+                    , {{ selectedShelter.address?.province }}
+                  </span>
                 </div>
               </div>
 
               <div class="mb-3">
-                <div class="text-muted small">Dirección:</div>
-                <div class="fw-semibold">
+                <div class="text-muted small">Dirección</div>
+                <div class="fw-semibold" style="color: var(--foreground)">
                   {{ getAddressText() }}
                 </div>
               </div>
 
               <div class="mb-3">
-                <div class="text-muted small">Cantidad de animales:</div>
-                <div class="fw-semibold">
+                <div class="text-muted small">Animales</div>
+                <div class="fw-semibold" style="color: var(--foreground)">
                   {{ getAnimalsCount() }}
                 </div>
               </div>
 
-              <div class="mb-3">
-                <div class="text-muted small">Contacto:</div>
-                <div class="fw-semibold">
-                  {{ selectedShelter.phoneNumber || 'Sin teléfono' }}
+              <div>
+                <div class="text-muted small">Contacto</div>
+                <div class="fw-semibold" style="color: var(--foreground)">
+                  {{ selectedShelter.phoneNumber || "Sin teléfono" }}
                 </div>
               </div>
-
             </div>
           </div>
         </div>
 
+        <!-- MAPA -->
         <div class="col-12 col-lg-8">
-          <div class="card h-100 border-0 shadow-sm">
-            <div class="card-body">
-              <div class="fw-bold mb-3">Ubicación en el mapa</div>
+          <div class="card shadow-sm h-100">
+            <div class="card-body p-3">
+              <div class="fw-semibold mb-2">Ubicación</div>
 
-              <div *ngIf="hasGoogleMapsLoaded(); else mapLoadingTpl">
-                <google-map
-                  width="100%"
-                  height="320px"
-                  [center]="center"
-                  [zoom]="zoom"
-                >
-                  <map-marker
-                    [position]="markerPosition"
-                    [options]="markerOptions"
-                  ></map-marker>
-                </google-map>
+              <div class="map-container">
+                <div *ngIf="hasGoogleMapsLoaded(); else mapLoadingTpl">
+                  <google-map
+                    width="100%"
+                    height="320px"
+                    [center]="center"
+                    [zoom]="zoom"
+                    [options]="mapOptions"
+                  >
+                    <map-marker
+                      [position]="markerPosition"
+                      [options]="markerOptions"
+                    ></map-marker>
+                  </google-map>
+                </div>
+
+                <ng-template #mapLoadingTpl>
+                  <div class="text-muted p-3">Cargando mapa...</div>
+                </ng-template>
               </div>
-
-              <ng-template #mapLoadingTpl>
-                <div class="text-muted">Cargando mapa...</div>
-              </ng-template>
             </div>
           </div>
         </div>
-
       </div>
 
+      <!-- ANIMALES -->
       <div class="mt-4">
-        <h3 class="text-center fw-bold mb-3">
-          Animales en el refugio esperando tu adopción
-        </h3>
+        <h4 class="fw-bold text-center mb-4">Animales en adopción</h4>
 
-        <div *ngIf="loadingAnimals" class="text-muted">Cargando animales...</div>
+        <div *ngIf="loadingAnimals" class="text-muted">
+          Cargando animales...
+        </div>
 
-        <div *ngIf="!loadingAnimals && animals.length === 0" class="text-muted text-center">
+        <div
+          *ngIf="!loadingAnimals && animals.length === 0"
+          class="text-muted text-center"
+        >
           Este refugio no tiene animales para mostrar.
         </div>
 
-        <div *ngIf="!loadingAnimals && animals.length > 0" class="row g-3">
-
-          <!-- Animales -->
-          <div class="col-12 col-md-6 col-lg-3" *ngFor="let animal of animals | slice:0:3">
+        <div *ngIf="!loadingAnimals && animals.length > 0" class="row g-4">
+          <!-- CARD ANIMAL -->
+          <div
+            class="col-12 col-md-6 col-lg-3"
+            *ngFor="let animal of animals | slice: 0 : 3"
+          >
             <a
-              class="card h-100 border-0 shadow-sm d-block text-decoration-none"
+              class="card animal-card shadow-sm text-decoration-none"
               [routerLink]="['/animal', animal.id]"
-              style="color: inherit; overflow: hidden;"
             >
-              <img
-                [src]="getPhotoUrl(animal)"
-                [alt]="animal?.name || 'Animal'"
-                class="w-100 d-block"
-                style="height: 180px; object-fit: cover;"
-              />
+              <img [src]="getPhotoUrl(animal)" class="animal-img" />
 
               <div class="card-body">
-                <div class="fw-bold mb-2">
-                  Nombre: {{ animal?.name || '—' }}
+                <div class="fw-bold fs-6 mb-1" style="color: var(--primary)">
+                  {{ animal?.name || "—" }}
                 </div>
 
-                <div class="text-muted small">Raza:</div>
-                <div class="mb-2">
-                  {{ animal?.breed?.name || '—' }}
+                <div class="text-muted small">Raza</div>
+                <div class="fw-semibold mb-2">
+                  {{ animal?.breed?.name || "—" }}
                 </div>
 
-                <div class="text-muted small">Fecha de rescate:</div>
-                <div>
-                  {{ animal?.rescueClass?.rescue_date ? (animal.rescueClass.rescue_date | date:'dd/MM/yyyy') : '—' }}
+                <div class="text-muted small">Rescatado</div>
+                <div class="small">
+                  {{
+                    animal?.rescueClass?.rescue_date
+                      ? (animal.rescueClass.rescue_date | date: "dd/MM/yyyy")
+                      : "—"
+                  }}
                 </div>
               </div>
             </a>
           </div>
 
-          <!-- Ver más animales -->
+          <!-- VER MÁS -->
           <div class="col-12 col-md-6 col-lg-3">
             <a
-              class="card h-100 border-0 shadow-sm d-flex align-items-center justify-content-center text-decoration-none"
+              class="card shadow-sm d-flex align-items-center justify-content-center text-decoration-none more-card"
               [routerLink]="['/animal']"
               [queryParams]="{ shelterId: selectedShelter.id }"
-              style="min-height: 100%; color: inherit;"
             >
-              <div class="fw-bold text-center">Ver más animales</div>
+              <div class="fw-bold text-center">Ver más →</div>
             </a>
           </div>
-
         </div>
       </div>
-
     </div>
 
     <div *ngIf="!loading && !selectedShelter" class="text-muted">
       Refugio no encontrado.
     </div>
-
   </div>
 </div>

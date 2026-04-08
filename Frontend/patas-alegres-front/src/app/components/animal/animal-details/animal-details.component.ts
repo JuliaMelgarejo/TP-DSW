@@ -9,13 +9,13 @@ import {
   Validators
 } from '@angular/forms';
 
-import { AnimalService } from '../../../services/animal/animal.service.js';
-import { BreedService } from '../../../services/breed/breed.service.js';
-import { PhotoService } from '../../../services/photo/photo.service.js';
+import { AnimalService } from '../../../services/animal/animal.service';
+import { BreedService } from '../../../services/breed/breed.service';
+import { PhotoService } from '../../../services/photo/photo.service';
 
-import { Animal } from '../../../models/animal/animal.model.js';
-import { Breed } from '../../../models/breed/breed.model.js';
-import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
+import { Animal } from '../../../models/animal/animal.model';
+import { Breed } from '../../../models/breed/breed.model';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service';
 
 @Component({
   selector: 'app-animal-details',

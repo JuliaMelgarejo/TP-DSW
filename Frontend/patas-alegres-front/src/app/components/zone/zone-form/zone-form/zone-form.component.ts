@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ZoneService } from '../../../../services/zone/zone.service.js';
+import { ZoneService } from '../../../../services/zone/zone.service';
 import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({

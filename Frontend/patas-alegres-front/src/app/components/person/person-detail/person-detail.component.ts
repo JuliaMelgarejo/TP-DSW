@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Person } from '../../../models/person/person.model.js';
+import { Person } from '../../../models/person/person.model';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { PersonService } from '../../../services/person/person.service.js';
-import { AuthService } from '../../../services/auth/auth.service.js';
-import { ErrorService } from '../../../services/errors/error.service.js';
+import { PersonService } from '../../../services/person/person.service';
+import { AuthService } from '../../../services/auth/auth.service';
+import { ErrorService } from '../../../services/errors/error.service';
 import { AddressPickerComponent } from "../../shared/address-picker/address-picker.component";
-import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service';
 
 @Component({
   selector: 'app-person-detail',
@@ -108,7 +108,7 @@ export class PersonDetailComponent {
     this.personService.updatePerson(updatedPerson).subscribe({
       next: (res) => {
         this.toast.show(res.message, 'success')
-        this.router.navigate(['/profile', res.data.id]);
+        this.router.navigate(['/profile']);
       },
       error: (e) => {
         this.toast.show(e.error.msg, 'danger')

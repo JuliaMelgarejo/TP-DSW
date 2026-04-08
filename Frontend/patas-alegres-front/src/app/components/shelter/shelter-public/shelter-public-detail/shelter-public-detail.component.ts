@@ -4,7 +4,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { GoogleMap, MapMarker } from '@angular/google-maps';
 import { ShelterService } from '../../../../services/shelter/shelter.service';
 import { AnimalService } from '../../../../services/animal/animal.service';
-import { ToastNotificationService } from '../../../../services/toast-notification/toast-notification.service.js';
+import { ToastNotificationService } from '../../../../services/toast-notification/toast-notification.service';
+import { AppConfig } from '../../../../core/config/app.config';
 
 
 @Component({
@@ -33,6 +34,11 @@ export class ShelterPublicDetailComponent {
   markerOptions: google.maps.MarkerOptions = {
     draggable: false
   };
+  mapOptions: google.maps.MapOptions = {
+    mapId: AppConfig.googleMapsMapId,
+    disableDefaultUI: true,
+    zoomControl: true,
+  }
 
   constructor(
     private route: ActivatedRoute,

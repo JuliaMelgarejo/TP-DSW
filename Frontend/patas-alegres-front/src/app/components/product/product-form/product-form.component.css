@@ -1,3 +1,12 @@
+.left-column {
+  padding-right: 2rem;
+  border-right: 1px solid #e9ecef;
+}
+
+.right-column {
+  padding-left: 2rem;
+}
+
 .price-stock-container {
   max-width: 500px;
 }

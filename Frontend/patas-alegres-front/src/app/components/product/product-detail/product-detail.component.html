@@ -1,6 +1,10 @@
-<div class="bg-light min-vh-100 py-4">
-  <div class="container px-3 mw-1000"> <div class="mb-4">
-      <a class="btn btn-outline-secondary btn-sm rounded px-3 shadow-sm" routerLink="/product">
+<div class="min-vh-100 py-4">
+  <div class="container px-3 mw-1000">
+    <div class="mb-4">
+      <a
+        class="btn btn-outline-secondary btn-sm rounded px-3 shadow-sm"
+        routerLink="/product"
+      >
         <i class="bi bi-arrow-left me-1"></i> Volver
       </a>
     </div>
@@ -13,10 +17,11 @@
     <div *ngIf="!loading && product">
       <h2 class="fw-bold text-dark mb-4">{{ product.name }}</h2>
 
-      <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+      <div class="card shadow-sm rounded-4 overflow-hidden">
         <div class="row g-0">
-
-          <div class="col-12 col-md-6 border-end bg-white d-flex align-items-center justify-content-center bg-white">
+          <div
+            class="col-12 col-md-6 border-end bg-white d-flex align-items-center justify-content-center bg-white"
+          >
             <div class="ratio ratio-1x1">
               <img
                 [src]="getPhotoUrl()"
@@ -28,70 +33,109 @@
 
           <div class="col-12 col-md-6 bg-white">
             <div class="card-body p-4 p-lg-5 h-100 d-flex flex-column">
-
               <div class="mb-4">
-                <div *ngIf="product.crossed_out_price && getDiscountPercent() > 0" class="mb-1">
-                  <span class="text-muted text-decoration-line-through fs-5">$ {{ product.crossed_out_price }}</span>
+                <div
+                  *ngIf="product.crossed_out_price && getDiscountPercent() > 0"
+                  class="mb-1"
+                >
+                  <span class="text-muted text-decoration-line-through fs-5"
+                    >$ {{ product.crossed_out_price }}</span
+                  >
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
                   <div class="text-primary fw-bolder fs-1">
                     $ {{ getPrice() }}
                   </div>
-                  <span *ngIf="product.crossed_out_price && getDiscountPercent() > 0" class="badge rounded-pill text-bg-success px-3 py-2">
+                  <span
+                    *ngIf="
+                      product.crossed_out_price && getDiscountPercent() > 0
+                    "
+                    class="badge rounded-pill text-bg-success px-3 py-2"
+                  >
                     {{ getDiscountPercent() }}% OFF
                   </span>
                 </div>
               </div>
 
               <div class="mb-4">
-                <label class="text-muted small fw-bold text-uppercase mb-2 d-block">Descripción</label>
-                <p class="text-dark mb-0">{{ product.description || 'Sin descripción disponible.' }}</p>
+                <label
+                  class="text-muted small fw-bold text-uppercase mb-2 d-block"
+                  >Descripción</label
+                >
+                <p class="text-dark mb-0">
+                  {{ product.description || "Sin descripción disponible." }}
+                </p>
               </div>
 
-              <div class="row g-3 mb-4 bg-light p-3 rounded-3 mx-0">
+              <div class="row g-3 mb-4 p-3 rounded-3 mx-0">
                 <div class="col-6">
-                  <label class="text-muted small fw-bold text-uppercase d-block text-truncate">Stock</label>
-                  <div class="fw-semibold text-dark">{{ product.stock }} un.</div>
+                  <label
+                    class="text-muted small fw-bold text-uppercase d-block text-truncate"
+                    >Stock</label
+                  >
+                  <div class="fw-semibold text-dark">
+                    {{ product.stock }} un.
+                  </div>
                 </div>
 
                 <div class="col-6 text-end">
-                  <label class="text-muted small fw-bold text-uppercase d-block text-truncate">Categoría</label>
-                  <div class="fw-semibold text-dark">{{ product?.category?.name || '—' }}</div>
+                  <label
+                    class="text-muted small fw-bold text-uppercase d-block text-truncate"
+                    >Categoría</label
+                  >
+                  <div class="fw-semibold text-dark">
+                    {{ product?.category?.name || "—" }}
+                  </div>
                 </div>
 
                 <div class="col-12 border-top pt-2">
-                  <label class="text-muted small fw-bold text-uppercase d-block">Refugio</label>
+                  <label class="text-muted small fw-bold text-uppercase d-block"
+                    >Refugio</label
+                  >
                   <div class="fw-semibold text-primary">
-                    <i class="bi bi-house-heart me-1"></i> {{ product?.shelter?.name || '—' }}
+                    <i class="bi bi-house-heart me-1"></i>
+                    {{ product?.shelter?.name || "—" }}
                   </div>
                 </div>
               </div>
 
               <div class="mt-auto d-grid gap-2">
-                <button class="btn btn-success btn-lg fw-bold py-3 shadow-sm border-0 rounded-3" (click)="openBuyNowModal(1)">
+                <button
+                  class="btn btn-success btn-lg fw-bold py-3 shadow-sm rounded-3"
+                  (click)="openBuyNowModal(1)"
+                >
                   Comprar ahora
                 </button>
 
-                <button class="btn btn-primary btn-lg fw-bold py-3 shadow-sm border-0 rounded-3" (click)="addToCart()" [disabled]="isAddingToCart">
-                  <span *ngIf="isAddingToCart" class="spinner-border spinner-border-sm me-2"></span>
-                  {{ isAddingToCart ? 'Agregando...' : 'Agregar al carrito' }}
+                <button
+                  class="btn btn-primary btn-lg fw-bold py-3 shadow-sm rounded-3"
+                  (click)="addToCart()"
+                  [disabled]="isAddingToCart"
+                >
+                  <span
+                    *ngIf="isAddingToCart"
+                    class="spinner-border spinner-border-sm me-2"
+                  ></span>
+                  {{ isAddingToCart ? "Agregando..." : "Agregar al carrito" }}
                 </button>
               </div>
-
             </div>
           </div>
-
         </div>
       </div>
     </div>
 
-    <div *ngIf="!loading && !product" class="alert alert-warning border-0 shadow-sm rounded-4 text-center py-5">
+    <div
+      *ngIf="!loading && !product"
+      class="alert alert-warning shadow-sm rounded-4 text-center py-5"
+    >
       <i class="bi bi-search fs-1 mb-3 d-block"></i>
       <h4 class="fw-bold">Producto no encontrado</h4>
-      <a class="btn btn-primary rounded-pill px-4 mt-2" routerLink="/product">Ver otros productos</a>
+      <a class="btn btn-primary rounded-pill px-4 mt-2" routerLink="/product"
+        >Ver otros productos</a
+      >
     </div>
-
   </div>
 </div>
 
@@ -99,24 +143,47 @@
   <div class="modal-backdrop fade show" (click)="closeAddedModal()"></div>
   <div class="modal fade show d-block" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow-lg rounded-4">
-        <div class="modal-header border-0 pb-0">
+      <div class="modal-content shadow-lg rounded-4">
+        <div class="modal-header pb-0">
           <h5 class="modal-title fw-bold">¡Agregado!</h5>
-          <button type="button" class="btn-close shadow-none" (click)="closeAddedModal()"></button>
+          <button
+            type="button"
+            class="btn-close shadow-none"
+            (click)="closeAddedModal()"
+          ></button>
         </div>
         <div class="modal-body py-4">
           <div class="d-flex gap-3 align-items-center">
-            <img [src]="getPhotoUrl()" class="rounded-3 border object-fit-cover img-thumbnail w-25" />
+            <img
+              [src]="getPhotoUrl()"
+              class="rounded-3 border object-fit-cover img-thumbnail w-25"
+            />
             <div class="flex-grow-1">
-              <div class="fw-bold text-dark text-truncate">{{ product?.name }}</div>
+              <div class="fw-bold text-dark text-truncate">
+                {{ product?.name }}
+              </div>
               <div class="text-primary fw-bold">$ {{ getPrice() }}</div>
-              <div class="text-muted small mt-1">Cantidad: <span class="badge bg-secondary">{{ addedQty }}</span></div>
+              <div class="text-muted small mt-1">
+                Cantidad: <span class="badge bg-secondary">{{ addedQty }}</span>
+              </div>
             </div>
           </div>
         </div>
-        <div class="modal-footer border-0 pt-0">
-          <button type="button" class="btn btn-light rounded-pill px-4" (click)="closeAddedModal()">Seguir</button>
-          <button class="btn btn-primary rounded-pill px-4" routerLink="/cart" (click)="closeAddedModal()">Ir al carrito</button>
+        <div class="modal-footer pt-0">
+          <button
+            type="button"
+            class="btn btn-light rounded-pill px-4"
+            (click)="closeAddedModal()"
+          >
+            Seguir
+          </button>
+          <button
+            class="btn btn-primary rounded-pill px-4"
+            routerLink="/cart"
+            (click)="closeAddedModal()"
+          >
+            Ir al carrito
+          </button>
         </div>
       </div>
     </div>
@@ -127,38 +194,81 @@
   <div class="modal-backdrop fade show" (click)="closeBuyNowModal()"></div>
   <div class="modal fade show d-block" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-content shadow-lg rounded-4">
         <div class="modal-header border-bottom-0">
-          <h5 class="modal-title fw-bold text-center w-100">Confirmar compra</h5>
-          <button type="button" class="btn-close shadow-none" (click)="closeBuyNowModal()"></button>
+          <h5 class="modal-title fw-bold text-center w-100">
+            Confirmar compra
+          </h5>
+          <button
+            type="button"
+            class="btn-close shadow-none"
+            (click)="closeBuyNowModal()"
+          ></button>
         </div>
         <div class="modal-body py-3">
           <div class="d-flex gap-3 align-items-center mb-4">
-            <img [src]="getPhotoUrl()" class="rounded-3 border shadow-sm w-25 object-fit-cover" />
+            <img
+              [src]="getPhotoUrl()"
+              class="rounded-3 border shadow-sm w-25 object-fit-cover"
+            />
             <div class="flex-grow-1">
               <div class="fw-bold text-dark mb-0">{{ product?.name }}</div>
-              <div class="text-muted small">Stock: {{ product?.stock ?? 0 }}</div>
+              <div class="text-muted small">
+                Stock: {{ product?.stock ?? 0 }}
+              </div>
             </div>
           </div>
 
-          <div class="bg-light p-3 rounded-3">
+          <div class="p-3 rounded-3">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <span class="text-muted fw-bold small text-uppercase">Cantidad</span>
+              <span class="text-muted fw-bold small text-uppercase"
+                >Cantidad</span
+              >
               <div class="input-group input-group-sm w-50">
-                <button class="btn btn-white border shadow-sm" type="button" (click)="buyNowQty = (buyNowQty > 1 ? buyNowQty - 1 : 1)">-</button>
-                <input class="form-control text-center bg-white border" type="number" [(ngModel)]="buyNowQty" />
-                <button class="btn btn-white border shadow-sm" type="button" (click)="buyNowQty = buyNowQty + 1">+</button>
+                <button
+                  class="btn btn-white border shadow-sm"
+                  type="button"
+                  (click)="buyNowQty = buyNowQty > 1 ? buyNowQty - 1 : 1"
+                >
+                  -
+                </button>
+                <input
+                  class="form-control text-center bg-white border"
+                  type="number"
+                  [(ngModel)]="buyNowQty"
+                />
+                <button
+                  class="btn btn-white border shadow-sm"
+                  type="button"
+                  (click)="buyNowQty = buyNowQty + 1"
+                >
+                  +
+                </button>
               </div>
             </div>
-            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+            <div
+              class="d-flex justify-content-between align-items-center pt-2 border-top"
+            >
               <span class="fw-bold">Total</span>
-              <span class="fw-bolder text-primary fs-4">$ {{ getBuyNowTotal() }}</span>
+              <span class="fw-bolder text-primary fs-4"
+                >$ {{ getBuyNowTotal() }}</span
+              >
             </div>
           </div>
         </div>
-        <div class="modal-footer border-0">
-          <button type="button" class="btn btn-link text-decoration-none text-muted" (click)="closeBuyNowModal()">Cancelar</button>
-          <button type="button" class="btn btn-success rounded-pill px-4 fw-bold" (click)="confirmBuyNow()">
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-link text-decoration-none text-muted"
+            (click)="closeBuyNowModal()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-success rounded-pill px-4 fw-bold"
+            (click)="confirmBuyNow()"
+          >
             Confirmar
           </button>
         </div>

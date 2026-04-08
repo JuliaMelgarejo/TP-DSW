@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AnimalService } from '../../services/animal/animal.service.js';
-import { Animal } from '../../models/animal/animal.model.js';
-import { Person } from '../../models/person/person.model.js';
-import { PersonService } from '../../services/person/person.service.js';
+import { AnimalService } from '../../services/animal/animal.service';
+import { Animal } from '../../models/animal/animal.model';
+import { Person } from '../../models/person/person.model';
+import { PersonService } from '../../services/person/person.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AdoptionService } from '../../services/adoption/adoption.service.js';
-import { Adoption } from '../../models/adoption/adoption.model.js';
-import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service.js';
+import { AdoptionService } from '../../services/adoption/adoption.service';
+import { Adoption } from '../../models/adoption/adoption.model';
+import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service';
 
 @Component({
   selector: 'app-adopt-animal',

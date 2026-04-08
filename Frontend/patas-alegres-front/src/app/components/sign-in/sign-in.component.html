@@ -1,14 +1,15 @@
-<div class="bg-light min-vh-100 py-4 py-lg-5">
-  <div class="container px-3 px-lg-4">
+<div class="min-vh-100 py-2 py-md-3">
+  <div class="container px-2">
     <div class="row justify-content-center">
       <div class="col-12 col-lg-10 col-xl-8">
-
-        <div class="card border-0 shadow-sm">
-          <div class="card-body p-3 p-md-4 p-lg-5">
-
+        <div class="card shadow-sm">
+          <div class="card-body">
             <div class="text-center mb-4 mb-lg-5">
               <h1 class="fw-bold mb-2">Patas alegres</h1>
-              <h4 class="fw-semibold mb-0">Registremos tu usuario</h4>
+              <h5 class="fw-semibold mb-0">Registremos tu usuario</h5>
+              <div class="form-helper">
+                Los campos marcados con <span class="required-mark">*</span> son obligatorios
+              </div>
             </div>
 
             <div *ngIf="submitError" class="alert alert-danger">
@@ -17,258 +18,442 @@
 
             <form [formGroup]="UserForm" (ngSubmit)="SignIn()">
               <div class="row g-4">
-
                 <div class="col-12 col-lg-6">
+                  <h6 class="text-muted mb-2">Datos de usuario</h6>
+                  <div class="row g-3">
+                    <div class="mb-2">
+                      <label class="form-label fw-semibold required">Usuario</label>
+                      <input
+                        type="text"
+                        class="form-control form-control-lg"
+                        formControlName="username"
+                        placeholder="Ingresar aquí el usuario"
+                        [class.is-invalid]="
+                          (UserForm.get('username')?.touched &&
+                            UserForm.get('username')?.invalid) ||
+                          !!usernameExistsError ||
+                          !!backendErrors['username']
+                        "
+                      />
 
-                  <div class="mb-4">
-                    <label class="form-label fw-semibold">Usuario</label>
-                    <input
-                      type="text"
-                      class="form-control form-control-lg"
-                      formControlName="username"
-                      placeholder="Ingresar aquí el usuario"
-                      [class.is-invalid]="
-                        (UserForm.get('username')?.touched && UserForm.get('username')?.invalid) ||
-                        !!usernameExistsError ||
-                        !!backendErrors['username']
-                      "
-                    />
+                      <div
+                        class="invalid-feedback"
+                        *ngIf="
+                          UserForm.get('username')?.touched &&
+                          UserForm.get('username')?.hasError('required')
+                        "
+                      >
+                        El usuario es obligatorio
+                      </div>
 
-                    <div class="invalid-feedback" *ngIf="UserForm.get('username')?.touched && UserForm.get('username')?.hasError('required')">
-                      El usuario es obligatorio
+                      <div
+                        class="invalid-feedback"
+                        *ngIf="
+                          UserForm.get('username')?.touched &&
+                          UserForm.get('username')?.hasError('minlength')
+                        "
+                      >
+                        El usuario debe tener al menos 3 caracteres
+                      </div>
+
+                      <div class="invalid-feedback" *ngIf="usernameExistsError">
+                        {{ usernameExistsError }}
+                      </div>
+
+                      <div
+                        class="invalid-feedback"
+                        *ngIf="backendErrors['username']"
+                      >
+                        {{ backendErrors["username"] }}
+                      </div>
+
+                      <div class="form-text" *ngIf="checkingUsername">
+                        Validando usuario...
+                      </div>
                     </div>
 
-                    <div class="invalid-feedback" *ngIf="UserForm.get('username')?.touched && UserForm.get('username')?.hasError('minlength')">
-                      El usuario debe tener al menos 3 caracteres
-                    </div>
+                    <div class="mb-2">
+                      <label class="form-label fw-semibold required">Contraseña</label>
+                      <input
+                        type="password"
+                        class="form-control form-control-lg"
+                        formControlName="password"
+                        placeholder="Ingresar aquí la contraseña"
+                        [class.is-invalid]="
+                          UserForm.get('password')?.invalid &&
+                          UserForm.get('password')?.touched
+                        "
+                      />
 
-                    <div class="invalid-feedback" *ngIf="usernameExistsError">
-                      {{ usernameExistsError }}
-                    </div>
+                      <div
+                        class="invalid-feedback"
+                        *ngIf="
+                          UserForm.get('password')?.touched &&
+                          UserForm.get('password')?.hasError('required')
+                        "
+                      >
+                        La contraseña es obligatoria
+                      </div>
 
-                    <div class="invalid-feedback" *ngIf="backendErrors['username']">
-                      {{ backendErrors['username'] }}
-                    </div>
+                      <div
+                        class="invalid-feedback"
+                        *ngIf="
+                          UserForm.get('password')?.touched &&
+                          UserForm.get('password')?.hasError('pattern')
+                        "
+                      >
+                        Debe tener mínimo 8 caracteres, una mayúscula, una
+                        minúscula, un número y un símbolo
+                      </div>
 
-                    <div class="form-text" *ngIf="checkingUsername">
-                      Validando usuario...
-                    </div>
-                  </div>
-
-                  <div class="mb-4">
-                    <label class="form-label fw-semibold">Contraseña</label>
-                    <input
-                      type="password"
-                      class="form-control form-control-lg"
-                      formControlName="password"
-                      placeholder="Ingresar aquí la contraseña"
-                      [class.is-invalid]="UserForm.get('password')?.invalid && UserForm.get('password')?.touched"
-                    />
-
-                    <div class="invalid-feedback" *ngIf="UserForm.get('password')?.touched && UserForm.get('password')?.hasError('required')">
-                      La contraseña es obligatoria
-                    </div>
-
-                    <div class="invalid-feedback" *ngIf="UserForm.get('password')?.touched && UserForm.get('password')?.hasError('pattern')">
-                      Debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo
-                    </div>
-
-                    <div class="invalid-feedback" *ngIf="backendErrors['password']">
-                      {{ backendErrors['password'] }}
+                      <div
+                        class="invalid-feedback"
+                        *ngIf="backendErrors['password']"
+                      >
+                        {{ backendErrors["password"] }}
+                      </div>
                     </div>
                   </div>
 
                   <div formGroupName="person">
-                    <div class="mb-4">
-                      <label class="form-label fw-semibold">Nombre</label>
-                      <input
-                        type="text"
-                        class="form-control form-control-lg"
-                        formControlName="name"
-                        placeholder="Ingresar aquí el nombre"
-                        [class.is-invalid]="
-                          (UserForm.get('person.name')?.invalid && UserForm.get('person.name')?.touched) ||
-                          !!backendErrors['person.name']
-                        "
-                      />
+                    <h6 class="text-muted mb-2 mt-3">Datos personales</h6>
+                    <div class="row g-3">
+                      <div class="mb-2">
+                        <label class="form-label fw-semibold required">Nombre</label>
+                        <input
+                          type="text"
+                          class="form-control form-control-lg"
+                          formControlName="name"
+                          placeholder="Ingresar aquí el nombre"
+                          [class.is-invalid]="
+                            (UserForm.get('person.name')?.invalid &&
+                              UserForm.get('person.name')?.touched) ||
+                            !!backendErrors['person.name']
+                          "
+                        />
 
-                      <div class="invalid-feedback" *ngIf="UserForm.get('person.name')?.touched && UserForm.get('person.name')?.hasError('required')">
-                        El nombre es obligatorio
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="
+                            UserForm.get('person.name')?.touched &&
+                            UserForm.get('person.name')?.hasError('required')
+                          "
+                        >
+                          El nombre es obligatorio
+                        </div>
+
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="backendErrors['person.name']"
+                        >
+                          {{ backendErrors["person.name"] }}
+                        </div>
                       </div>
 
-                      <div class="invalid-feedback" *ngIf="backendErrors['person.name']">
-                        {{ backendErrors['person.name'] }}
+                      <div class="mb-2">
+                        <label class="form-label fw-semibold required">Apellido</label>
+                        <input
+                          type="text"
+                          class="form-control form-control-lg"
+                          formControlName="surname"
+                          placeholder="Ingresar aquí el apellido"
+                          [class.is-invalid]="
+                            (UserForm.get('person.surname')?.invalid &&
+                              UserForm.get('person.surname')?.touched) ||
+                            !!backendErrors['person.surname']
+                          "
+                        />
+
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="
+                            UserForm.get('person.surname')?.touched &&
+                            UserForm.get('person.surname')?.hasError('required')
+                          "
+                        >
+                          El apellido es obligatorio
+                        </div>
+
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="backendErrors['person.surname']"
+                        >
+                          {{ backendErrors["person.surname"] }}
+                        </div>
+                      </div>
+                      
+                      <div class="mb-2 mb-lg-0">
+                        <label class="form-label fw-semibold required"
+                          >Fecha de nacimiento</label
+                        >
+                        <input
+                          type="date"
+                          class="form-control form-control-lg"
+                          formControlName="birthdate"
+                          [class.is-invalid]="
+                            (UserForm.get('person.birthdate')?.invalid &&
+                              UserForm.get('person.birthdate')?.touched) ||
+                            !!backendErrors['person.birthdate']
+                          "
+                        />
+
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="
+                            UserForm.get('person.birthdate')?.touched &&
+                            UserForm.get('person.birthdate')?.hasError('required')
+                          "
+                        >
+                          La fecha de nacimiento es obligatoria
+                        </div>
+
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="
+                            UserForm.get('person.birthdate')?.touched &&
+                            UserForm.get('person.birthdate')?.hasError(
+                              'futureDate'
+                            )
+                          "
+                        >
+                          La fecha de nacimiento no puede ser futura
+                        </div>
+
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="backendErrors['person.birthdate']"
+                        >
+                          {{ backendErrors["person.birthdate"] }}
+                        </div>
                       </div>
                     </div>
 
-                    <div class="mb-4">
-                      <label class="form-label fw-semibold">Apellido</label>
-                      <input
-                        type="text"
-                        class="form-control form-control-lg"
-                        formControlName="surname"
-                        placeholder="Ingresar aquí el apellido"
-                        [class.is-invalid]="
-                          (UserForm.get('person.surname')?.invalid && UserForm.get('person.surname')?.touched) ||
-                          !!backendErrors['person.surname']
-                        "
-                      />
+                    <h6 class="text-muted mt-3 mb-2">Documentación</h6>
+                    <div class="row g-3">
+                      <div class="mb-2">
+                        <label
+                          class="form-label fw-semibold required"
+                          for="person-doc_type"
+                          >Tipo de documento</label
+                        >
+                        <select
+                          id="person-doc_type"
+                          formControlName="doc_type"
+                          class="form-select form-select-lg"
+                          [class.is-invalid]="
+                            (UserForm.get('person.doc_type')?.invalid &&
+                              UserForm.get('person.doc_type')?.touched) ||
+                            !!backendErrors['person.doc_type']
+                          "
+                        >
+                          <option [ngValue]="null" disabled>
+                            Seleccione un tipo de documento
+                          </option>
+                          <option
+                            *ngFor="let doc of documentTypes"
+                            [ngValue]="doc.value"
+                          >
+                            {{ doc.label }}
+                          </option>
+                        </select>
 
-                      <div class="invalid-feedback" *ngIf="UserForm.get('person.surname')?.touched && UserForm.get('person.surname')?.hasError('required')">
-                        El apellido es obligatorio
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="
+                            UserForm.get('person.doc_type')?.touched &&
+                            UserForm.get('person.doc_type')?.hasError('required')
+                          "
+                        >
+                          El tipo de documento es obligatorio
+                        </div>
+
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="backendErrors['person.doc_type']"
+                        >
+                          {{ backendErrors["person.doc_type"] }}
+                        </div>
                       </div>
 
-                      <div class="invalid-feedback" *ngIf="backendErrors['person.surname']">
-                        {{ backendErrors['person.surname'] }}
-                      </div>
-                    </div>
+                      <div class="mb-2">
+                        <label class="form-label fw-semibold required"
+                          >Número de documento</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control form-control-lg"
+                          formControlName="doc_nro"
+                          placeholder="Ingresar aquí el número"
+                          [class.is-invalid]="
+                            (UserForm.get('person.doc_nro')?.invalid &&
+                              UserForm.get('person.doc_nro')?.touched) ||
+                            !!backendErrors['person.doc_nro']
+                          "
+                        />
 
-                    <div class="mb-4">
-                      <label class="form-label fw-semibold" for="person-doc_type">Tipo de documento</label>
-                      <select
-                        id="person-doc_type"
-                        formControlName="doc_type"
-                        class="form-select form-select-lg"
-                        [class.is-invalid]="
-                          (UserForm.get('person.doc_type')?.invalid && UserForm.get('person.doc_type')?.touched) ||
-                          !!backendErrors['person.doc_type']
-                        "
-                      >
-                        <option [ngValue]="null" disabled>Seleccione un tipo de documento</option>
-                        <option *ngFor="let doc of documentTypes" [ngValue]="doc.value">{{ doc.label }}</option>
-                      </select>
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="
+                            UserForm.get('person.doc_nro')?.touched &&
+                            UserForm.get('person.doc_nro')?.hasError('required')
+                          "
+                        >
+                          El número de documento es obligatorio
+                        </div>
 
-                      <div class="invalid-feedback" *ngIf="UserForm.get('person.doc_type')?.touched && UserForm.get('person.doc_type')?.hasError('required')">
-                        El tipo de documento es obligatorio
-                      </div>
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="
+                            UserForm.get('person.doc_nro')?.touched &&
+                            UserForm.get('person.doc_nro')?.hasError('pattern')
+                          "
+                        >
+                          El número de documento solo debe contener números
+                        </div>
 
-                      <div class="invalid-feedback" *ngIf="backendErrors['person.doc_type']">
-                        {{ backendErrors['person.doc_type'] }}
-                      </div>
-                    </div>
-
-                    <div class="mb-4">
-                      <label class="form-label fw-semibold">Número de documento</label>
-                      <input
-                        type="text"
-                        class="form-control form-control-lg"
-                        formControlName="doc_nro"
-                        placeholder="Ingresar aquí el número"
-                        [class.is-invalid]="
-                          (UserForm.get('person.doc_nro')?.invalid && UserForm.get('person.doc_nro')?.touched) ||
-                          !!backendErrors['person.doc_nro']
-                        "
-                      />
-
-                      <div class="invalid-feedback" *ngIf="UserForm.get('person.doc_nro')?.touched && UserForm.get('person.doc_nro')?.hasError('required')">
-                        El número de documento es obligatorio
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="backendErrors['person.doc_nro']"
+                        >
+                          {{ backendErrors["person.doc_nro"] }}
+                        </div>
                       </div>
 
-                      <div class="invalid-feedback" *ngIf="UserForm.get('person.doc_nro')?.touched && UserForm.get('person.doc_nro')?.hasError('pattern')">
-                        El número de documento solo debe contener números
-                      </div>
+                      <div class="mb-2">
+                        <label class="form-label fw-semibold">Número de CUIT</label>
+                        <input
+                          type="text"
+                          class="form-control form-control-lg"
+                          formControlName="nroCuit"
+                          placeholder="Ingresar aquí el número de CUIT"
+                          [class.is-invalid]="
+                            UserForm.get('person.nroCuit')?.invalid &&
+                            UserForm.get('person.nroCuit')?.touched
+                          "
+                        />
 
-                      <div class="invalid-feedback" *ngIf="backendErrors['person.doc_nro']">
-                        {{ backendErrors['person.doc_nro'] }}
-                      </div>
-                    </div>
-
-                    <div class="mb-4 mb-lg-0">
-                      <label class="form-label fw-semibold">Fecha de nacimiento</label>
-                      <input
-                        type="date"
-                        class="form-control form-control-lg"
-                        formControlName="birthdate"
-                        [class.is-invalid]="
-                          (UserForm.get('person.birthdate')?.invalid && UserForm.get('person.birthdate')?.touched) ||
-                          !!backendErrors['person.birthdate']
-                        "
-                      />
-
-                      <div class="invalid-feedback" *ngIf="UserForm.get('person.birthdate')?.touched && UserForm.get('person.birthdate')?.hasError('required')">
-                        La fecha de nacimiento es obligatoria
-                      </div>
-
-                      <div class="invalid-feedback" *ngIf="UserForm.get('person.birthdate')?.touched && UserForm.get('person.birthdate')?.hasError('futureDate')">
-                        La fecha de nacimiento no puede ser futura
-                      </div>
-
-                      <div class="invalid-feedback" *ngIf="backendErrors['person.birthdate']">
-                        {{ backendErrors['person.birthdate'] }}
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="
+                            UserForm.get('person.nroCuit')?.touched &&
+                            UserForm.get('person.nroCuit')?.hasError('pattern')
+                          "
+                        >
+                          El CUIT debe tener exactamente 11 números
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div class="col-12 col-lg-6" formGroupName="person">
-                  <div class="mb-4">
-                    <label class="form-label fw-semibold">Número de CUIT</label>
-                    <input
-                      type="text"
-                      class="form-control form-control-lg"
-                      formControlName="nroCuit"
-                      placeholder="Ingresar aquí el número de CUIT"
-                      [class.is-invalid]="UserForm.get('person.nroCuit')?.invalid && UserForm.get('person.nroCuit')?.touched"
-                    />
+                  <h6 class="text-muted mb-2">Contacto</h6>
+                  <div class="row g-3">
+                    <div class="mb-2">
+                      <label class="form-label fw-semibold"
+                        >Número de teléfono</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control form-control-lg"
+                        formControlName="phoneNumber"
+                        placeholder="Ingresar aquí el número de teléfono"
+                        [class.is-invalid]="
+                          UserForm.get('person.phoneNumber')?.invalid &&
+                          UserForm.get('person.phoneNumber')?.touched
+                        "
+                      />
 
-                    <div class="invalid-feedback" *ngIf="UserForm.get('person.nroCuit')?.touched && UserForm.get('person.nroCuit')?.hasError('pattern')">
-                      El CUIT debe tener exactamente 11 números
+                      <div
+                        class="invalid-feedback"
+                        *ngIf="
+                          UserForm.get('person.phoneNumber')?.touched &&
+                          UserForm.get('person.phoneNumber')?.hasError('pattern')
+                        "
+                      >
+                        El teléfono debe tener entre 6 y 15 números
+                      </div>
+                    </div>
+
+                    <div class="mb-2">
+                      <label class="form-label fw-semibold">Email</label>
+                      <input
+                        type="email"
+                        class="form-control form-control-lg"
+                        formControlName="email"
+                        placeholder="Ingresar aquí el email"
+                        [class.is-invalid]="
+                          (UserForm.get('person.email')?.invalid &&
+                            UserForm.get('person.email')?.touched) ||
+                          !!backendErrors['person.email']
+                        "
+                      />
+
+                      <div
+                        class="invalid-feedback"
+                        *ngIf="
+                          UserForm.get('person.email')?.touched &&
+                          UserForm.get('person.email')?.hasError('email')
+                        "
+                      >
+                        El email no es válido
+                      </div>
+
+                      <div
+                        class="invalid-feedback"
+                        *ngIf="backendErrors['person.email']"
+                      >
+                        {{ backendErrors["person.email"] }}
+                      </div>
                     </div>
                   </div>
 
-                  <div class="mb-4">
-                    <label class="form-label fw-semibold">Número de teléfono</label>
-                    <input
-                      type="text"
-                      class="form-control form-control-lg"
-                      formControlName="phoneNumber"
-                      placeholder="Ingresar aquí el número de teléfono"
-                      [class.is-invalid]="UserForm.get('person.phoneNumber')?.invalid && UserForm.get('person.phoneNumber')?.touched"
-                    />
-
-                    <div class="invalid-feedback" *ngIf="UserForm.get('person.phoneNumber')?.touched && UserForm.get('person.phoneNumber')?.hasError('pattern')">
-                      El teléfono debe tener entre 6 y 15 números
-                    </div>
-                  </div>
-
-                  <div class="mb-4">
-                    <label class="form-label fw-semibold">Email</label>
-                    <input
-                      type="email"
-                      class="form-control form-control-lg"
-                      formControlName="email"
-                      placeholder="Ingresar aquí el email"
-                      [class.is-invalid]="
-                        (UserForm.get('person.email')?.invalid && UserForm.get('person.email')?.touched) ||
-                        !!backendErrors['person.email']
-                      "
-                    />
-
-                    <div class="invalid-feedback" *ngIf="UserForm.get('person.email')?.touched && UserForm.get('person.email')?.hasError('email')">
-                      El email no es válido
+                  <h6 class="text-muted mt-3 mb-2">Dirección</h6>
+                  <div class="row g-3">
+                    <div class="form-fieldset mb-2 d-flex flex-column rounded">
+                      <label class="form-label fw-semibold required">Ingrese su dirección de residencia</label>
+                      <app-address-picker
+                        [form]="addressForm"
+                      ></app-address-picker>
                     </div>
 
-                    <div class="invalid-feedback" *ngIf="backendErrors['person.email']">
-                      {{ backendErrors['person.email'] }}
+                    <div
+                      class="text-danger small mt-2"
+                      *ngIf="backendErrors['person.address']"
+                    >
+                      {{ backendErrors["person.address"] }}
                     </div>
-                  </div>
-                  <div class="card border-0 bg-body-tertiary">
-                    <div class="card-body p-3 p-md-4">
-                      <label class="form-label fw-semibold">Dirección</label>
-                      <app-address-picker [form]="addressForm"></app-address-picker>
-
-                      <div class="text-danger small mt-2" *ngIf="backendErrors['person.address']">{{ backendErrors['person.address'] }}</div>
-                      <div class="text-danger small mt-1" *ngIf="backendErrors['person.address.formattedAddress']">{{ backendErrors['person.address.formattedAddress'] }}</div>
-                      <div class="text-danger small mt-1" *ngIf="backendErrors['person.address.city']">{{ backendErrors['person.address.city'] }}</div>
-                      <div class="text-danger small mt-1" *ngIf="backendErrors['person.address.province']">{{ backendErrors['person.address.province'] }}</div>
-                      <div class="text-danger small mt-1" *ngIf="backendErrors['person.address.country']">{{ backendErrors['person.address.country'] }}</div>
+                    <div
+                      class="text-danger small mt-1"
+                      *ngIf="backendErrors['person.address.formattedAddress']"
+                    >
+                      {{ backendErrors["person.address.formattedAddress"] }}
+                    </div>
+                    <div
+                      class="text-danger small mt-1"
+                      *ngIf="backendErrors['person.address.city']"
+                    >
+                      {{ backendErrors["person.address.city"] }}
+                    </div>
+                    <div
+                      class="text-danger small mt-1"
+                      *ngIf="backendErrors['person.address.province']"
+                    >
+                      {{ backendErrors["person.address.province"] }}
+                    </div>
+                    <div
+                      class="text-danger small mt-1"
+                      *ngIf="backendErrors['person.address.country']"
+                    >
+                      {{ backendErrors["person.address.country"] }}
                     </div>
                   </div>
                 </div>
-
               </div>
 
-              <div class="d-grid d-md-flex gap-2 mt-4 justify-content-md-center">
+              <div
+                class="d-grid d-md-flex gap-2 mt-4 justify-content-md-center"
+              >
                 <button
                   type="button"
                   class="btn btn-secondary w-100"
@@ -277,18 +462,13 @@
                   Volver
                 </button>
 
-                <button
-                  type="submit"
-                  class="btn btn-primary w-100"
-                >
+                <button type="submit" class="btn btn-primary w-100">
                   Registrarme
                 </button>
               </div>
             </form>
-
           </div>
         </div>
-
       </div>
     </div>
   </div>

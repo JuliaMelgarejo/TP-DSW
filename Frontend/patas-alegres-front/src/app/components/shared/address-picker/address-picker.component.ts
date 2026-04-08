@@ -10,7 +10,7 @@ import {
 
 import { FormGroup } from '@angular/forms';
 import { GoogleMap, MapAdvancedMarker } from '@angular/google-maps';
-import { AppConfig } from '../../../core/config/app.config.js';
+import { AppConfig } from '../../../core/config/app.config';
 
 @Component({
   selector: 'app-address-picker',

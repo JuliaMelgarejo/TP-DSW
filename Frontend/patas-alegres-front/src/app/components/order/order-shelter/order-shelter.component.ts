@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { OrderService } from '../../../services/order/order-srvice.service';
-import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service';
 
 @Component({
   selector: 'app-order-shelter',

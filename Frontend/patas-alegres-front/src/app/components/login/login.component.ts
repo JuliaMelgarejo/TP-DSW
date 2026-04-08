@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { User } from '../../models/user/user.model.js';
-import { UserService } from '../../services/user/user.service.js';
+import { User } from '../../models/user/user.model';
+import { UserService } from '../../services/user/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ErrorService } from '../../services/errors/error.service.js';
-import { AuthService } from '../../services/auth/auth.service.js';
-import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service.js';
+import { ErrorService } from '../../services/errors/error.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { ToastNotificationService } from '../../services/toast-notification/toast-notification.service';
 
 
 @Component({

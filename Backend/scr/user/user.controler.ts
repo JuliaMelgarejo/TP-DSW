@@ -151,7 +151,7 @@ async function newUser(req: Request, res: Response) {
     if (role === UserRole.USER && !shelter) {
       await em.persistAndFlush([user, newPerson, newPerson.address]);
       return res.status(201).json({
-        msg: `Usuario ${username} y persona creados exitosamente`,
+        message: `Usuario ${username} creados exitosamente`,
         data: user
       });
     }
@@ -173,7 +173,7 @@ async function newUser(req: Request, res: Response) {
       ]);
 
       return res.status(201).json({
-        msg: `Usuario ${username}, persona y refugio creados exitosamente`,
+        message: `Usuario ${username} y refugio ${newShelter.name} creados exitosamente`,
         data: user
       });
     }

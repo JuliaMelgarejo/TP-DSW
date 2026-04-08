@@ -1,16 +1,20 @@
-<div class="bg-light min-vh-100 py-4">
+<div class="min-vh-100 py-4">
   <div class="container-fluid px-3">
-
     <div class="row align-items-center mb-4 g-3">
       <div class="col-md-2 d-none d-md-block"></div>
-      
+
       <div class="col-12 col-md-8 text-center">
         <h2 class="fw-bold mb-1 text-dark">Lista de solicitudes realizadas</h2>
-        <p class="text-muted small mb-0">Seguí el estado de tus pedidos de adopción</p>
+        <p class="text-muted small mb-0">
+          Seguí el estado de tus pedidos de adopción
+        </p>
       </div>
 
       <div class="col-12 col-md-2 text-md-end text-center">
-        <a class="btn btn-outline-secondary btn-sm px-4 shadow-sm" routerLink="/home">
+        <a
+          class="btn btn-outline-secondary btn-sm px-4 shadow-sm"
+          routerLink="/home"
+        >
           Volver
         </a>
       </div>
@@ -21,69 +25,89 @@
       <p class="text-muted small">Cargando tus solicitudes...</p>
     </div>
 
-    <div *ngIf="!loading && errMsg" class="alert alert-danger border-0 shadow-sm d-flex align-items-center" role="alert">
+    <div
+      *ngIf="!loading && errMsg"
+      class="alert alert-danger shadow-sm d-flex align-items-center"
+      role="alert"
+    >
       <i class="bi bi-exclamation-triangle-fill me-2"></i>
       {{ errMsg }}
     </div>
 
-    <div *ngIf="!loading && !errMsg && items.length === 0" class="card border-0 shadow-sm">
+    <div
+      *ngIf="!loading && !errMsg && items.length === 0"
+      class="card shadow-sm"
+    >
       <div class="card-body text-center py-5">
-        <p class="text-muted mb-0">Todavía no realizaste ninguna solicitud de adopción.</p>
-        <a routerLink="/animals" class="btn btn-primary btn-sm mt-3">Ver animales disponibles</a>
+        <p class="text-muted mb-0">
+          Todavía no realizaste ninguna solicitud de adopción.
+        </p>
+        <a routerLink="/animals" class="btn btn-primary btn-sm mt-3"
+          >Ver animales disponibles</a
+        >
       </div>
     </div>
 
     <div *ngIf="!loading && !errMsg && items.length > 0" class="row g-4">
-
       <div class="col-12 col-md-6 col-lg-4" *ngFor="let a of items">
-
-        <button
-          type="button"
-          class="card h-100 w-100 text-start border-0 shadow-sm transition-hover p-0 overflow-hidden text-decoration-none bg-white"
-          (click)="goDetail(a.id)">
-
+        <a class="card h-100 shadow-sm product-card text-decoration-none" [routerLink]="['/my-adoptions', a.id]">
           <img
             [src]="getPhoto(a)"
             [alt]="a?.animal?.name || 'Animal'"
             class="card-img-top d-block"
-            style="height: 220px; object-fit: cover;"
+            style="height: 220px; object-fit: cover"
           />
 
           <div class="card-body p-4">
-
             <h5 class="fw-bold text-dark mb-3">
-              {{ a?.animal?.name || '—' }}
+              {{ a?.animal?.name || "—" }}
             </h5>
 
             <div class="mb-3">
-              <label class="text-muted small fw-bold text-uppercase d-block mb-1" style="font-size: 0.7rem;">Estado</label>
-              <span class="badge px-3 py-2 rounded-pill"
+              <label
+                class="text-muted small fw-bold text-uppercase d-block mb-1"
+                style="font-size: 0.7rem"
+                >Estado</label
+              >
+              <span
+                class="badge px-3 py-2 rounded-pill"
                 [ngClass]="{
-                  'text-bg-warning': (a?.currentState ?? 'PENDIENTE') === 'PENDIENTE',
+                  'text-bg-warning':
+                    (a?.currentState ?? 'PENDIENTE') === 'PENDIENTE',
                   'text-bg-success': a?.currentState === 'APROBADA',
-                  'text-bg-danger': a?.currentState === 'RECHAZADA'
-                }">
-                {{ a?.currentState ?? 'PENDIENTE' }}
+                  'text-bg-danger': a?.currentState === 'RECHAZADA',
+                }"
+              >
+                {{ a?.currentState ?? "PENDIENTE" }}
               </span>
             </div>
 
             <div class="mb-3">
-              <label class="text-muted small fw-bold text-uppercase d-block mb-1" style="font-size: 0.7rem;">Fecha de pedido</label>
+              <label
+                class="text-muted small fw-bold text-uppercase d-block mb-1"
+                style="font-size: 0.7rem"
+                >Fecha de pedido</label
+              >
               <div class="fw-semibold text-dark">
-                {{ a?.adoption_date ? (a.adoption_date | date:'dd/MM/yyyy') : '—' }}
+                {{
+                  a?.adoption_date
+                    ? (a.adoption_date | date: "dd/MM/yyyy")
+                    : "—"
+                }}
               </div>
             </div>
 
-            <div class="pt-3 border-top d-flex justify-content-between align-items-center">
-              <span class="text-primary fw-bold small text-uppercase">Ver detalle</span>
+            <div
+              class="pt-3 border-top d-flex justify-content-between align-items-center"
+            >
+              <span class="text-primary fw-bold small text-uppercase"
+                >Ver detalle</span
+              >
               <i class="bi bi-chevron-right text-primary"></i>
             </div>
-
           </div>
-        </button>
-
+        </a>
       </div>
     </div>
-
   </div>
 </div>

@@ -124,7 +124,49 @@ label{
   align-items: center;
 }
 
-@media (min-width: 992px) {
+.form-control, .form-select {
+  max-width: 100%;
+}
+
+.form-control, .form-select {
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.form-control:hover, .form-select:hover {
+  border-color: rgba(var(--primary-rgb), 0.5);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb),.15);
+}
+
+.btn {
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+label.required::after {
+  content: " *";
+  color: var(--bs-danger);
+  font-weight: 600;
+}
+
+.form-helper {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.form-helper .required-mark {
+  color: var(--bs-danger);
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
   .left-column {
     padding-right: 2rem;
     border-right: 1px solid #e5e5e5;
@@ -144,5 +186,9 @@ label{
     width: 100%;
     max-width: 450px;
     padding: 0 1rem;
+  }
+
+  .form-control-sm-width {
+    max-width: 250px;
   }
 }

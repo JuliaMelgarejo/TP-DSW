@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from  '../../services/auth/auth.service';
 import { GoogleMap, MapInfoWindow, MapAdvancedMarker } from '@angular/google-maps';
-import { PersonService } from '../../services/person/person.service.js';
-import { ShelterService } from '../../services/shelter/shelter.service.js';
-import { Shelter } from '../../models/shelter/shelter.model.js';
-import { AppConfig } from '../../core/config/app.config.js';
+import { PersonService } from '../../services/person/person.service';
+import { ShelterService } from '../../services/shelter/shelter.service';
+import { Shelter } from '../../models/shelter/shelter.model';
+import { AppConfig } from '../../core/config/app.config';
 type Banner = {
   src: string;
   alt: string;

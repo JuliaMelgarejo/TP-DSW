@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { AnimalService } from '../../../services/animal/animal.service.js';
+import { AnimalService } from '../../../services/animal/animal.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service.js';
+import { ToastNotificationService } from '../../../services/toast-notification/toast-notification.service';
 
 @Component({
   selector: 'app-animal-form',
