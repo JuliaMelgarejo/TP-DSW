@@ -24,11 +24,11 @@ export const syncSchema = async () => {
   // await generator.createSchema();
   await generator.updateSchema();
   if (process.env.RUN_SEEDS === 'true') {
-    // await import('./../../../scr/scripts/seedCategories.js');
-    await import('./../../../scr/scripts/seedAdoptionState.js');
-    await import('./../../../scr/scripts/seedOrderState.js');
-    await import('./../../../scr/scripts/seedBreeds.js');
-    await import('./../../../scr/scripts/seedShelters.js');
+    await import('./../../../scr/scripts/seedCategories.js');
+    // await import('./../../../scr/scripts/seedAdoptionState.js');
+    // await import('./../../../scr/scripts/seedOrderState.js');
+    // await import('./../../../scr/scripts/seedBreeds.js');
+    // await import('./../../../scr/scripts/seedShelters.js');
     await import('./../../../scr/scripts/seedProducts.js');
     await import('./../../../scr/scripts/seedAnimals.js');
   }
