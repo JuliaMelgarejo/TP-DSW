@@ -32,8 +32,7 @@ import { orderStatusRouter } from './scr/orderStatus/orderStatus.router.js';
 import { addressRouter } from './scr/address/address.router.js';
 import { locationRouter } from './scr/location/location.router.js';
 
-const app = express();
-
+export const app = express();
 app.use(express.json());
 
 app.use(cors({
@@ -108,15 +107,4 @@ if (process.env.NODE_ENV !== 'production') {
   await syncSchema()
 }
 
-
-// =========================
-// START SERVER
-// =========================
-
 const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log('server running on http://localhost:' + PORT);
-  console.log('Swagger UI: http://localhost:' + PORT + '/api-docs');
-  console.log('Redoc docs: http://localhost:' + PORT + '/docs');
-});
