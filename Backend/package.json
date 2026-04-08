@@ -5,10 +5,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
     "build": "tsc -p ./tsconfig.json",
-    "start:dev": "cross-env NODE_ENV=development tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/app.js\"",
-    "start:prod": "cross-env NODE_ENV=production node dist/app.js",
+    "start:dev": "cross-env NODE_ENV=development tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/server.js\"",
+    "start:prod": "cross-env NODE_ENV=production node dist/server.js",
     "start": "yarn start:dev",
     "seed:categories": "node dist/scr/scripts/seedCategories.js",
     "seed:adoptionState": "node dist/scr/scripts/seedAdoptionState.js",
@@ -28,9 +28,13 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/multer": "^2.0.0",
     "@types/node": "20.12.12",
+    "@types/supertest": "^7.2.0",
+    "@vitest/coverage-v8": "4.1.3",
     "cross-env": "^10.1.0",
+    "supertest": "^7.2.2",
     "tsc-watch": "6.0.4",
-    "typescript": "5.1.3"
+    "typescript": "5.1.3",
+    "vitest": "^4.1.3"
   },
   "dependencies": {
     "@mikro-orm/core": "5.8.10",
