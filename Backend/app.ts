@@ -2,8 +2,12 @@ import './scr/config/env.js';
 import 'reflect-metadata'
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
-import {orm, syncSchema} from './scr/zshare/db/orm.js';
+import { orm, syncSchema } from './scr/zshare/db/orm.js';
 import { RequestContext } from '@mikro-orm/core';
+
+import redoc from "redoc-express";
+import swaggerUi from "swagger-ui-express";
+import { generateOpenApi } from "./scr/config/generateOpenApi.js";
 
 import { animalRouter } from './scr/animal/animal.router.js';
 import { breedRouter } from './scr/breed/breed.router.js';
@@ -14,7 +18,9 @@ import { rescueRouter } from './scr/rescue/rescue.router.js';
 import { vetRouter } from './scr/vet/vet.router.js';
 import { adoptionRouter } from './scr/adoption/adoption.router.js';
 import { userRouter } from './scr/user/user.routes.js';
+
 import path from 'path';
+
 import { photoRouter } from './scr/photo/photo.router.js';
 import { productRouter } from './scr/product/product.router.js';
 import { categoryRouter } from './scr/productCategory/productoCategory.router.js';
@@ -27,23 +33,26 @@ import { addressRouter } from './scr/address/address.router.js';
 import { locationRouter } from './scr/location/location.router.js';
 
 const app = express();
+
 app.use(express.json());
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL,  // Permitir solicitudes desde el frontend de Angular
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Métodos permitidos
-  allowedHeaders: ['Content-Type', 'Authorization']  // Cabeceras permitidas
+  origin: process.env.FRONTEND_URL,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-//luego de los middlewares base
-app.use((req, res, next ) => {
+// contexto de MikroORM
+app.use((req, res, next) => {
   RequestContext.create(orm.em, next)
 })
 
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 
-//antes de las rutas y middlewares
+// =========================
+// ROUTES
+// =========================
 
 app.use('/api/breed', breedRouter)
 app.use('/api/animal', animalRouter)
@@ -67,11 +76,47 @@ app.use('/api/orderState', orderStateRouter)
 app.use('/api/address', addressRouter);
 app.use('/api/location', locationRouter);
 
-if (process.env.NODE_ENV !== 'production'){
-  await syncSchema() //never in production*/
+
+// =========================
+// GENERATE OPENAPI AUTOMATICALLY
+// =========================
+
+const openApiSpec = generateOpenApi(app);
+
+app.get("/openapi.json", (req, res) => {
+  res.json(openApiSpec);
+});
+
+// Swagger UI (permite probar endpoints)
+app.use("/api-docs", swaggerUi.serve as any, swaggerUi.setup(openApiSpec)as any);
+
+// Redoc (documentación visual)
+app.get(
+  "/docs",
+  redoc({
+    title: "Refugio API",
+    specUrl: "/openapi.json"
+  })as any
+);
+
+
+// =========================
+// DB SYNC (solo desarrollo)
+// =========================
+
+if (process.env.NODE_ENV !== 'production') {
+  await syncSchema()
 }
 
+
+// =========================
+// START SERVER
+// =========================
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, ()=>{
-console.log('server running on http://localhost:' + PORT);
-})
+
+app.listen(PORT, () => {
+  console.log('server running on http://localhost:' + PORT);
+  console.log('Swagger UI: http://localhost:' + PORT + '/api-docs');
+  console.log('Redoc docs: http://localhost:' + PORT + '/docs');
+});
